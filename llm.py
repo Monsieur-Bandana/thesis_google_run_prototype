@@ -1,7 +1,5 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
-import os
-# Modell- und Tokenizer laden
+
 
 # Eingabetext
 def generateAnswer(input: str, model, tokenizer)  -> str:
