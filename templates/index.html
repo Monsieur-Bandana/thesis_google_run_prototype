@@ -7,9 +7,18 @@
 </head>
 
 <body>
-    <h1>Don't click the button!</h1>
+    <h1>Click the button!</h1>
     <form action="/response" method="post">
+        <input type="hidden" name="button_text" value="Hello there!">
         <button type="submit">Hello there!</button>
+    </form>
+    <form action="/response" method="post">
+        <input type="hidden" name="button_text" value="It's over Anakin!">
+        <button type="submit">It's over Anakin!</button>
+    </form>
+    <form action="/response" method="post">
+        <input type="hidden" name="button_text" value="Of course I know him!">
+        <button type="submit">Of course I know him!</button>
     </form>
     <p>{{ message }}</p>
 </body>
