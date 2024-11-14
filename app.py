@@ -11,10 +11,11 @@ model, tokenizer = boot_model()
 def index():
     return render_template("index.html", message="")
 
-@app.route("/response", methods=["POST"])
+
+@app.route('/response', methods=['POST'])
 def response():
-    button_text = request.form.get('button_text', 'No text provided')
-    message = generateAnswer(button_text, model, tokenizer)
+    name = request.form.get('name')  # Retrieve the 'name' input value
+    message = generateAnswer(name, model, tokenizer)
     return render_template("index.html", message=message)
 
 if __name__ == "__main__":
