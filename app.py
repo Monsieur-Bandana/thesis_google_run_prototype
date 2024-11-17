@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 
-from boot_up_llm import boot_model
+from boot_up_llm import boot_model, boot_model_from_gc
 from llm import generateAnswer
 
 app = Flask(__name__)
 
-model, tokenizer = boot_model()
+model, tokenizer = boot_model_from_gc()
 
 @app.route("/")
 def index():
