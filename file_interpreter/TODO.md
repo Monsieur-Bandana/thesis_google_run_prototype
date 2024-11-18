@@ -1,0 +1,1 @@
+creates json files, containing tags about the topic and the concluded text

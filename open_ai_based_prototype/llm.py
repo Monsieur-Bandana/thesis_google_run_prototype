@@ -1,6 +1,5 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
 from openai import OpenAI
-from thesis_google_run_prototype.ind_key import key
+# from ind_key import key
 
 def accessScientificInformation() -> str:
     return f"""Key Emission Sources in the Smartphone Lifecycle
@@ -37,7 +36,7 @@ def generateAnswer(input: str)  -> str:
     comment = f"""please tell me about the carbon footprint of the {input}"""
 
     context = f"""You are a helpful assistant, returning a structered text abot the carbon footprint of smartphones use the following input: {accessScientificInformation()}."""
-    sk = key
+    sk = ""
     client = OpenAI(api_key=sk)
     
     client.api_key = sk
@@ -53,7 +52,9 @@ def generateAnswer(input: str)  -> str:
     )
     
     generated_text = completion.choices[0].message.content
+    html_output = ''.join(f'<p>{line}</p>' for line in generated_text.split('\n') if line.strip())
+   
 
     print(generated_text)
 
-    return generated_text
+    return html_output
