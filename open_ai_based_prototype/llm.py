@@ -35,7 +35,7 @@ def generateAnswer(input: str)  -> str:
     context = accessScientificInformation()
     comment = f"""please tell me about the carbon footprint of the {input}"""
 
-    context = f"""You are a helpful assistant, returning a structered text abot the carbon footprint of smartphones use the following input: {accessScientificInformation()}."""
+    context = f"""You are a helpful assistant, returning a structered text abot the carbon footprint of smartphones use exclusively the following input: {accessScientificInformation()} as a source of information."""
     sk = ""
     client = OpenAI(api_key=sk)
     

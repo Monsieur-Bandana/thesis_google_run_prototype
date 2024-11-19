@@ -1,0 +1,4 @@
+from pdf_extractor import process_pdfs_from_bucket_using_gpt
+
+bucket_name = "raw_pdf_files"
+process_pdfs_from_bucket_using_gpt(bucket_name)
