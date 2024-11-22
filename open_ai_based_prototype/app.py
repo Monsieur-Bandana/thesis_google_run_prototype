@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 
-from llm import generateAnswer
+from llm_after_class import generateAnswer
 
 app = Flask(__name__)
 

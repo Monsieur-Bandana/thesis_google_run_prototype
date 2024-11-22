@@ -2,6 +2,7 @@
     {
         "name": "Raw Materials",
         "description": "Which Raw Materials are used for Production? Raw Materials can be Tungsten, Tin, plastic, gold (3TG), lead, high-temperature solder, cobald, lithium, tantalum",
+        "parent": "Materials",
         "tokens": [
             "Tungsten",
             "Tin",
@@ -19,6 +20,7 @@
     {
         "name": "Toxic Chemical Materials",
         "description": "Which Chemical Materials are used for Production? Chemical Materials can be beryllium, brominated flame retardants, PVC, phthalates, arsenic in the glass, and mercury",
+        "parent": "Materials",
         "tokens": [
             "beryllium",
             "brominated flame retardants",
@@ -33,6 +35,7 @@
     {
         "name": "Alternative Materials",
         "description": "Which Alternatives are used for Production? Those can be bio-based plastic",
+        "parent": "Materials",
         "tokens": [
             "bio-based plastic",
             "recycling materials",
@@ -42,6 +45,7 @@
     {
         "name": "Materials Source",
         "description": "Where do the Raw Materials come from",
+        "parent": "Materials",
         "tokens": [
             "Mines",
             "Africa",
@@ -51,6 +55,7 @@
     {
         "name": "Transportation",
         "description": "Which distances have to be done between the production sites. Look out for tokens like 'km' or 'miles'",
+        "parent": "Transportation",
         "tokens": [
             "km",
             "miles",

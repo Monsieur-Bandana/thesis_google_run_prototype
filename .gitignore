@@ -6,5 +6,6 @@ saved_model_directory24/
 ind_key.py
 temp_pdfs/
 !labels_with_descriptions.json
+!prefilter.json
 *.pyc
 temp/
