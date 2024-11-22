@@ -1,7 +1,7 @@
 from google.cloud import storage
 import pdfplumber
 import os
-from gcs_handler import list_files_in_bucket, download_file_from_bucket
+from gcs_handler import list_files_in_bucket, download_file_from_bucket, list_files_in_folder
 
 def extract_text_from_pdf(pdf_path):
     with pdfplumber.open(pdf_path) as pdf:
@@ -11,36 +11,29 @@ def extract_text_from_pdf(pdf_path):
             text = text.encode('ascii', 'ignore').decode('utf-8')
             
     return text
-
+"""
 def process_pdfs_from_bucket_using_gpt(bucket_name):
     temp_folder = "temp_pdfs"
     os.makedirs(temp_folder, exist_ok=True)  # Ensure temp folder exists
 
-    files_list = list_files_in_bucket(bucket_name)
+    files_list = list_files_in_folder(bucket_name, "raw_pdf_files")
     for file_name in files_list:
         local_pdf_path = os.path.join(temp_folder, file_name)
 
         # Download file from GCS
-        download_file_from_bucket(bucket_name, file_name, local_pdf_path)
-
-        # Extract text from PDF
-        try:
-            pdf_text = extract_text_from_pdf(local_pdf_path)
-           #  exec_file(pdf_text)
-        except Exception as e:
-            print(f"Error processing {file_name}: {e}")
-
+        download_file_from_bucket(bucket_name, file_name, local_pdf_path, "raw_pdf_files")
         # Clean up local file
         os.remove(local_pdf_path)
+"""
 
 def create_pdf_temp_folder(bucket_name) -> str:
     temp_folder = "temp_pdfs"
     os.makedirs(temp_folder, exist_ok=True)  # Ensure temp folder exists
 
-    files_list = list_files_in_bucket(bucket_name)
+    files_list = list_files_in_folder(bucket_name, "raw_pdf_files")
     for file_name in files_list:
-        local_pdf_path = os.path.join(temp_folder, file_name)
-        download_file_from_bucket(bucket_name, file_name, local_pdf_path)
+        local_pdf_path = os.path.basename(os.path.join(temp_folder, file_name))
+        download_file_from_bucket(bucket_name, file_name, f"{temp_folder}/{local_pdf_path}")
 
     return temp_folder
 

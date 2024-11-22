@@ -2,9 +2,11 @@ from llama_index.core import SimpleDirectoryReader
 import json
 import os
 from pdf_handler import create_pdf_temp_folder
+from gcs_handler import upload_file
 
 classes = []
 tokens = []
+bucket_name = "raw_pdf_files"
 
 def extract_classes():
     with open('labels_with_descriptions.json', 'r') as file:
@@ -22,7 +24,7 @@ def classify_text_using_retriever()->list[dict]:
     """
     if not classes:
         extract_classes()
-    bucket_name = "raw_pdf_files"
+    
     pdf_docs = create_pdf_temp_folder(bucket_name)
 
     pdf_list = [os.path.basename(file) for file in os.listdir(pdf_docs)]
@@ -56,8 +58,11 @@ def classify_text_using_retriever()->list[dict]:
 
 list_of_dicts: list[dict] = classify_text_using_retriever()
 
-output_file = "output.json"
+output_file = "classification.json"
 
 # Write the list of dictionaries to a JSON file
 with open(output_file, "w") as file:
     json.dump(list_of_dicts, file, indent=4)
+
+# bucket_name, source_file_name, destination_blob_name, folder_name=None
+upload_file(bucket_name, "classification.json","classification.json", "json_files")
