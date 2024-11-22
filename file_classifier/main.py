@@ -2,13 +2,14 @@ from llama_index.core import SimpleDirectoryReader
 import json
 import os
 from pdf_handler import create_pdf_temp_folder
-from gcs_handler import upload_file
+from gcs_handler import upload_file, download_file_from_bucket
 
 classes = []
 tokens = []
 bucket_name = "raw_pdf_files"
 
 def extract_classes():
+    download_file_from_bucket(bucket_name, "json_files/labels_with_descriptions.json", "labels_with_descriptions.json")
     with open('labels_with_descriptions.json', 'r') as file:
         data: list = json.load(file)
 
