@@ -5,6 +5,41 @@ import os
 
 print("Current working directory:", os.getcwd())
 
+from google.cloud import storage
+
+def list_directories_in_bucket(bucket_name, prefix=None):
+    """
+    List directories in a Google Cloud Storage bucket.
+
+    Args:
+        bucket_name (str): Name of the GCS bucket.
+        prefix (str): (Optional) Prefix to filter objects by directory.
+
+    Returns:
+        List[str]: A list of directory names.
+    """
+    # Initialize a GCS client
+    client = storage.Client()
+
+    # Access the bucket
+    bucket = client.bucket(bucket_name)
+
+    # Fetch blobs in the bucket
+    blobs = bucket.list_blobs(prefix=prefix)
+        # Collect directories
+    directories = []
+    
+
+    for blob in blobs:
+        # Extract the directory name
+        path_parts = blob.name.split('/')
+        if path_parts[1] not in directories and not path_parts[1] == '':
+            directories.append(path_parts[1])
+    
+    
+    dir: list[str] = directories
+    return dir
+
 def list_files_in_bucket(bucket_name):
     client = storage.Client()
     bucket = client.get_bucket(bucket_name)

@@ -2,7 +2,7 @@ from llama_index.core import SimpleDirectoryReader
 import json
 import os
 from pdf_handler import create_pdf_temp_folder
-from gcs_handler import upload_file, download_file_from_bucket
+from gcs_handler import upload_file, download_file_from_bucket, list_directories_in_bucket
 
 classes = []
 tokens = []
@@ -17,16 +17,16 @@ def extract_classes():
             classes.append(el["name"])
             tokens.append(el["tokens"])
 
-def classify_text_using_retriever()->list[dict]:
+def classify_text_using_retriever(dir: str)->list[dict]:
     """
     * exec retriever for each label
-    * outcome for each lebel stored in list.
+    * outcome for each label stored in list.
     * if list empty label not in use
     """
     if not classes:
         extract_classes()
     
-    pdf_docs = create_pdf_temp_folder(bucket_name)
+    pdf_docs = create_pdf_temp_folder(bucket_name, dir)
 
     pdf_list = [os.path.basename(file) for file in os.listdir(pdf_docs)]
 
@@ -56,14 +56,22 @@ def classify_text_using_retriever()->list[dict]:
     # clear_temp_folder()
     return collection
 
+# for each directory in google cloud storage:
+prefix = 'raw_pdf_files/'
+directories = list_directories_in_bucket(bucket_name, prefix)
+print(directories)
 
-list_of_dicts: list[dict] = classify_text_using_retriever()
+for directory in directories:
+    text_classifications: list[dict] = classify_text_using_retriever(directory)
 
-output_file = "classification.json"
+    # one output file for each directory
+    # all output files, will be saved in temp folder
+    output_file = f"{directory}-classification.json"
 
-# Write the list of dictionaries to a JSON file
-with open(output_file, "w") as file:
-    json.dump(list_of_dicts, file, indent=4)
+    # Write the list of dictionaries to a JSON file
+    with open(output_file, "w") as file:
+        json.dump(text_classifications, file, indent=4)
 
-# bucket_name, source_file_name, destination_blob_name, folder_name=None
-upload_file(bucket_name, "classification.json","classification.json", "json_files")
+    # bucket_name, source_file_name, destination_blob_name, folder_name=None
+    upload_file(bucket_name, output_file,output_file, "json_files")
+
