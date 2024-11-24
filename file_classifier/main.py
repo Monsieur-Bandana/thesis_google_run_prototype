@@ -69,9 +69,9 @@ for directory in directories:
     output_file = f"{directory}-classification.json"
 
     # Write the list of dictionaries to a JSON file
-    with open(output_file, "w") as file:
+    with open(f"temp/{output_file}", "w") as file:
         json.dump(text_classifications, file, indent=4)
 
     # bucket_name, source_file_name, destination_blob_name, folder_name=None
-    upload_file(bucket_name, output_file,output_file, "json_files")
+    upload_file(bucket_name, f"temp/{output_file}",output_file, "json_files")
 

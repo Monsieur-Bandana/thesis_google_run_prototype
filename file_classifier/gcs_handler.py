@@ -2,10 +2,10 @@ from google.cloud import storage
 import pdfplumber
 import os
 # from classifier import exec_file
+from google.cloud import storage
 
 print("Current working directory:", os.getcwd())
 
-from google.cloud import storage
 
 def list_directories_in_bucket(bucket_name, prefix=None):
     """
