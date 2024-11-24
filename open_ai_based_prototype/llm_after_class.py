@@ -58,8 +58,26 @@ def download_file_from_gcs(bucket_name, source_blob_name, destination_file_name)
     blob.download_to_filename(destination_file_name)
     print(f"Downloaded {source_blob_name} to {destination_file_name}")
 
+def getContext(dir, class_name):
+    local_file_path = f"temp/{dir}-{class_name}.txt"
+    try:
+        with open(local_file_path, 'r', encoding='utf-8') as file:
+            print(f"extracted text from {local_file_path}")
+            context = file.read()
+    except UnicodeDecodeError:
+        with open(local_file_path, 'r', encoding='ISO-8859-1') as file:
+            context = file.read()
+    return context
+
 def generateAnswer(input: str):
     bucket_name = "raw_pdf_files"
+
+    dir = "general"
+
+    for brand in ["iphone", "fairphone"]:
+        if input in brand:
+            dir = brand
+        
     
     create_temp_folder()
     # Step 1: Download and read JSON files
@@ -73,19 +91,17 @@ def generateAnswer(input: str):
     for entity in entities:
         class_name = entity["name"]
 
-        download_file_from_gcs(bucket_name, f"summaries/{class_name}.txt", f"temp/{class_name}.txt")
+        context = ""
+        download_file_from_gcs(bucket_name, f"summaries/{dir}-{class_name}.txt", f"temp/{dir}-{class_name}.txt")
+        context = getContext(dir, class_name)
+        if not dir == "general":
+            download_file_from_gcs(bucket_name, f"summaries/general-{class_name}.txt", f"temp/general-{class_name}.txt")
+            context = context + getContext("general", class_name)
+
         
         # Summarize each PDF and compile into a text file
-        context = ""
-        local_file_path = f"temp/{class_name}.txt"
         response = ""
-        try:
-            with open(local_file_path, 'r', encoding='utf-8') as file:
-                print(f"extracted text from {local_file_path}")
-                context = file.read()
-        except UnicodeDecodeError:
-            with open(local_file_path, 'r', encoding='ISO-8859-1') as file:
-                context = file.read()
+       
         if context.strip():
             response = activate_api(input, class_name, context)
             resposne_with_title = f'<h1>{class_name}</h1>{response}'
@@ -94,6 +110,6 @@ def generateAnswer(input: str):
     return " ".join(responses)
 
 ## Testsection
-# print(generateAnswer("Smartphones"))
+# print(generateAnswer("iphone"))
 
 
