@@ -98,11 +98,11 @@ def main():
                 summaries.append(f"Summary for {pdf_name}:\n{summary}\n\n")
             
             # Save summaries to a text file
-            
-            with open(f"temp/{dir}-{class_name}.txt", "w", encoding="utf-8") as txt_file:
-                txt_file.writelines(summaries)
-            print(f"Summaries saved to {class_name}.txt")
-            upload_file(bucket_name,f"temp/{dir}-{class_name}.txt",f"summaries/{dir}-{class_name}.txt")
+            if summaries:
+                with open(f"temp/{dir}-{class_name}.txt", "w", encoding="utf-8") as txt_file:
+                    txt_file.writelines(summaries)
+                print(f"Summaries saved to {class_name}.txt")
+                upload_file(bucket_name,f"temp/{dir}-{class_name}.txt",f"summaries/{dir}-{class_name}.txt")
         
 
 if __name__ == "__main__":

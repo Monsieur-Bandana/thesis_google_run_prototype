@@ -3,6 +3,7 @@ from openai import OpenAI
 import os
 import json
 from google.cloud import storage
+from google.api_core.exceptions import NotFound
 # from ind_key import key
 
 def accessScientificInformation() -> str:
@@ -34,9 +35,6 @@ def activate_api(input: str, class_name: str, rag_inf: str)  -> str:
     
     generated_text = completion.choices[0].message.content
     html_output = ''.join(f'<p>{line}</p>' for line in generated_text.split('\n') if line.strip())
-   
-
-    print(generated_text)
 
     return html_output
 
@@ -92,11 +90,20 @@ def generateAnswer(input: str):
         class_name = entity["name"]
 
         context = ""
-        download_file_from_gcs(bucket_name, f"summaries/{dir}-{class_name}.txt", f"temp/{dir}-{class_name}.txt")
-        context = getContext(dir, class_name)
+        try:
+            download_file_from_gcs(bucket_name, f"summaries/{dir}-{class_name}.txt", f"temp/{dir}-{class_name}.txt")
+            context = getContext(dir, class_name)
+        except NotFound:
+            print(f"file summaries/{dir}-{class_name}.txt not found")
+
+
+
         if not dir == "general":
-            download_file_from_gcs(bucket_name, f"summaries/general-{class_name}.txt", f"temp/general-{class_name}.txt")
-            context = context + getContext("general", class_name)
+            try:
+                download_file_from_gcs(bucket_name, f"summaries/general-{class_name}.txt", f"temp/general-{class_name}.txt")
+                context = context + getContext("general", class_name)
+            except NotFound:
+                print(f"file summaries/general-{class_name}.txt not found")
 
         
         # Summarize each PDF and compile into a text file
@@ -111,5 +118,3 @@ def generateAnswer(input: str):
 
 ## Testsection
 # print(generateAnswer("iphone"))
-
-
