@@ -49,14 +49,46 @@ def create_temp_folder():
     else:
         print(f"Folder already exists: {folder_path}")
 
+def get_existing_summaries(bucketname):
+    files = list_files_in_folder(bucketname, "summaries")
+    for file in files:
+        filename = file.split("/")[1]
+        download_file_from_bucket(bucketname, file, f"temp/{filename}")
+
+def check_if_txt_file_already_exists(txt_path)->bool:
+    if os.path.exists(txt_path):
+        return True
+    return False
+
+def check_if_file_got_already_interpreted(txt_path, pdf_path)-> bool:
+    # Specify the file path and the text line to search for
+    
+    search_text = pdf_path
+
+    # Check if the file exists
+    if os.path.exists(txt_path):
+        print(f"{txt_path} exists")
+        # Open the file and check for the line
+        with open(txt_path, "r", encoding="utf-8") as file:
+            for line in file:
+                if search_text in line:
+                    print(f"{search_text} exists in the file.")
+                    return True
+                else:
+                    print(f"searching for {search_text} ...")
+    
+    return False
+    
+
+
 def main():
     # TODO adapt to folder structure
     prefix = 'raw_pdf_files/'
     bucket_name = "raw_pdf_files"
     brandlist = list_directories_in_bucket(bucket_name, prefix)
-    
-    
+        
     create_temp_folder()
+    get_existing_summaries(bucket_name)
     # Step 1: Download and read JSON files
     list_of_jsons = list_files_in_folder(bucket_name, "json_files")
     for file in list_of_jsons:
@@ -91,19 +123,24 @@ def main():
             # Summarize each PDF and compile into a text file
             summaries = []
             for pdf_name in fitting_pdfs:
-                local_pdf_path = f"temp/{pdf_name.split("/")[1]}"
-                download_file_from_bucket(bucket_name, f"raw_pdf_files/{pdf_name}", local_pdf_path)
-                summary = summarize_pdf_content(local_pdf_path, class_name, class_description, related_terms)
-                print(f"Completed {pdf_name}")
-                summaries.append(f"Summary for {pdf_name}:\n{summary}\n\n")
+                if not check_if_file_got_already_interpreted(f"temp/{dir}-{class_name}.txt", f"""{dir}/{pdf_name.split("/")[1]}"""):
+                    local_pdf_path = f"""temp/{pdf_name.split("/")[1]}"""
+                    download_file_from_bucket(bucket_name, f"raw_pdf_files/{pdf_name}", local_pdf_path)
+                    summary = summarize_pdf_content(local_pdf_path, class_name, class_description, related_terms)
+                    print(f"Completed {pdf_name}")
+                    summaries.append(f"Summary for {pdf_name}:\n{summary}\n\n")
             
             # Save summaries to a text file
             if summaries:
-                with open(f"temp/{dir}-{class_name}.txt", "w", encoding="utf-8") as txt_file:
-                    txt_file.writelines(summaries)
-                print(f"Summaries saved to {class_name}.txt")
+                if not check_if_txt_file_already_exists(f"temp/{pdf_name.split("/")[1]}"):
+                    with open(f"temp/{dir}-{class_name}.txt", "w", encoding="utf-8") as txt_file:
+                        txt_file.writelines(summaries)
+                    print(f"Summaries saved to {class_name}.txt")
+                else:
+                    with open(f"temp/{dir}-{class_name}.txt", "a", encoding="utf-8") as txt_file:
+                        txt_file.writelines(summaries)
+                    print(f"Summaries added to {class_name}.txt")
                 upload_file(bucket_name,f"temp/{dir}-{class_name}.txt",f"summaries/{dir}-{class_name}.txt")
-        
 
 if __name__ == "__main__":
     main()
