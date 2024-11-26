@@ -9,3 +9,5 @@ temp_pdfs/
 !/prefilter.json
 *.pyc
 temp/
+*/sel_scraper.py
+*/tut_scraper.py

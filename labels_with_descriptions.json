@@ -1,7 +1,7 @@
 [
     {
         "name": "Raw Materials",
-        "description": "Which Raw Materials are used for Production? Raw Materials can be Tungsten, Tin, plastic, gold (3TG), lead, high-temperature solder, cobald, lithium, tantalum",
+        "description": "Which Raw Materials are used for Production? Raw Materials can be Tungsten, Tin, plastic, gold (3TG), lead, high-temperature solder, cobalt, lithium, tantalum",
         "parent": "Materials",
         "tokens": [
             "Tungsten",
@@ -10,11 +10,12 @@
             "gold",
             "lead",
             "high-temperature solder",
-            "cobald",
+            "cobalt",
             "lithium",
             "tantalum",
             "rares",
-            "rare earths"
+            "rare earths",
+            "rare earth elements"
         ]
     },
     {
@@ -62,5 +63,104 @@
             "sea-transportation",
             "distant"
         ]
+    },
+    {
+        "name": "Production Waste",
+        "description": "How many waste occors during the manufacturing process. How is dealt with the waste?",
+        "parent": "Production",
+        "tokens": []
+    },
+    {
+        "name": "Supplier Energy Use",
+        "description": "",
+        "parent": "Production",
+        "tokens": []
+    },
+    {
+        "name": "Location of Assembly",
+        "description": "",
+        "parent": "Production",
+        "tokens": [
+            "China"
+        ]
+    },
+    {
+        "name": "Ease of Reparation",
+        "description": "",
+        "parent": "Use",
+        "tokens": [
+            "reparability",
+            "replace battery",
+            "replace display",
+            "replaceability of the ",
+            "ease of disassemably"
+        ]
+    },
+    {
+        "name": "Ease of modification",
+        "description": "",
+        "parent": "Use",
+        "tokens": [
+            "SD card slot",
+            "SD card storage slot"
+        ]
+    },
+    {
+        "name": "top notch technology",
+        "description": "Does the phone keeps up with the modern standards? By doing so the probability, that the phone has to be replaced by a newer one soon is reduced.",
+        "parent": "Use",
+        "tokens": [
+            "5G support",
+            "eSim support",
+            "Snapdragon",
+            "bionic",
+            "dimensity",
+            "helio",
+            "exynos",
+            "tensor"
+        ]
+    },
+    {
+        "name": "Quality of Battery",
+        "description": "",
+        "parent": "Use",
+        "tokens": [
+            "battery life",
+            "battery",
+            "recharge"
+        ]
+    },
+    {
+        "name": "Quality of display",
+        "description": "",
+        "parent": "Use",
+        "tokens": [
+            "display"
+        ]
+    },
+    {
+        "name": "Durability",
+        "description": "How long will the phone be in use, how quickly will it be outdated. How quickly may the user wasn't a new phone, based on the lesser quality of the given phone?",
+        "parent": "Use",
+        "tokens": [
+            "longevity",
+            "Planned Obsolescence",
+            "parts quality"
+        ]
+    },
+    {
+        "name": "Second Use",
+        "description": "The probability the phone can be sold or passed down for second use. It mainly depends on the quality the phone has after the mean use period of two years.",
+        "parent": "End of Life",
+        "tokens": [
+            "second hand",
+            "refurbish"
+        ]
+    },
+    {
+        "name": "Recycling",
+        "description": "The Degree of parts and materials, which can be returned in production.",
+        "parent": "End of Life",
+        "tokens": []
     }
 ]
