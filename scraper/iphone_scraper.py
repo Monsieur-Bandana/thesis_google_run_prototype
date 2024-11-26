@@ -22,7 +22,6 @@ for iphone in all_iphone_products:
     iphone_name = iphone.find_element(By.CLASS_NAME, "product-name").text
     iphone_link = iphone.find_element(By.CSS_SELECTOR, "a").get_attribute("href")
     all_iphone_products_by_text.append({"name": iphone_name, "link": iphone_link})
-print(str(all_iphone_products_by_text))
 
 jsonList = []
 
