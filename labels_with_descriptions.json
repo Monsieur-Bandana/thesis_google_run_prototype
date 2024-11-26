@@ -149,6 +149,17 @@
         ]
     },
     {
+        "name": "Energy Consumption",
+        "description": "",
+        "parent": "Use",
+        "tokens": [
+            "energy efficiency",
+            "hours",
+            "power",
+            "battery"
+        ]
+    },
+    {
         "name": "Second Use",
         "description": "The probability the phone can be sold or passed down for second use. It mainly depends on the quality the phone has after the mean use period of two years.",
         "parent": "End of Life",
