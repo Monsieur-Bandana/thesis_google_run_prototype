@@ -89,10 +89,12 @@ def generateAnswer(input: str):
 
     dir = "general"
 
-    for brand in ["iphone", "fairphone"]:
+    for brand in ["iphone", "fairphone", "huawei"]:
         if brand in input.lower():
+            print(f"{brand} found in request {input}")
             dir = brand
             download_file_from_gcs(bucket_name, f"json_files/scraped-{dir}-data.json", f"temp/scraped-{dir}-data.json")
+        print(f"{brand} not found in request {input}")
 
     # extract model specific information
 
@@ -138,4 +140,4 @@ def generateAnswer(input: str):
     return " ".join(responses)
 
 ## Testsection
-print(generateAnswer("iPhone 15 Plus"))
+print(generateAnswer("HUAWEI nova 12i"))
