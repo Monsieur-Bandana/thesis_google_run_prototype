@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from gcs_handler import list_files_in_folder, download_file_from_bucket
 import json
+from llm_after_class import generateAnswer
 
 app = Flask(__name__)
 
@@ -10,9 +11,10 @@ def generate_button_texts():
     print(str(json_files))
     phones = []
     for json_file in json_files:
-        if "scraped" in str(json_file):
-            download_file_from_bucket(bucket, json_file, f"temp/{json_file[1]}")
-            with open(f"temp/{json_file[1]}", 'r') as file:
+        if "scraped" in json_file:
+            dest: str = f"temp/{str(json_file).split("/")[1]}"
+            download_file_from_bucket(bucket, json_file, dest)
+            with open(dest, 'r') as file:
                 data: list = json.load(file)
 
                 for el in data:
@@ -23,12 +25,14 @@ def generate_button_texts():
 def loadAnswer(name):
     bucket = "raw_pdf_files"
     file_content = ""
-    download_file_from_bucket(bucket, f"pre_rendered_texts/{name}.txt", f"temp/{name}.txt")
-    with open(f"temp/{name}", 'r', encoding='utf-8') as file:
-        # Read the file content
-        file_content = file.read()
-
-    return file_content
+    download_file_from_bucket(bucket, f"pre_rendered_texts/{name}.html", f"temp/{name}.html")
+    try:
+        with open(f"temp/{name}.html", 'r') as file:
+            # Read the file content
+            file_content = file.read()
+            return file_content
+    except:
+        print(f"text could not be extracted from {name}.html")
 
 
 @app.route("/")
@@ -40,7 +44,11 @@ def index():
 @app.route('/response', methods=['POST'])
 def response():
     name = request.form.get('name')  # Retrieve the 'name' input value
-    message = loadAnswer(name)
+    try:
+        message = loadAnswer(name)
+    except:
+        print("call api")
+        message = generateAnswer(name)
     return render_template("index.html", message=message)
 
 if __name__ == "__main__":

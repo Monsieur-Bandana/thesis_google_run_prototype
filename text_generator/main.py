@@ -5,7 +5,7 @@ retrieve texts
 upload text to google cloud storage
 """
 from llm_after_class import generateAnswer
-from gcs_handler import download_file_from_bucket, list_files_in_folder, upload_file
+from gcs_handler import download_file_from_bucket, list_files_in_folder, upload_file, create_temp_folder
 import json
 
 def access_list_of_phones():
@@ -21,14 +21,16 @@ def access_list_of_phones():
 
                 for el in data:
                     phones.append(el["name"])
+    return phones
 
+create_temp_folder()
 all_phones = access_list_of_phones()
 bucket_name = "raw_pdf_files"
 for phone in all_phones[:5]:
     resp: str = generateAnswer(phone)
-    with open(f'temp/{phone}.txt', 'w', encoding='utf-8') as file:
+    with open(f'temp/{phone}.html', 'w', encoding='utf-8') as file:
     # Write the string to the file
         file.write(resp)
-    upload_file(bucket_name, f'temp/{phone}.txt', f'pre_rendered_texts/{phone}.txt')
+    upload_file(bucket_name, f'temp/{phone}.html', f'pre_rendered_texts/{phone}.html')
     print(f"{phone} completed")
     
