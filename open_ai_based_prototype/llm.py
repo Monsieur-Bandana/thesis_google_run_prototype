@@ -1,3 +1,7 @@
+"""
+this file is depreciated
+"""
+
 from openai import OpenAI
 # from ind_key import key
 

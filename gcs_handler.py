@@ -1,7 +1,9 @@
 """
 collection of handy functions to communicate with the google cloud storage
+IMPORTANT: file needs to be copied in each container
 """
 from google.cloud import storage
+import pdfplumber
 import os
 # from classifier import exec_file
 from google.cloud import storage
@@ -72,6 +74,12 @@ def upload_file(bucket_name, source_file_name, destination_blob_name, folder_nam
     print(f"File {source_file_name} uploaded to {destination_blob_name}.")
 
 def download_file_from_bucket(bucket_name, source_blob_name, destination_file_name, folder_name=None):
+    """
+    checks if file is already downloaded, if not loads from google cloud strorage
+    """
+    if os.path.isfile(destination_file_name):
+        print(f"{destination_file_name} found in temp folder")
+        return
     client = storage.Client()
     bucket = client.bucket(bucket_name)
 

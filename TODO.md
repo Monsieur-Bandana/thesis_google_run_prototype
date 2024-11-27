@@ -3,6 +3,6 @@
 * or the system suggested by Valentin
 
 # current goals:
-* complete class json
-* think of company and product filter
-* create scraper
+* edit UX:
+* contains search field.
+* contains or at least a list links to products

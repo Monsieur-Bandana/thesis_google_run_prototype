@@ -2,6 +2,10 @@ from openai import OpenAI
 import os
 import json
 
+"""
+file depreciated
+"""
+
 sk = "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"
 
 classes = []

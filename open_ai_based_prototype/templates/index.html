@@ -4,16 +4,36 @@
 <head>
     <meta charset="utf-8">
     <title>Hello there!</title>
+    <script>
+        function insertText(buttonText) {
+            const textField = document.getElementById("text-field");
+            textField.value = buttonText;
+        }
+    </script>
 </head>
 
 <body>
-
+    <h1>Enter name of your phone model here ... </h1>
     <form action="/response" method="post">
-        <input type="text" name="name" placeholder="Type your message here">
+        <input type="text" id="text-field" name="name" placeholder="Type your message here">
         <button type="submit">Submit</button>
     </form>
     <p>The answer might take up to 21 scds</p>
     {{ message | safe }}
+
+    <h1>Or choose from the provided list of buttons ... </h1>
+    <table>
+        <tr>
+            {% for text in button_texts %}
+            <td>
+                <button onclick="insertText('{{ text }}')">{{ text }}</button>
+            </td>
+            {% if loop.index % 4 == 0 %}
+        </tr>
+        <tr> {% endif %}
+            {% endfor %}
+        </tr>
+    </table>
 </body>
 
 </html>

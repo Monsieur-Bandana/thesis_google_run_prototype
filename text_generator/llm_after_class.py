@@ -4,10 +4,9 @@ import os
 import json
 from google.cloud import storage
 from google.api_core.exceptions import NotFound
+from gcs_handler import download_file_from_bucket
 # from ind_key import key
 
-def accessScientificInformation() -> str:
-    return ""
 # Eingabetext
 def activate_api(input: str, class_name: str, rag_inf: str)  -> str:
     
@@ -46,16 +45,6 @@ def create_temp_folder():
     else:
         print(f"Folder already exists: {folder_path}")
 
-def download_file_from_gcs(bucket_name, source_blob_name, destination_file_name):
-    """Downloads a file from Google Cloud Storage."""
-    if os.path.isfile(destination_file_name):
-        return
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(source_blob_name)
-    blob.download_to_filename(destination_file_name)
-    print(f"Downloaded {source_blob_name} to {destination_file_name}")
-
 def getContext(dir, class_name):
     local_file_path = f"temp/{dir}-{class_name}.txt"
     try:
@@ -93,7 +82,7 @@ def generateAnswer(input: str):
         if brand in input.lower():
             print(f"{brand} found in request {input}")
             dir = brand
-            download_file_from_gcs(bucket_name, f"json_files/scraped-{dir}-data.json", f"temp/scraped-{dir}-data.json")
+            download_file_from_bucket(bucket_name, f"json_files/scraped-{dir}-data.json", f"temp/scraped-{dir}-data.json")
         print(f"{brand} not found in request {input}")
 
     # extract model specific information
@@ -101,7 +90,7 @@ def generateAnswer(input: str):
     
     create_temp_folder()
     # Step 1: Download and read JSON files
-    download_file_from_gcs(bucket_name, "json_files/labels_with_descriptions.json", "temp/classes.json")
+    download_file_from_bucket(bucket_name, "json_files/labels_with_descriptions.json", "temp/classes.json")
     
     with open("temp/classes.json", "r") as file:
         entities = json.load(file)
@@ -113,7 +102,7 @@ def generateAnswer(input: str):
 
         context = ""
         try:
-            download_file_from_gcs(bucket_name, f"summaries/{dir}-{class_name}.txt", f"temp/{dir}-{class_name}.txt")
+            download_file_from_bucket(bucket_name, f"summaries/{dir}-{class_name}.txt", f"temp/{dir}-{class_name}.txt")
             context = getContext(dir, class_name)
         except NotFound:
             print(f"file summaries/{dir}-{class_name}.txt not found")
@@ -122,7 +111,7 @@ def generateAnswer(input: str):
 
         if not dir == "general":
             try:
-                download_file_from_gcs(bucket_name, f"summaries/general-{class_name}.txt", f"temp/general-{class_name}.txt")
+                download_file_from_bucket(bucket_name, f"summaries/general-{class_name}.txt", f"temp/general-{class_name}.txt")
                 context = get_element_by_name(f"temp/scraped-{dir}-data.json", input) + context + getContext("general", class_name) 
             except NotFound:
                 print(f"file summaries/general-{class_name}.txt not found")
@@ -133,11 +122,14 @@ def generateAnswer(input: str):
         response = ""
        
         if context.strip():
-            response = activate_api(input, class_name, context)
-            resposne_with_title = f'<h1>{class_name}</h1>{response}'
-            responses.append(resposne_with_title)
+            try:
+                response = activate_api(input, class_name, context)
+                resposne_with_title = f'<h1>{class_name}</h1>{response}'
+                responses.append(resposne_with_title)
+            except:
+                print("Missing API Key")
 
     return " ".join(responses)
 
 ## Testsection
-print(generateAnswer("HUAWEI nova 12i"))
+# print(generateAnswer("HUAWEI nova 12i"))
