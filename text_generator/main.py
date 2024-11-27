@@ -14,23 +14,30 @@ def access_list_of_phones():
     print(str(json_files))
     phones = []
     for json_file in json_files:
-        if "scraped" in str(json_file):
-            download_file_from_bucket(bucket, json_file, f"temp/{json_file[1]}")
-            with open(f"temp/{json_file[1]}", 'r') as file:
+        if "scraped" in json_file:
+            dest: str = f"temp/{str(json_file).split("/")[1]}"
+            download_file_from_bucket(bucket, json_file, dest)
+            with open(dest, 'r') as file:
                 data: list = json.load(file)
 
                 for el in data:
                     phones.append(el["name"])
+    # Replace this list with dynamic data generation logic
     return phones
+
 
 create_temp_folder()
 all_phones = access_list_of_phones()
 bucket_name = "raw_pdf_files"
-for phone in all_phones[:5]:
+print(all_phones[20:23])
+
+
+for phone in all_phones[20:23]:
     resp: str = generateAnswer(phone)
     with open(f'temp/{phone}.html', 'w', encoding='utf-8') as file:
     # Write the string to the file
         file.write(resp)
     upload_file(bucket_name, f'temp/{phone}.html', f'pre_rendered_texts/{phone}.html')
     print(f"{phone} completed")
+
     
