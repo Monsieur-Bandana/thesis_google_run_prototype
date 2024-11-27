@@ -16,7 +16,7 @@ driver.implicitly_wait(1)
 soup = BeautifulSoup(html, "html.parser")
 
 all_iphone_products: list[BeautifulSoup] = soup.find_all("li", class_="product-list-item")
-all_iphone_products_by_text:dict = []
+all_iphone_products_by_text:list[dict] = []
 
 json_content = []
 

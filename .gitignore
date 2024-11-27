@@ -11,5 +11,4 @@ temp_pdfs/
 temp/
 */sel_scraper.py
 */tut_scraper.py
-*/page_source_specs.html
-*/page_source.html
+htmls/

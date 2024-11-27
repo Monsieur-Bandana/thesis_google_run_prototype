@@ -67,15 +67,35 @@ def getContext(dir, class_name):
             context = file.read()
     return context
 
+def get_element_by_name(file_path, input_name):
+    try:
+        # Open and load the JSON file
+        with open(file_path, 'r') as file:
+            data:list[dict] = json.load(file)
+
+        # Iterate over the list of entities in the JSON
+        for entity in data:
+            if entity.get("name") == input_name:
+                return entity.get("specs", "specs not found for this entity")
+
+        return f"No entity found with the name '{input_name}'."
+    except FileNotFoundError:
+        return f"The file '{file_path}' was not found."
+    except json.JSONDecodeError:
+        return "Error decoding JSON. Please check the file format."
+
 def generateAnswer(input: str):
     bucket_name = "raw_pdf_files"
 
     dir = "general"
 
     for brand in ["iphone", "fairphone"]:
-        if input in brand:
+        if brand in input.lower():
             dir = brand
-        
+            download_file_from_gcs(bucket_name, f"json_files/scraped-{dir}-data.json", f"temp/scraped-{dir}-data.json")
+
+    # extract model specific information
+
     
     create_temp_folder()
     # Step 1: Download and read JSON files
@@ -101,10 +121,11 @@ def generateAnswer(input: str):
         if not dir == "general":
             try:
                 download_file_from_gcs(bucket_name, f"summaries/general-{class_name}.txt", f"temp/general-{class_name}.txt")
-                context = context + getContext("general", class_name)
+                context = get_element_by_name(f"temp/scraped-{dir}-data.json", input) + context + getContext("general", class_name) 
             except NotFound:
                 print(f"file summaries/general-{class_name}.txt not found")
-
+        with open(f"temp/{class_name}.txt", "w", encoding="utf-8") as file:
+            file.write(context)
         
         # Summarize each PDF and compile into a text file
         response = ""
@@ -117,4 +138,4 @@ def generateAnswer(input: str):
     return " ".join(responses)
 
 ## Testsection
-# print(generateAnswer("iphone"))
+print(generateAnswer("iPhone 15 Plus"))
