@@ -1,6 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from json_handler import createJsonFromList, cleanUpText
+from json_handler import createJsonFromList
 from gcs_handler import upload_file
 from bs4 import BeautifulSoup
 import os
@@ -45,7 +45,7 @@ def exec_scrape(scrape_link):
 
     jsonList:list[dict] = []
 
-    for phone in all_mi_phones[:5]:
+    for phone in all_mi_phones:
         driver.get(phone["link"])
         driver.implicitly_wait(2)
         html = driver.page_source

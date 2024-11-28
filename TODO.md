@@ -5,4 +5,7 @@
 # current goals:
 * edit UX:
 * contains search field.
-* contains or at least a list links to products
+* more data
+* containerize scrapers
+* scrape samsung
+* contact experts
