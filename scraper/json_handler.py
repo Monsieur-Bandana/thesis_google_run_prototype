@@ -1,7 +1,7 @@
 import json
 import os
 
-def createJsonFromList(list, filename):
+def createJsonFromList(list, filename, mode='w'):
     if not os.path.exists("temp"):
         os.makedirs("temp")
 
@@ -9,7 +9,7 @@ def createJsonFromList(list, filename):
     file_name = f'temp/{filename}.json'
 
     # Save the list as a JSON file
-    with open(file_name, 'w') as json_file:
+    with open(file_name, mode) as json_file:
         json.dump(list, json_file)
 
     print(f"The list has been saved to {file_name}")
