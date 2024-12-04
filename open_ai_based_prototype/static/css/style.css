@@ -49,7 +49,7 @@ body {
     align-items: center;
     width: 700px;
     height: 1200px;
-    background-color: black;
+    background: linear-gradient(170deg, black 26%, white 45%, black 65%);
     border-radius: 60px;
     padding: 20px;
     margin: 50px;
@@ -70,6 +70,13 @@ body {
         radial-gradient(circle at bottom left, #89ea89 0%, rgba(255, 255, 255, 0.5) 50%),
         radial-gradient(circle at bottom right, #68e868 0%, rgba(255, 255, 255, 0.5) 50%);
     background-blend-mode: multiply;
+}
+
+#filterInput {
+    border: none;
+    background: none;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.212);
+    margin-bottom: 20px;
 }
 
 .apps-area {
@@ -246,4 +253,10 @@ body {
     font-size: 0.9rem;
     color: #333;
     text-align: center;
+}
+
+.eco-button img {
+    width: 100%;
+    height: 100%;
+    opacity: 50%;
 }

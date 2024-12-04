@@ -9,8 +9,8 @@ app = Flask(__name__)
 def generate_button_texts():
     bucket = "raw_pdf_files"
     json_files = list_files_in_folder(bucket, "json_files")
-    print(str(json_files))
-    phones = []
+    
+    phones:list[tuple] = []
     for json_file in json_files:
         if "scraped" in json_file:
             dest: str = f"temp/{str(json_file).split("/")[1]}"
@@ -19,7 +19,18 @@ def generate_button_texts():
                 data: list = json.load(file)
 
                 for el in data:
-                    phones.append(el["name"])
+                    name:str = el["name"]
+                    text = name.lower()
+                    image = ""
+                    print(text)
+                    if "iphone" in text:
+                        image = "iphone"
+                    elif "huawei" in text:
+                        image = "huawei"
+                    else:
+                        image = "mi"
+
+                    phones.append((name, f"/static/images/{image}.svg"))
     # Replace this list with dynamic data generation logic
     random.shuffle(phones)
 
@@ -40,7 +51,10 @@ def loadAnswer(name):
 
 @app.route("/")
 def index():
-    button_texts = generate_button_texts()
+    button_texts:list[str] = generate_button_texts()
+
+   
+
     return render_template("index.html", message="", button_texts=button_texts)
 
 
