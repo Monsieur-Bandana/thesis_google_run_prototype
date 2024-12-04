@@ -3,6 +3,7 @@ get list of phones
 loop through all phones
 retrieve texts
 upload text to google cloud storage
+TODO: remove hashtag preventing file upload
 """
 from llm_after_class import generateAnswer
 from gcs_handler import download_file_from_bucket, list_files_in_folder, upload_file, create_temp_folder
@@ -32,12 +33,12 @@ bucket_name = "raw_pdf_files"
 print(all_phones[20:23])
 
 
-for phone in all_phones[20:23]:
+for phone in all_phones[:5]:
     resp: str = generateAnswer(phone)
     with open(f'temp/{phone}.html', 'w', encoding='utf-8') as file:
     # Write the string to the file
         file.write(resp)
-    upload_file(bucket_name, f'temp/{phone}.html', f'pre_rendered_texts/{phone}.html')
+    # upload_file(bucket_name, f'temp/{phone}.html', f'pre_rendered_texts/{phone}.html')
     print(f"{phone} completed")
 
     

@@ -4,6 +4,8 @@ from json_handler import createJsonFromList
 from gcs_handler import upload_file
 from bs4 import BeautifulSoup
 import os
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 def exec_scrape(scrape_link):
@@ -31,8 +33,6 @@ def exec_scrape(scrape_link):
     # print(all_huawei_products)
     all_mi_phones:list[dict] = []
 
-    json_content = []
-
     i = 0
     for phone in sections:
         
@@ -43,27 +43,32 @@ def exec_scrape(scrape_link):
         all_mi_phones.append({"name": phone_name,"link": f"{phone_link}specs"})
         i+=1
 
-    jsonList:list[dict] = []
 
     for phone in all_mi_phones:
         driver.get(phone["link"])
-        driver.implicitly_wait(2)
-        html = driver.page_source
-        soup = BeautifulSoup(html, "html.parser")
-        outc_text = soup.find("div", class_="specs-con").text
-        cleaned_text = outc_text.replace("\n", " ")
-        jsonList.append({"name": phone["name"],"specs": cleaned_text})
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, "specs-con")))
+            html = driver.page_source
+            soup = BeautifulSoup(html, "html.parser")
+            outc_text = soup.find("div", class_="specs-con").text
+            cleaned_text = outc_text.replace("\n", " ")
+            jsonList.append({"name": phone["name"],"specs": cleaned_text})
+        except:
+            print(f"couldn't find specs-class for {phone['name']}")
 
-    filename = "scraped-mi-data"
-    createJsonFromList(jsonList, filename)
 
-    upload_file("raw_pdf_files", f"temp/{filename}.json", f"json_files/{filename}.json")
-
+jsonList:list[dict] = []
 op = webdriver.ChromeOptions()
 op.add_argument('--headless')
-driver = webdriver.Chrome()
+driver = webdriver.Chrome(options=op)
 exec_scrape("https://www.mi.com/en/product-list/phone/redmi/")
-exec_scrape("https://www.mi.com/en/product-list/phone/xiaomi/", 'a')
+exec_scrape("https://www.mi.com/en/product-list/phone/xiaomi/")
+filename = "scraped-mi-data"
+createJsonFromList(jsonList, filename)
+
+upload_file("raw_pdf_files", f"temp/{filename}.json", f"json_files/{filename}.json")
+driver.quit()
 
 
 

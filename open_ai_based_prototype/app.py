@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from gcs_handler import list_files_in_folder, download_file_from_bucket
 import json
 from llm_after_class import generateAnswer
+import random
 
 app = Flask(__name__)
 
@@ -20,6 +21,8 @@ def generate_button_texts():
                 for el in data:
                     phones.append(el["name"])
     # Replace this list with dynamic data generation logic
+    random.shuffle(phones)
+
     return phones
 
 def loadAnswer(name):

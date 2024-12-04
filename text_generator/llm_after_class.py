@@ -1,3 +1,6 @@
+"""
+TODO: allow multiple entities
+"""
 from openai import OpenAI
 # from ind_key import rand_k
 import os
@@ -8,15 +11,15 @@ from gcs_handler import download_file_from_bucket
 # from ind_key import key
 
 # Eingabetext
-def activate_api(input: str, class_name: str, rag_inf: str)  -> str:
+def activate_api(input: str, class_name: str, rag_inf: str, fewshots: str)  -> str:
     
     rand_k = ""
     
     
-    comment = f"""please tell me about {class_name} of the {input}"""
+    comment = f"""{fewshots} please tell me about {class_name} of the {input}"""
 
     context = f"""You are a helpful assistant, returning a structered text about {class_name} related to smartphones.
-    use exclusively the text between the <input> brackets as a source of information. <input> {rag_inf} <input>."""
+    use exclusively the text between the <input> brackets as a source of information. <input> {rag_inf} </input>."""
     sk = rand_k
     client = OpenAI(api_key=sk)
     
@@ -78,12 +81,12 @@ def generateAnswer(input: str):
 
     dir = "general"
 
-    for brand in ["iphone", "fairphone", "huawei"]:
+    for brand in ["iphone", "fairphone", "huawei", "mi"]:
         if brand in input.lower():
-            print(f"{brand} found in request {input}")
+            print(f"{brand} found in request {input.lower()}")
             dir = brand
             download_file_from_bucket(bucket_name, f"json_files/scraped-{dir}-data.json", f"temp/scraped-{dir}-data.json")
-        print(f"{brand} not found in request {input}")
+        else: print(f"{brand} not found in request {input}")
 
     # extract model specific information
 
@@ -97,7 +100,7 @@ def generateAnswer(input: str):
 
     responses = []
     # Step 2: Process each class
-    for entity in entities:
+    for entity in entities[:1]:
         class_name = entity["name"]
 
         context = ""
@@ -120,14 +123,13 @@ def generateAnswer(input: str):
         
         # Summarize each PDF and compile into a text file
         response = ""
-       
+        
         if context.strip():
-            try:
-                response = activate_api(input, class_name, context)
-                resposne_with_title = f'<h1>{class_name}</h1>{response}'
-                responses.append(resposne_with_title)
-            except:
-                print("Missing API Key")
+           
+            response = activate_api(input, class_name, context, entity["fewshots"])
+            resposne_with_title = f'<h1>{class_name}</h1>{response}'
+            responses.append(resposne_with_title)
+           
 
     return " ".join(responses)
 
