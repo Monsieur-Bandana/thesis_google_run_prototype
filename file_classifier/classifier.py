@@ -24,7 +24,7 @@ def classify_text_using_gpt(text, classes, descriptions):
     client = OpenAI(api_key=sk)
     
     response = client.chat.completions.create(
-        model="gpt-4o",  # Oder ein anderes Modell wie "gpt-4"
+        model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
         messages=[
             {"role": "system", "content": context},
             {

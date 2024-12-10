@@ -1,6 +1,7 @@
 from llama_index.core import SimpleDirectoryReader
 import json
 import os
+from git_handler import load_class_data_from_git
 from pdf_handler import create_pdf_temp_folder
 from gcs_handler import upload_file, download_file_from_bucket, list_directories_in_bucket
 
@@ -9,22 +10,21 @@ tokens = []
 bucket_name = "raw_pdf_files"
 
 def extract_classes():
-    download_file_from_bucket(bucket_name, "json_files/labels_with_descriptions.json", "labels_with_descriptions.json")
-    with open('labels_with_descriptions.json', 'r') as file:
+    load_class_data_from_git()
+    with open('temp/classes.json', 'r') as file:
         data: list = json.load(file)
 
         for el in data:
             classes.append(el["name"])
             tokens.append(el["tokens"])
 
-def classify_text_using_retriever(dir: str)->list[dict]:
+def classify_text_using_retriever(dir: str, classes: list[str])->list[dict]:
     """
     * exec retriever for each label
     * outcome for each label stored in list.
     * if list empty label not in use
     """
-    if not classes:
-        extract_classes()
+
     
     pdf_docs = create_pdf_temp_folder(bucket_name, dir)
 
@@ -61,8 +61,11 @@ prefix = 'raw_pdf_files/'
 directories = list_directories_in_bucket(bucket_name, prefix)
 print(directories)
 
+if not classes:
+    extract_classes()
+
 for directory in directories:
-    text_classifications: list[dict] = classify_text_using_retriever(directory)
+    text_classifications: list[dict] = classify_text_using_retriever(directory, classes)
 
     # one output file for each directory
     # all output files, will be saved in temp folder

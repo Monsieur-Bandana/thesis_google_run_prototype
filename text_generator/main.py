@@ -30,15 +30,15 @@ def access_list_of_phones():
 create_temp_folder()
 all_phones = access_list_of_phones()
 bucket_name = "raw_pdf_files"
-print(all_phones[20:23])
 
 
-for phone in all_phones[:5]:
+
+for phone in all_phones[:1]:
     resp: str = generateAnswer(phone)
     with open(f'temp/{phone}.html', 'w', encoding='utf-8') as file:
     # Write the string to the file
         file.write(resp)
-    # upload_file(bucket_name, f'temp/{phone}.html', f'pre_rendered_texts/{phone}.html')
+    upload_file(bucket_name, f'temp/{phone}.html', f'pre_rendered_texts/{phone}.html')
     print(f"{phone} completed")
 
     

@@ -1,3 +1,6 @@
+"""
+TODO: allow multiple entities
+"""
 from openai import OpenAI
 # from ind_key import rand_k
 import os
@@ -5,37 +8,93 @@ import json
 from google.cloud import storage
 from google.api_core.exceptions import NotFound
 from gcs_handler import download_file_from_bucket
+from git_handler import load_class_data_from_git
+import random
+
+rand_k = ""
+sk = rand_k
+client = OpenAI(api_key=sk)
+
+def replace_sentence_start(sentence: str, input, html_start):
+    # List of typical sentence starting phrases
+    starting_phrases = [
+        "Further the phone",
+        "Additionally it",
+        "In addition the smartphone"
+    ]
+    
+    # Check if the sentence starts with "The HUAWEI Pura 70 Ultra"
+    if sentence.startswith(f"{html_start}The {input}"):
+        # Replace the starting phrase with a randomly chosen phrase from the list
+        return html_start + random.choice(starting_phrases) + sentence[len(f"{html_start}The {input}"):]
+    
+    # Return the original sentence if no match
+    return sentence
+
 # from ind_key import key
+def give_conlusion(previous_text:str, class_name, phone_name)->str:
+    context = f"""
+    You are a helpful assistant, giving conlusions about the {class_name} related to smartphones.
+    You only refer to the as-is situation and don't give any comments on how the footprint could potentially be improved.
+    The review consists of a description of the as-is situation as well as it's impact on the environmental footprint.
+    use exclusively the text between the <input> brackets as a source of information. <input> {previous_text} </input>.
+    Keep the answer informative but brief. The length of the response should be kept arround 50 tokens.
 
-# Eingabetext
-def activate_api(input: str, class_name: str, rag_inf: str)  -> str:
-    
-    rand_k = ""
-    
-    
-    comment = f"""please tell me about {class_name} of the {input}"""
+    """
 
-    context = f"""You are a helpful assistant, returning a structered text about {class_name} related to smartphones.
-    use exclusively the text between the <input> brackets as a source of information. <input> {rag_inf} <input>."""
-    sk = rand_k
-    client = OpenAI(api_key=sk)
+    question = f"""Give a brief summary about the carbon footprint of the {phone_name}. 
+    Please mention in you summary wether the phone might have a good footprint or a rather bad one"""
     
     completion = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": context},
             {
                 "role": "user",
-                "content": comment
+                "content": question
             }
         ],
         max_tokens=200
     )
     
     generated_text = completion.choices[0].message.content
-    html_output = ''.join(f'<p>{line}</p>' for line in generated_text.split('\n') if line.strip())
 
-    return html_output
+    return generated_text
+
+# Eingabetext
+def activate_api(input: str, class_name: str, rag_inf: str, fewshots: list[str], startsuggestion)  -> str:
+    
+    
+    question:str = f"""Tell me about {class_name} of the {input}."""
+    fewshot_question:str = f"""Tell me about {class_name} of the Luminara-phone."""
+    comment = f""" Give the responses in the style of the following examples: Question: {fewshot_question} Answer: {fewshots[0]} Question: {fewshot_question} Answer: {fewshots[1]}"""
+
+    context = f"""You are a helpful assistant, giving reviews about {class_name} related to smartphones.
+    The review consists of a description of the as-is situation as well as it's impact on the environmental footprint.
+    You only refer to the as-is situation and don't give any comments on how the footprint could potentially be improved.
+    use exclusively the text between the <input> brackets as a source of information. <input> {rag_inf} </input>.
+    Keep the answer informative but brief. The length of the response should be kept arround 50 tokens.
+    """
+    sk = rand_k
+    client = OpenAI(api_key=sk)
+    
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": context},
+            {
+                "role": "user",
+                "content": question
+            }
+        ],
+        max_tokens=200
+    )
+
+    generated_text = completion.choices[0].message.content
+
+    html_output = ''.join(f'{line} ' for line in generated_text.split('\n') if line.strip())
+
+    return f"<li>{html_output}</li>"
 
 def create_temp_folder():
     folder_path = "temp"
@@ -78,27 +137,29 @@ def generateAnswer(input: str):
 
     dir = "general"
 
-    for brand in ["iphone", "fairphone", "huawei"]:
+    for brand in ["iphone", "fairphone", "huawei", "mi"]:
         if brand in input.lower():
-            print(f"{brand} found in request {input}")
+            print(f"{brand} found in request {input.lower()}")
             dir = brand
             download_file_from_bucket(bucket_name, f"json_files/scraped-{dir}-data.json", f"temp/scraped-{dir}-data.json")
-        print(f"{brand} not found in request {input}")
+        else: print(f"{brand} not found in request {input}")
 
     # extract model specific information
 
     
     create_temp_folder()
     # Step 1: Download and read JSON files
-    download_file_from_bucket(bucket_name, "json_files/labels_with_descriptions.json", "temp/classes.json")
+    load_class_data_from_git()
     
     with open("temp/classes.json", "r") as file:
         entities = json.load(file)
 
+    parenttitle = ""
     responses = []
     # Step 2: Process each class
     for entity in entities:
         class_name = entity["name"]
+        
 
         context = ""
         try:
@@ -120,16 +181,26 @@ def generateAnswer(input: str):
         
         # Summarize each PDF and compile into a text file
         response = ""
-       
+        
         if context.strip():
-            try:
-                response = activate_api(input, class_name, context)
-                resposne_with_title = f'<h1>{class_name}</h1>{response}'
-                responses.append(resposne_with_title)
-            except:
-                print("Missing API Key")
+            fewshots = ["", ""] if entity.get("fewshots") is None else entity["fewshots"]
+            startsuggestion = "" if entity.get("sug") is None else entity["sug"]
+            response = activate_api(input, class_name, context, fewshots, startsuggestion)
+            if not entity["parent"] == parenttitle:
+                parenttitle = entity["parent"]
+                responses.append(f'</ul><p>{parenttitle}</p><ul>')
+            else:
+                response = replace_sentence_start(response, input, "<li>")
+            # responses.append(f"""<h2>{entity["name"]}</h2>{response}""")
+            responses.append(response)
+           
+    final_resp = " ".join(responses)
+    
+    final_resp = final_resp[len("</ul>"):]
+    final_resp = f"<p>{give_conlusion(final_resp, entity["name"], input)}</p><p>Further Details:</p>{final_resp}</ul>"
+    return final_resp
 
-    return " ".join(responses)
+
 
 ## Testsection
 # print(generateAnswer("HUAWEI nova 12i"))

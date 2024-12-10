@@ -5,6 +5,7 @@ from google.cloud import storage
 from PyPDF2 import PdfReader
 from openai import OpenAI
 # from ind_key import rand_k
+from git_handler import load_class_data_from_git
 from gcs_handler import list_files_in_folder, download_file_from_bucket, upload_file, list_directories_in_bucket
 
 # Configure your Google Cloud and OpenAI API credentials
@@ -26,10 +27,10 @@ def summarize_pdf_content(pdf_file_path, focus_class, class_description, related
     summaries = []
     for chunk in content_chunks:
         prompt = f"""Summarize the following content with a focus on the class '{focus_class}' and related terms: {', '.join(related_terms)}.
-        You can use the following class-description as an oriention {class_description}. Content:\n{chunk}"""
+        You can use the following class-description as an oriention {class_description}. Don't write complete sentences, prefer concluding texts in bullet points. Content:\n{chunk}"""
         
         response = client.chat.completions.create(
-            model="gpt-4o",  # Oder ein anderes Modell wie "gpt-4"
+            model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
             messages=[
                 {"role": "user", "content": prompt},
             
@@ -93,9 +94,11 @@ def main():
     list_of_jsons = list_files_in_folder(bucket_name, "json_files")
     for file in list_of_jsons:
         filename = file.split("/")[1]
-        download_file_from_bucket(bucket_name, file, f"temp/{filename}")
+        if "classification" in filename:
+            download_file_from_bucket(bucket_name, file, f"temp/{filename}")
 
-    with open("temp/labels_with_descriptions.json", "r") as file:
+    load_class_data_from_git()
+    with open("temp/classes.json", "r") as file:
         entities = json.load(file)
     
     # get dirs, loop the following through dirs
@@ -132,7 +135,7 @@ def main():
             
             # Save summaries to a text file
             if summaries:
-                if not check_if_txt_file_already_exists(f"temp/{pdf_name.split("/")[1]}"):
+                if not check_if_txt_file_already_exists(f"temp/{dir}-{class_name}.txt"):
                     with open(f"temp/{dir}-{class_name}.txt", "w", encoding="utf-8") as txt_file:
                         txt_file.writelines(summaries)
                     print(f"Summaries saved to {class_name}.txt")

@@ -45,7 +45,7 @@ def generateAnswer(input: str)  -> str:
     
     client.api_key = sk
     completion = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": context},
             {
