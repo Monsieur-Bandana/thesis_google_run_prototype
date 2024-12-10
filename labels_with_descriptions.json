@@ -17,7 +17,10 @@
             "rare earths",
             "rare earth elements"
         ],
-        "fewshots": "please tell me about Raw Materials of the Luminara-phone A: The Luminara-phone uses a lot of rare earths such as gold, lead or tin. please tell me about Raw Materials of the Luminara-phone A: Although there are no specific information about the materials used for the Luminara-phone, in common smartphone production there are used a lot of rare earths such as gold, lead or tin."
+        "fewshots": [
+            "The Luminara-phone uses a lot of rare earths such as gold, lead or tin.",
+            "Although there are no specific information about the materials used for the Luminara-phone, in common smartphone production there are used a lot of rare earths such as gold, lead or tin."
+        ]
     },
     {
         "name": "Toxic Chemical Materials",
@@ -32,6 +35,10 @@
             "mercury",
             "Chemicals",
             "Chemical"
+        ],
+        "fewshots": [
+            "The Luminara-phone uses toxic chemical materials such as beryllium and PVC.",
+            "Although there are no specific information about chemical materials used for the Luminara-phone, in common smartphone production there are used a lot of rare earths such as gold, lead or tin."
         ]
     },
     {
@@ -42,6 +49,10 @@
             "bio-based plastic",
             "recycling materials",
             "recycled"
+        ],
+        "fewshots": [
+            "The dog of Baskerville",
+            "The dog of Baskerville"
         ]
     },
     {
@@ -51,7 +62,8 @@
         "tokens": [
             "Mines",
             "Africa",
-            "South-America"
+            "South-America",
+            "rare earth deposits"
         ]
     },
     {
