@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from json_handler import createJsonFromList, cleanUpText
-from gcs_handler import upload_file
+from shared.gcs_handler import upload_file
 from bs4 import BeautifulSoup
 
 op = webdriver.ChromeOptions()
@@ -52,7 +52,7 @@ for iphone in all_iphone_products_by_text:
 filename = "scraped-iphone-data"
 createJsonFromList(jsonList, filename)
 
-upload_file("raw_pdf_files", f"temp/{filename}.json", f"json_files/{filename}.json")
+upload_file("raw_pdf_files", f"scraper/temp/{filename}.json", f"json_files/{filename}.json")
 
 
 

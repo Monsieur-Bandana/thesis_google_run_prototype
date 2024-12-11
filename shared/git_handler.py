@@ -1,12 +1,13 @@
 import requests
+from ind_key import git
 
-def load_class_data_from_git():
+def load_class_data_from_git(parent: str):
     # URL to the raw JSON file in the GitHub repository
     url = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/main/labels_with_descriptions.json"
 
     # Local filename to save the downloaded JSON file
-    local_filename = "temp/classes.json"
-    token = ""
+    local_filename = f"{parent}/temp/classes.json"
+    token = git
 
     headers = {
         "Authorization": f"token {token}"

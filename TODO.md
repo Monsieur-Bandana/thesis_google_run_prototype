@@ -26,3 +26,6 @@
 * improve content richness
 ### Friday
 * improve UI/UX
+
+# Install package:
+just copy hsared folder within the exec folder of the container

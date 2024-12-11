@@ -2,11 +2,11 @@ import json
 import os
 
 def createJsonFromList(list, filename, mode='w'):
-    if not os.path.exists("temp"):
-        os.makedirs("temp")
+    if not os.path.exists("scraper/temp"):
+        os.makedirs("scraper/temp")
 
     # Specify the file name
-    file_name = f'temp/{filename}.json'
+    file_name = f'scraper/temp/{filename}.json'
 
     # Save the list as a JSON file
     with open(file_name, mode) as json_file:

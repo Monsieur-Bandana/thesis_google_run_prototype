@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from json_handler import createJsonFromList
-from gcs_handler import upload_file
+from shared.gcs_handler import upload_file
 from bs4 import BeautifulSoup
 import os
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,7 +17,7 @@ def exec_scrape(scrape_link):
     except:
         print("folder already exists")
 
-    with open("htmls/mi_page_source.html", "w", encoding="utf-8") as file:
+    with open("scraper/htmls/mi_page_source.html", "w", encoding="utf-8") as file:
         file.write(html)
 
 
@@ -67,7 +67,7 @@ exec_scrape("https://www.mi.com/en/product-list/phone/xiaomi/")
 filename = "scraped-mi-data"
 createJsonFromList(jsonList, filename)
 
-upload_file("raw_pdf_files", f"temp/{filename}.json", f"json_files/{filename}.json")
+upload_file("raw_pdf_files", f"scraper/temp/{filename}.json", f"json_files/{filename}.json")
 driver.quit()
 
 

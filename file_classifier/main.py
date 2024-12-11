@@ -1,17 +1,18 @@
 from llama_index.core import SimpleDirectoryReader
 import json
 import os
-from git_handler import load_class_data_from_git
+from shared.git_handler import load_class_data_from_git
 from pdf_handler import create_pdf_temp_folder
-from gcs_handler import upload_file, download_file_from_bucket, list_directories_in_bucket
+from shared.gcs_handler import upload_file, download_file_from_bucket, list_directories_in_bucket
 
 classes = []
 tokens = []
 bucket_name = "raw_pdf_files"
+folder_name = "file_classifier"
 
 def extract_classes():
-    load_class_data_from_git()
-    with open('temp/classes.json', 'r') as file:
+    load_class_data_from_git(folder_name)
+    with open(f'{folder_name}/temp/classes.json', 'r') as file:
         data: list = json.load(file)
 
         for el in data:
@@ -26,7 +27,7 @@ def classify_text_using_retriever(dir: str, classes: list[str])->list[dict]:
     """
 
     
-    pdf_docs = create_pdf_temp_folder(bucket_name, dir)
+    pdf_docs = create_pdf_temp_folder(bucket_name, folder_name, dir)
 
     pdf_list = [os.path.basename(file) for file in os.listdir(pdf_docs)]
 
@@ -72,9 +73,9 @@ for directory in directories:
     output_file = f"{directory}-classification.json"
 
     # Write the list of dictionaries to a JSON file
-    with open(f"temp/{output_file}", "w") as file:
+    with open(f"{folder_name}/temp/{output_file}", "w") as file:
         json.dump(text_classifications, file, indent=4)
 
     # bucket_name, source_file_name, destination_blob_name, folder_name=None
-    upload_file(bucket_name, f"temp/{output_file}",output_file, "json_files")
+    upload_file(bucket_name, f"{folder_name}/temp/{output_file}",output_file, "json_files")
 

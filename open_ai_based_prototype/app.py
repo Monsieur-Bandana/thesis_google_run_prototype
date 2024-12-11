@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request
-from gcs_handler import list_files_in_folder, download_file_from_bucket
+from shared.gcs_handler import list_files_in_folder, download_file_from_bucket
 import json
-from llm_after_class import generateAnswer
+from shared.llm_after_class import generateAnswer
 import random
 
 app = Flask(__name__)
+folder = "open_ai_based_prototype"
 
 def generate_button_texts():
     bucket = "raw_pdf_files"
@@ -13,7 +14,7 @@ def generate_button_texts():
     phones:list[tuple] = []
     for json_file in json_files:
         if "scraped" in json_file:
-            dest: str = f"temp/{str(json_file).split("/")[1]}"
+            dest: str = f"{folder}/temp/{str(json_file).split("/")[1]}"
             download_file_from_bucket(bucket, json_file, dest)
             with open(dest, 'r') as file:
                 data: list = json.load(file)
@@ -30,7 +31,7 @@ def generate_button_texts():
                     else:
                         image = "mi"
 
-                    phones.append((name, f"/static/images/{image}.svg"))
+                    phones.append((name, f"{folder}/static/images/{image}.svg"))
     # Replace this list with dynamic data generation logic
     random.shuffle(phones)
 
@@ -39,9 +40,9 @@ def generate_button_texts():
 def loadAnswer(name):
     bucket = "raw_pdf_files"
     file_content = ""
-    download_file_from_bucket(bucket, f"pre_rendered_texts/{name}.html", f"temp/{name}.html")
+    download_file_from_bucket(bucket, f"pre_rendered_texts/{name}.html", f"{folder}/temp/{name}.html")
     try:
-        with open(f"temp/{name}.html", 'r') as file:
+        with open(f"{folder}/temp/{name}.html", 'r') as file:
             # Read the file content
             file_content = file.read()
             return file_content
@@ -55,7 +56,7 @@ def index():
 
    
 
-    return render_template("index.html", message="", button_texts=button_texts)
+    return render_template(f"{folder}/index.html", message="", button_texts=button_texts)
 
 
 @app.route('/response', methods=['POST'])
@@ -65,8 +66,8 @@ def response():
         message = loadAnswer(name)
     except:
         print("call api")
-        message = generateAnswer(name)
-    return render_template("index.html", message=message)
+        message = generateAnswer(name, folder)
+    return render_template(f"{folder}/index.html", message=message)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

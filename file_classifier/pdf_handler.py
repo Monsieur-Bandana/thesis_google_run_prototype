@@ -1,7 +1,7 @@
 from google.cloud import storage
 import pdfplumber
 import os
-from gcs_handler import list_files_in_bucket, download_file_from_bucket, list_files_in_folder
+from shared.gcs_handler import download_file_from_bucket, list_files_in_folder
 
 def extract_text_from_pdf(pdf_path):
     with pdfplumber.open(pdf_path) as pdf:
@@ -26,8 +26,8 @@ def process_pdfs_from_bucket_using_gpt(bucket_name):
         os.remove(local_pdf_path)
 """
 
-def create_pdf_temp_folder(bucket_name, dir) -> str:
-    temp_folder = f"temp/{dir}"
+def create_pdf_temp_folder(bucket_name, parent, dir) -> str:
+    temp_folder = f"{parent}/temp/{dir}"
     os.makedirs(temp_folder, exist_ok=True)  # Ensure temp folder exists
 
     files_list = list_files_in_folder(bucket_name, f"raw_pdf_files/{dir}")

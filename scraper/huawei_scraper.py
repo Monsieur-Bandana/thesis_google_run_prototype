@@ -1,23 +1,24 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from json_handler import createJsonFromList, cleanUpText
-from gcs_handler import upload_file
+from shared.gcs_handler import upload_file
 from bs4 import BeautifulSoup
 import os
 
 op = webdriver.ChromeOptions()
 op.add_argument('--headless')
 driver = webdriver.Chrome(options=op)
+folder = "scraper"
 
 driver.get("https://consumer.huawei.com/en/sitemap/")
 html = driver.page_source
 
 try:
-    os.makedirs("htmls")
+    os.makedirs(f"{folder}/htmls")
 except:
     print("folder already exists")
 
-with open("htmls/huawei_page_source.html", "w", encoding="utf-8") as file:
+with open(f"{folder}/htmls/huawei_page_source.html", "w", encoding="utf-8") as file:
     file.write(html)
 
 driver.implicitly_wait(1)
@@ -54,7 +55,7 @@ for phone in all_huawei_phones:
 filename = "scraped-huawei-data"
 createJsonFromList(jsonList, filename)
 
-upload_file("raw_pdf_files", f"temp/{filename}.json", f"json_files/{filename}.json")
+upload_file("raw_pdf_files", f"{folder}/scraper/temp/{filename}.json", f"json_files/{filename}.json")
 
 
 

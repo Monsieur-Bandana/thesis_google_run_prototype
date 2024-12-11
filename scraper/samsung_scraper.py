@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from json_handler import createJsonFromList, cleanUpText
-from gcs_handler import upload_file
+from shared.gcs_handler import upload_file
 from bs4 import BeautifulSoup
 import os
 from selenium.webdriver.support.ui import WebDriverWait
@@ -41,7 +41,7 @@ try:
 except:
     print("folder already exists")
 
-with open("htmls/samsung_page_source.html", "w", encoding="utf-8") as file:
+with open("scraper/htmls/samsung_page_source.html", "w", encoding="utf-8") as file:
     file.write(html)
 
 

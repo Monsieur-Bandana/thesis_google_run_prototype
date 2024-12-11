@@ -2,16 +2,15 @@
 TODO: allow multiple entities
 """
 from openai import OpenAI
-# from ind_key import rand_k
+from ind_key import rand_k
 import os
 import json
 from google.cloud import storage
 from google.api_core.exceptions import NotFound
-from gcs_handler import download_file_from_bucket
-from git_handler import load_class_data_from_git
+from shared.gcs_handler import download_file_from_bucket
+from shared.git_handler import load_class_data_from_git
 import random
 
-rand_k = ""
 sk = rand_k
 client = OpenAI(api_key=sk)
 
@@ -96,16 +95,16 @@ def activate_api(input: str, class_name: str, rag_inf: str, fewshots: list[str],
 
     return f"<li>{html_output}</li>"
 
-def create_temp_folder():
-    folder_path = "temp"
+def create_temp_folder(sourcefolder):
+    folder_path = f"{sourcefolder}/temp"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
         print(f"Folder created: {folder_path}")
     else:
         print(f"Folder already exists: {folder_path}")
 
-def getContext(dir, class_name):
-    local_file_path = f"temp/{dir}-{class_name}.txt"
+def getContext(dir, class_name, sourcefolder):
+    local_file_path = f"{sourcefolder}/temp/{dir}-{class_name}.txt"
     try:
         with open(local_file_path, 'r', encoding='utf-8') as file:
             print(f"extracted text from {local_file_path}")
@@ -132,7 +131,7 @@ def get_element_by_name(file_path, input_name):
     except json.JSONDecodeError:
         return "Error decoding JSON. Please check the file format."
 
-def generateAnswer(input: str):
+def generateAnswer(input: str, sourcefolder):
     bucket_name = "raw_pdf_files"
 
     dir = "general"
@@ -141,17 +140,17 @@ def generateAnswer(input: str):
         if brand in input.lower():
             print(f"{brand} found in request {input.lower()}")
             dir = brand
-            download_file_from_bucket(bucket_name, f"json_files/scraped-{dir}-data.json", f"temp/scraped-{dir}-data.json")
+            download_file_from_bucket(bucket_name, f"json_files/scraped-{dir}-data.json", f"{sourcefolder}/temp/scraped-{dir}-data.json")
         else: print(f"{brand} not found in request {input}")
 
     # extract model specific information
 
     
-    create_temp_folder()
+    create_temp_folder(sourcefolder)
     # Step 1: Download and read JSON files
-    load_class_data_from_git()
+    load_class_data_from_git(sourcefolder)
     
-    with open("temp/classes.json", "r") as file:
+    with open(f"{sourcefolder}/temp/classes.json", "r") as file:
         entities = json.load(file)
 
     parenttitle = ""
@@ -163,8 +162,8 @@ def generateAnswer(input: str):
 
         context = ""
         try:
-            download_file_from_bucket(bucket_name, f"summaries/{dir}-{class_name}.txt", f"temp/{dir}-{class_name}.txt")
-            context = getContext(dir, class_name)
+            download_file_from_bucket(bucket_name, f"summaries/{dir}-{class_name}.txt", f"{sourcefolder}/temp/{dir}-{class_name}.txt")
+            context = getContext(dir, class_name, sourcefolder)
         except NotFound:
             print(f"file summaries/{dir}-{class_name}.txt not found")
 
@@ -172,11 +171,11 @@ def generateAnswer(input: str):
 
         if not dir == "general":
             try:
-                download_file_from_bucket(bucket_name, f"summaries/general-{class_name}.txt", f"temp/general-{class_name}.txt")
-                context = get_element_by_name(f"temp/scraped-{dir}-data.json", input) + context + getContext("general", class_name) 
+                download_file_from_bucket(bucket_name, f"summaries/general-{class_name}.txt", f"{sourcefolder}/temp/general-{class_name}.txt")
+                context = get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input) + context + getContext("general", class_name, sourcefolder) 
             except NotFound:
                 print(f"file summaries/general-{class_name}.txt not found")
-        with open(f"temp/{class_name}.txt", "w", encoding="utf-8") as file:
+        with open(f"{sourcefolder}/temp/{class_name}.txt", "w", encoding="utf-8") as file:
             file.write(context)
         
         # Summarize each PDF and compile into a text file
