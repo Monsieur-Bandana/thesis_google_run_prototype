@@ -1,5 +1,5 @@
 import requests
-from ind_key import git
+from shared.ind_key import git
 
 def load_class_data_from_git(parent: str):
     # URL to the raw JSON file in the GitHub repository

@@ -31,7 +31,7 @@ def generate_button_texts():
                     else:
                         image = "mi"
 
-                    phones.append((name, f"{folder}/static/images/{image}.svg"))
+                    phones.append((name, f"static/images/{image}.svg"))
     # Replace this list with dynamic data generation logic
     random.shuffle(phones)
 
@@ -56,7 +56,7 @@ def index():
 
    
 
-    return render_template(f"{folder}/index.html", message="", button_texts=button_texts)
+    return render_template(f"/index.html", message="", button_texts=button_texts)
 
 
 @app.route('/response', methods=['POST'])
@@ -67,7 +67,7 @@ def response():
     except:
         print("call api")
         message = generateAnswer(name, folder)
-    return render_template(f"{folder}/index.html", message=message)
+    return render_template(f"/index.html", message=message)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

@@ -49,8 +49,10 @@
                 <p>The answer might take up to 21 scds</p>
 
 
+                <div class="apps-area" style="{% if not message %}display: none;{% endif %}">
 
-                {{ message | safe }}
+                    {{ message | safe }}
+                </div>
 
                 <h1>Or choose from the provided list of buttons ... </h1>
                 <p>currently only HUAWEI Pura 70, HUAWEI Pura 70 Ultra, HUAWEI Pura 70 Pro, HUAWEI nova 11i, HUAWEI

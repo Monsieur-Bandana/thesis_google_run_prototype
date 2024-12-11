@@ -2,7 +2,7 @@
 TODO: allow multiple entities
 """
 from openai import OpenAI
-from ind_key import rand_k
+from shared.ind_key import rand_k
 import os
 import json
 from google.cloud import storage
