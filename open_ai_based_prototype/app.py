@@ -59,15 +59,15 @@ def index():
     return render_template(f"/index.html", message="", button_texts=button_texts)
 
 
-@app.route('/response', methods=['POST'])
+@app.route('/get-data', methods=['POST'])
 def response():
-    name = request.form.get('name')  # Retrieve the 'name' input value
+    name = request.form.get('input_text', '') # Retrieve the 'name' input value
     try:
         message = loadAnswer(name)
     except:
         print("call api")
         message = generateAnswer(name, folder)
-    return render_template(f"/index.html", message=message)
+    return message
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

@@ -6,14 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
     <title>Hello there!</title>
-    <script>
-        function insertText(buttonText) {
-            const textField = document.getElementById("text-field");
-            textField.value = buttonText;
-        }
 
-
-    </script>
 </head>
 
 <body>
@@ -33,25 +26,25 @@
                     </div>
                 </div>
 
-                <form action="/response" method="post">
-                    <div class="search-container">
-                        <input type="text" class="search-input" id="text-field" name="name"
-                            placeholder="Enter name of your phone model here ... ">
-                        <button class="search-button" type="submit">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24"
-                                fill="#555">
-                                <path
-                                    d="M796.9 856.8 601.5 661.3q-27.4 19.9-59.1 29.9-31.7 10-64.9 10-88.8 0-151.3-62.4T263.8 458.8q0-88.8 62.4-151.3T478.8 245q88.8 0 151.3 62.4t62.4 151.3q0 33.2-10 64.9t-29.9 59.1l195.4 195.4q12.2 12.1 12.1 29.7-.2 17.6-13.1 30.5-13 13-30.5 13.1-17.6.2-29.7-12.1ZM478.8 615q61.5 0 105.7-44.2t44.2-105.7q0-61.5-44.2-105.7T478.8 315q-61.5 0-105.7 44.2t-44.2 105.7q0 61.5 44.2 105.7T478.8 615Z" />
-                            </svg>
-                        </button>
-                    </div>
-                </form>
+
+                <div class="search-container">
+                    <input type="text" class="search-input" id="text-field" name="name"
+                        placeholder="Enter name of your phone model here ... ">
+                    <button class="search-button" type="submit" id="load-content-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24"
+                            fill="#555">
+                            <path
+                                d="M796.9 856.8 601.5 661.3q-27.4 19.9-59.1 29.9-31.7 10-64.9 10-88.8 0-151.3-62.4T263.8 458.8q0-88.8 62.4-151.3T478.8 245q88.8 0 151.3 62.4t62.4 151.3q0 33.2-10 64.9t-29.9 59.1l195.4 195.4q12.2 12.1 12.1 29.7-.2 17.6-13.1 30.5-13 13-30.5 13.1-17.6.2-29.7-12.1ZM478.8 615q61.5 0 105.7-44.2t44.2-105.7q0-61.5-44.2-105.7T478.8 315q-61.5 0-105.7 44.2t-44.2 105.7q0 61.5 44.2 105.7T478.8 615Z" />
+                        </svg>
+                    </button>
+                </div>
+
                 <p>The answer might take up to 21 scds</p>
 
 
-                <div class="apps-area" style="{% if not message %}display: none;{% endif %}">
+                <div class="apps-area" id="dynamic-content">
 
-                    {{ message | safe }}
+
                 </div>
 
                 <h1>Or choose from the provided list of buttons ... </h1>
@@ -59,7 +52,6 @@
                     nova
                     11 Pro,
                     iPhone 16 Plus, iPhone 16 Pro Max, iPhone 16 Pro available</p>
-                <input type="text" id="filterInput" placeholder="Type to filter buttons">
                 <div class="apps-area" id="buttonContainer">
 
                     {% for text, image in button_texts %}
@@ -80,34 +72,8 @@
             </div>
         </div>
     </div>
-    <script>
-        let hrs = document.getElementById("hrs")
-        let min = document.getElementById("min")
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 
-        setInterval(() => {
-
-            let currentTime = new Date();
-
-            hrs.innerHTML = (currentTime.getHours() < 10 ? "0" : "") + currentTime.getHours();
-            min.innerHTML = (currentTime.getMinutes() < 10 ? "0" : "") + currentTime.getMinutes();
-        }, 1000)
-
-
-        const inputField = document.getElementById('filterInput');
-        const buttons = document.querySelectorAll('#buttonContainer .buttonContent');
-
-        inputField.addEventListener('input', function () {
-            const filterText = inputField.value.toLowerCase();
-            buttons.forEach(button => {
-                console.log(button.textContent)
-                if (button.textContent.toLowerCase().includes(filterText)) {
-                    button.classList.remove('hidden');
-                } else {
-                    button.classList.add('hidden');
-                }
-            });
-        });
-    </script>
 
 </body>
 
