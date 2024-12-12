@@ -69,7 +69,7 @@ def activate_api(input: str, class_name: str, rag_inf: str, fewshots: list[str],
     comment = f""" Give the responses in the style of the following examples: Question: {fewshot_question} Answer: {fewshots[0]} Question: {fewshot_question} Answer: {fewshots[1]}"""
 
     context = f"""You are a helpful assistant, giving reviews about {class_name} related to smartphones.
-    The review consists of a description of the as-is situation as well as it's impact on the environmental footprint.
+    The review consists of a description of the as-is situation and wether this benefits or increases it's impact on the environmental footprint.
     You only refer to the as-is situation and don't give any comments on how the footprint could potentially be improved.
     use exclusively the text between the <input> brackets as a source of information. <input> {rag_inf} </input>.
     Keep the answer informative but brief. The length of the response should be kept arround 50 tokens.

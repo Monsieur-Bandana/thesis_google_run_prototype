@@ -92,8 +92,8 @@ def download_file_from_bucket(bucket_name, source_blob_name, destination_file_na
     blob.download_to_filename(destination_file_name)
     print(f"Downloaded {source_blob_name} to {destination_file_name}")
 
-def create_temp_folder():
-    folder_path = "temp"
+def create_temp_folder(parentf):
+    folder_path = f"{parentf}/temp"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
         print(f"Folder created: {folder_path}")

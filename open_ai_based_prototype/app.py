@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from shared.gcs_handler import list_files_in_folder, download_file_from_bucket
+from shared.gcs_handler import list_files_in_folder, download_file_from_bucket, create_temp_folder
 import json
 from shared.llm_after_class import generateAnswer
 import random
@@ -57,6 +57,13 @@ def responseButtons():
    
 
     return button_texts
+
+@app.before_request
+def before_request():
+    # Code to run before each request
+    create_temp_folder("open_ai_based_prototype")
+    print(f"Before request: {request.path}")
+    # Add any other logic you need here
 
 @app.route('/')
 def index():

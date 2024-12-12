@@ -35,7 +35,7 @@ bucket_name = "raw_pdf_files"
 
 
 
-for phone in all_phones[1:2]:
+for phone in all_phones:
     resp: str = generateAnswer(phone, source_folder)
     with open(f'{source_folder}/temp/{phone}.html', 'w', encoding='utf-8') as file:
     # Write the string to the file

@@ -7,9 +7,10 @@ from openai import OpenAI
 # from ind_key import rand_k
 from shared.git_handler import load_class_data_from_git
 from shared.gcs_handler import list_files_in_folder, download_file_from_bucket, upload_file, list_directories_in_bucket
+from shared.ind_key import rand_k
 
 # Configure your Google Cloud and OpenAI API credentials
-sk = ""
+sk = rand_k
 main_folder = "file_interpreter"
 
 def summarize_pdf_content(pdf_file_path, focus_class, class_description, related_terms):
@@ -88,6 +89,7 @@ def main():
     prefix = 'raw_pdf_files/'
     bucket_name = "raw_pdf_files"
     brandlist = list_directories_in_bucket(bucket_name, prefix)
+    entities = []
         
     create_temp_folder()
     get_existing_summaries(bucket_name)
@@ -101,7 +103,6 @@ def main():
     load_class_data_from_git(main_folder)
     with open(f"{main_folder}/temp/classes.json", "r") as file:
         entities = json.load(file)
-    
     # get dirs, loop the following through dirs
     dirs = brandlist
     for dir in dirs:
