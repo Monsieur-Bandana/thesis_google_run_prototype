@@ -196,7 +196,7 @@ def generateAnswer(input: str, sourcefolder):
     final_resp = " ".join(responses)
     
     final_resp = final_resp[len("</ul>"):]
-    final_resp = f"<p>{give_conlusion(final_resp, entity["name"], input)}</p><p>Further Details:</p>{final_resp}</ul>"
+    final_resp = f"""<p>{give_conlusion(final_resp, entity["name"], input)}</p><div style="width: 100%">Further Details:</div>{final_resp}</ul>"""
     return final_resp
 
 

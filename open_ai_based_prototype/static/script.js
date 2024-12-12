@@ -1,12 +1,28 @@
 const dynamicContent = document.getElementById('dynamic-content');
 const buttonsdiv = document.getElementById('buttonContainer');
 const inputField = document.getElementById('text-field');
+let isOnButtonScreen = true;
 const backButton = `
 <button onclick="goBack()" style="display: block" id="backButton">Try other phone!</button>
 `
+const spinner = `<div id="loading-spinner" class="spinner"></div>`
+const clock = document.getElementById('clock');
+let hrs = document.getElementById("hrs");
+let min = document.getElementById("min");
+
+setInterval(() => {
+
+    let currentTime = new Date();
+
+    hrs.innerHTML = (currentTime.getHours() < 10 ? "0" : "") + currentTime.getHours();
+    min.innerHTML = (currentTime.getMinutes() < 10 ? "0" : "") + currentTime.getMinutes();
+}, 1000)
 
 function flask_call(input) {
-
+    dynamicContent.innerHTML = spinner;
+    dynamicContent.style = 'height: 90%';
+    clock.style = "display: none";
+    isOnButtonScreen = false;
     fetch('/get-data', {
         method: 'POST', headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -24,6 +40,7 @@ function flask_call(input) {
 }
 
 function getButtons() {
+    dynamicContent.innerHTML = spinner;
     fetch('/get-buttons').then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -64,17 +81,12 @@ function insertText(buttonText) {
     flask_call(buttonText);
 }
 
-let hrs = document.getElementById("hrs")
-let min = document.getElementById("min")
-
-setInterval(() => {
-
-    let currentTime = new Date();
-
-    hrs.innerHTML = (currentTime.getHours() < 10 ? "0" : "") + currentTime.getHours();
-    min.innerHTML = (currentTime.getMinutes() < 10 ? "0" : "") + currentTime.getMinutes();
-}, 1000)
-
+inputField.addEventListener('input', function () {
+    if (!isOnButtonScreen) {
+        getButtons();
+        isOnButtonScreen = true;
+    }
+});
 
 
 
@@ -91,6 +103,7 @@ const observer = new MutationObserver(() => {
     }
     inputField.addEventListener('input', function () {
         const filterText = inputField.value.toLowerCase();
+
         buttons.forEach(button => {
             console.log(button.textContent)
             if (button.textContent.toLowerCase().includes(filterText)) {
