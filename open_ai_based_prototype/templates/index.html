@@ -42,32 +42,14 @@
                 <p>The answer might take up to 21 scds</p>
 
 
+
                 <div class="apps-area" id="dynamic-content">
 
 
                 </div>
 
-                <h1>Or choose from the provided list of buttons ... </h1>
-                <p>currently only HUAWEI Pura 70, HUAWEI Pura 70 Ultra, HUAWEI Pura 70 Pro, HUAWEI nova 11i, HUAWEI
-                    nova
-                    11 Pro,
-                    iPhone 16 Plus, iPhone 16 Pro Max, iPhone 16 Pro available</p>
-                <div class="apps-area" id="buttonContainer">
 
-                    {% for text, image in button_texts %}
-                    <div class="buttonContent" name="{{ text }}">
-                        <div>
 
-                            <button class="eco-button" onclick="insertText('{{ text }}')">
-                                <img src="{{ image }}">
-                            </button>
-                        </div>
-                        <p class="button-text">{{ text }}</p>
-                    </div>
-
-                    {% endfor %}
-
-                </div>
 
             </div>
         </div>

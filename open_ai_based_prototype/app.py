@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, jsonify, request
 from shared.gcs_handler import list_files_in_folder, download_file_from_bucket
 import json
 from shared.llm_after_class import generateAnswer
@@ -11,7 +11,7 @@ def generate_button_texts():
     bucket = "raw_pdf_files"
     json_files = list_files_in_folder(bucket, "json_files")
     
-    phones:list[tuple] = []
+    phones:list[dict] = []
     for json_file in json_files:
         if "scraped" in json_file:
             dest: str = f"{folder}/temp/{str(json_file).split("/")[1]}"
@@ -31,7 +31,7 @@ def generate_button_texts():
                     else:
                         image = "mi"
 
-                    phones.append((name, f"static/images/{image}.svg"))
+                    phones.append({"text": name, "img": f"static/images/{image}.svg"})
     # Replace this list with dynamic data generation logic
     random.shuffle(phones)
 
@@ -50,14 +50,17 @@ def loadAnswer(name):
         print(f"text could not be extracted from {name}.html")
 
 
-@app.route("/")
-def index():
-    button_texts:list[str] = generate_button_texts()
+@app.route("/get-buttons", methods=['GET'])
+def responseButtons():
+    button_texts:list[dict] = generate_button_texts()
 
    
 
-    return render_template(f"/index.html", message="", button_texts=button_texts)
+    return button_texts
 
+@app.route('/')
+def index():
+    return render_template('index.html') 
 
 @app.route('/get-data', methods=['POST'])
 def response():

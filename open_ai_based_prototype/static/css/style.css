@@ -82,7 +82,7 @@ body {
 .apps-area {
     overflow-y: scroll;
     box-sizing: border-box;
-    max-height: 45%;
+    max-height: 65%;
     display: flex;
     flex-wrap: wrap;
 }
