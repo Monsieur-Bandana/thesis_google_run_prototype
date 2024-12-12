@@ -77,6 +77,16 @@
         ]
     },
     {
+        "name": "Production Process",
+        "description": "",
+        "parent": "Production",
+        "tokens": [
+            "device assembly",
+            "assembly",
+            "manufacturing"
+        ]
+    },
+    {
         "name": "Production Waste",
         "description": "How many waste occors during the manufacturing process. How is dealt with the waste?",
         "parent": "Production",
@@ -93,7 +103,10 @@
         "description": "",
         "parent": "Production",
         "tokens": [
-            "China"
+            "supplier",
+            "assembly",
+            "manufacturer",
+            "subcontractor"
         ]
     },
     {
