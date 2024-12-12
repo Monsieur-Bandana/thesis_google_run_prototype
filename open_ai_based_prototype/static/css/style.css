@@ -283,3 +283,64 @@ body {
         transform: rotate(360deg);
     }
 }
+
+/* Styling for the return button */
+.return-button {
+    display: inline-block;
+    background-color: #007bff;
+    /* Primary blue */
+    color: #ffffff;
+    /* White text */
+    font-size: 16px;
+    /* Adjust the size as needed */
+    font-weight: bold;
+    padding: 10px 20px;
+    /* Button padding */
+    border: none;
+    /* No border */
+    border-radius: 25px;
+    /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* Smooth hover effect */
+}
+
+/* Hover effect */
+.return-button:hover {
+    background-color: #0056b3;
+    /* Darker blue for hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    /* Enhanced shadow on hover */
+    transform: scale(1.05);
+    /* Slight scale-up on hover */
+}
+
+/* Focus effect for accessibility */
+.return-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+    /* Focus ring */
+}
+
+/* Disabled state */
+.return-button:disabled {
+    background-color: #c0c0c0;
+    /* Grey color */
+    cursor: not-allowed;
+    /* Disabled cursor */
+    box-shadow: none;
+    /* No shadow */
+}
+
+/* Optional: Add an icon to the button */
+.return-button::before {
+    content: '←';
+    /* Unicode arrow symbol */
+    margin-right: 10px;
+    /* Space between icon and text */
+    font-size: 18px;
+    /* Adjust icon size */
+}

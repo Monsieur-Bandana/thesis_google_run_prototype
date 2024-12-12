@@ -3,7 +3,7 @@ const buttonsdiv = document.getElementById('buttonContainer');
 const inputField = document.getElementById('text-field');
 let isOnButtonScreen = true;
 const backButton = `
-<button onclick="goBack()" style="display: block" id="backButton">Try other phone!</button>
+<button onclick="goBack()" style="display: block" class="return-button" id="backButton">Try other phone!</button>
 `
 const spinner = `<div id="loading-spinner" class="spinner"></div>`
 const clock = document.getElementById('clock');
