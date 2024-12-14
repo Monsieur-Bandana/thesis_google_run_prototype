@@ -185,6 +185,12 @@
         ]
     },
     {
+        "name": "Planned Obsolescence",
+        "description": "",
+        "parent": "End of Life",
+        "tokens": []
+    },
+    {
         "name": "Second Use",
         "description": "The probability the phone can be sold or passed down for second use. It mainly depends on the quality the phone has after the mean use period of two years.",
         "parent": "End of Life",
