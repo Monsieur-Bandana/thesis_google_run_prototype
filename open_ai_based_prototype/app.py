@@ -3,6 +3,7 @@ from shared.gcs_handler import list_files_in_folder, download_file_from_bucket, 
 import json
 from shared.llm_after_class import generateAnswer
 import random
+import os
 
 app = Flask(__name__)
 folder = "open_ai_based_prototype"
@@ -20,7 +21,6 @@ def generate_button_texts():
                 data: list[dict] = json.load(file)
 
                 for el in data:
-                    print("------------------->"+ str(el))
                     name:str = el["name"]
                     text = name.lower()
                     image = ""
@@ -42,17 +42,28 @@ def generate_button_texts():
 
     return phones
 
-def loadAnswer(name):
+def loadAnswer(name)->str:
     bucket = "raw_pdf_files"
     file_content = ""
-    download_file_from_bucket(bucket, f"pre_rendered_texts/{name}.html", f"{folder}/temp/{name}.html")
+    file_path = f"{folder}/temp/{name}.html"
+
+
     try:
-        with open(f"{folder}/temp/{name}.html", 'r') as file:
-            # Read the file content
+        download_file_from_bucket(bucket, f"pre_rendered_texts/{name}.html", file_path)
+
+        with open(file_path, 'r') as file:
+
             file_content = file.read()
             return file_content
+        
     except:
+        # workarround: try block created empty file, causing bug. remove file to prevent bug
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
         print(f"text could not be extracted from {name}.html")
+
+    return file_content
 
 
 @app.route("/get-buttons", methods=['GET'])
@@ -77,9 +88,9 @@ def index():
 @app.route('/get-data', methods=['POST'])
 def response():
     name = request.form.get('input_text', '') # Retrieve the 'name' input value
-    try:
-        message = loadAnswer(name)
-    except:
+    
+    message = loadAnswer(name)
+    if message=="":
         print("call api")
         message = generateAnswer(name, folder)
     return message
