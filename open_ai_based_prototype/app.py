@@ -13,13 +13,14 @@ def generate_button_texts():
     
     phones:list[dict] = []
     for json_file in json_files:
-        if "scraped" in json_file:
+        if "scraped" in json_file and not "companies" in json_file:
             dest: str = f"{folder}/temp/{str(json_file).split("/")[1]}"
             download_file_from_bucket(bucket, json_file, dest)
             with open(dest, 'r') as file:
-                data: list = json.load(file)
+                data: list[dict] = json.load(file)
 
                 for el in data:
+                    print("------------------->"+ str(el))
                     name:str = el["name"]
                     text = name.lower()
                     image = ""
@@ -30,6 +31,8 @@ def generate_button_texts():
                         image = "huawei"
                     elif "fairphone" in text:
                         image = "fairphone"
+                    elif "galaxy" in text:
+                        image = "samsung"
                     else:
                         image = "mi"
 

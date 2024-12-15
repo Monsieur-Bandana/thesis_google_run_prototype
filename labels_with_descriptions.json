@@ -1,7 +1,7 @@
 [
     {
         "name": "Raw Materials",
-        "description": "Which Raw Materials are used for Production? Raw Materials can be Tungsten, Tin, plastic, gold (3TG), lead, high-temperature solder, cobalt, lithium, tantalum",
+        "description": "Which Raw Materials, especially rare earths, are used for Smartphone roduction?",
         "parent": "Materials",
         "tokens": [
             "Tungsten",
@@ -25,7 +25,7 @@
     },
     {
         "name": "Toxic Chemical Materials",
-        "description": "Which Chemical Materials are used for Production? Chemical Materials can be beryllium, brominated flame retardants, PVC, phthalates, arsenic in the glass, and mercury",
+        "description": "Which Chemical Materials are used for Smartphoneproduction?",
         "parent": "Materials",
         "tokens": [
             "beryllium",
@@ -36,29 +36,21 @@
             "mercury",
             "Chemicals",
             "Chemical"
-        ],
-        "fewshots": [
-            "The Luminara-phone uses toxic chemical materials such as beryllium and PVC.",
-            "Although there are no specific information about chemical materials used for the Luminara-phone, in common smartphone production there are used a lot of rare earths such as gold, lead or tin."
         ]
     },
     {
         "name": "Alternative Materials",
-        "description": "Which Alternatives are used for Production? Those can be bio-based plastic",
+        "description": "Does the Manufacturer uses environment-friendly alternatives to lower the consumption of rare earths or toxic chemicals?",
         "parent": "Materials",
         "tokens": [
             "bio-based plastic",
             "recycling materials",
             "recycled"
-        ],
-        "fewshots": [
-            "The dog of Baskerville",
-            "The dog of Baskerville"
         ]
     },
     {
         "name": "Raw Materials Origin",
-        "description": "Where do the Raw Materials come from?",
+        "description": "This is about the origin of the natural ressources. Where are the mines of the rare earths for electronic device production located?",
         "parent": "Materials",
         "tokens": [
             "Mines",
@@ -78,7 +70,7 @@
     },
     {
         "name": "Production Process",
-        "description": "",
+        "description": "The process in which the raw ressources get processed to consumer electronics. This includes the production of intermediate products, such as the wired printing board, but also the assembly of the final smartphone.",
         "parent": "Production",
         "tokens": [
             "device assembly",
@@ -88,19 +80,19 @@
     },
     {
         "name": "Production Waste",
-        "description": "How many waste occors during the manufacturing process. How is dealt with the waste?",
+        "description": "How much waste occors during the manufacturing process. How is dealt with the waste?",
         "parent": "Production",
         "tokens": []
     },
     {
         "name": "Supplier Energy Use",
-        "description": "",
+        "description": "How much energy does is consumed at the production sites? Is the consumed energy clean?",
         "parent": "Production",
         "tokens": []
     },
     {
         "name": "Location of Assembly",
-        "description": "",
+        "description": "Whare are the sites of assmebly of intermadiate products, such as the wired printing board, or the final smartphones? There are certain countries favoured by smartphone companies for low production costs, which howver often also have lower environment-regulations.",
         "parent": "Production",
         "tokens": [
             "supplier",
@@ -111,7 +103,7 @@
     },
     {
         "name": "Ease of Reparation",
-        "description": "",
+        "description": "How easy can the end user repare the phon by himself? Are parts, which are prone for replacement intentionally hard to access? Many Smartphones nowaydays use glue instead of screws, so the dissasmbly is more risky in damaging the whole phone.",
         "parent": "Use",
         "tokens": [
             "reparability",
@@ -123,7 +115,7 @@
     },
     {
         "name": "Ease of modification",
-        "description": "",
+        "description": "Can the perfomance of the phone be increased by the user?",
         "parent": "Use",
         "tokens": [
             "SD card slot",
@@ -147,7 +139,7 @@
     },
     {
         "name": "Quality of Battery",
-        "description": "",
+        "description": "How many years can the battery keep up with the expections of the user? If the battery dies the user can't use his phone and very probable decides for a new phone.",
         "parent": "Use",
         "tokens": [
             "battery life",
@@ -157,7 +149,7 @@
     },
     {
         "name": "Quality of display",
-        "description": "",
+        "description": "The display is one of the smartphone-modules most prone to break. The nescessity of replacing the display of course increases the ressource consumption.",
         "parent": "Use",
         "tokens": [
             "display"
@@ -186,9 +178,13 @@
     },
     {
         "name": "Planned Obsolescence",
-        "description": "",
+        "description": "Does the manufacturer uses certain strategies, such as software updates which lower the performnace of the phone, to make the phone unatttractive over time, so the user feels the nessecity to bey a new phone after two years?",
         "parent": "End of Life",
-        "tokens": []
+        "tokens": [
+            "Discontinuity of support",
+            "battery degradation",
+            "technological obsolescence"
+        ]
     },
     {
         "name": "Second Use",

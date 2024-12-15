@@ -133,9 +133,9 @@ def get_element_by_name(file_path, input_name):
 
 def generateAnswer(input: str, sourcefolder):
     bucket_name = "raw_pdf_files"
-    download_file_from_bucket("raw_pdf_files", "json_files/scraped_companies.json", f"{sourcefolder}/temp/scraped_companies.json")
+    download_file_from_bucket("raw_pdf_files", "json_files/all_companies.json", f"{sourcefolder}/temp/all_companies.json")
     brandlist: list[str] = []
-    with open(f"{sourcefolder}/temp/scraped_companies.json", "r") as file:
+    with open(f"{sourcefolder}/temp/all_companies.json", "r") as file:
         brandlist = json.load(file)
     brandlist.append("general")
 
@@ -207,4 +207,4 @@ def generateAnswer(input: str, sourcefolder):
 
 
 ## Testsection
-generateAnswer("HUAWEI nova 12i", "open_ai_based_prototype")
+# generateAnswer("HUAWEI nova 12i", "open_ai_based_prototype")
