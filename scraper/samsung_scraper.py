@@ -65,7 +65,7 @@ print(all_samsung_phones)
 jsonList:list[dict] = []
 scd_try_list = []
 
-for phone in all_samsung_phones[:5]:
+for phone in all_samsung_phones:
     
     try:
         exec_text_pull(phone)

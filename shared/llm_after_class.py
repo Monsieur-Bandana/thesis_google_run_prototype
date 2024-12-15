@@ -93,7 +93,7 @@ def activate_api(input: str, class_name: str, rag_inf: str, fewshots: list[str],
 
     html_output = ''.join(f'{line} ' for line in generated_text.split('\n') if line.strip())
 
-    return f"<li>{html_output}</li>"
+    return f"""<li class="{class_name}">{html_output}</li>"""
 
 def create_temp_folder(sourcefolder):
     folder_path = f"{sourcefolder}/temp"
@@ -133,10 +133,15 @@ def get_element_by_name(file_path, input_name):
 
 def generateAnswer(input: str, sourcefolder):
     bucket_name = "raw_pdf_files"
+    download_file_from_bucket("raw_pdf_files", "json_files/scraped_companies.json", f"{sourcefolder}/temp/scraped_companies.json")
+    brandlist: list[str] = []
+    with open(f"{sourcefolder}/temp/scraped_companies.json", "r") as file:
+        brandlist = json.load(file)
+    brandlist.append("general")
 
     dir = "general"
-
-    for brand in ["iphone", "fairphone", "huawei", "mi"]:
+    # TODO load data from scraped company json
+    for brand in brandlist:
         if brand in input.lower():
             print(f"{brand} found in request {input.lower()}")
             dir = brand
@@ -202,4 +207,4 @@ def generateAnswer(input: str, sourcefolder):
 
 
 ## Testsection
-# print(generateAnswer("HUAWEI nova 12i"))
+generateAnswer("HUAWEI nova 12i", "open_ai_based_prototype")

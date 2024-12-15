@@ -28,6 +28,8 @@ def generate_button_texts():
                         image = "iphone"
                     elif "huawei" in text:
                         image = "huawei"
+                    elif "fairphone" in text:
+                        image = "fairphone"
                     else:
                         image = "mi"
 

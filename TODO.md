@@ -31,3 +31,4 @@
 just copy hsared folder within the exec folder of the container
 
 ## conditional wether information is from general or smartphoen specific
+## scraper für csr

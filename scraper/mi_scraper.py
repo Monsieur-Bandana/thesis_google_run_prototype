@@ -13,7 +13,7 @@ def exec_scrape(scrape_link):
     html = driver.page_source
 
     try:
-        os.makedirs("htmls")
+        os.makedirs("scraper/htmls")
     except:
         print("folder already exists")
 
