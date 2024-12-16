@@ -3,7 +3,6 @@ collection of handy functions to communicate with the google cloud storage
 IMPORTANT: file needs to be copied in each container
 """
 from google.cloud import storage
-import pdfplumber
 import os
 # from classifier import exec_file
 from google.cloud import storage

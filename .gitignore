@@ -13,3 +13,4 @@ temp/
 */tut_scraper.py
 htmls/
 */test_env.py
+__pycache__/

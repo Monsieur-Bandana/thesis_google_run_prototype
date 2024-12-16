@@ -6,7 +6,7 @@ import random
 import os
 
 app = Flask(__name__)
-folder = "open_ai_based_prototype"
+folder = "frontend"
 
 def generate_button_texts():
     bucket = "raw_pdf_files"
@@ -77,7 +77,7 @@ def responseButtons():
 @app.before_request
 def before_request():
     # Code to run before each request
-    create_temp_folder("open_ai_based_prototype")
+    create_temp_folder(folder)
     print(f"Before request: {request.path}")
     # Add any other logic you need here
 

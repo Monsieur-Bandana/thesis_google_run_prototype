@@ -1,0 +1,16 @@
+FROM python:3.12.4-slim
+
+WORKDIR /frontend_container
+
+COPY shared/ ./shared/
+RUN pip3 install ./shared
+COPY frontend/requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+COPY frontend/ ./frontend/
+COPY keen-dispatch-385408-7150201568b0.json /app/key.json
+
+ENV flask_app = ./frontend/app.py
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
+EXPOSE 8080
+
+CMD ["gunicorn", "--bind", "0.0.0.0:8080","--timeout", "180", "frontend.app:app"]
