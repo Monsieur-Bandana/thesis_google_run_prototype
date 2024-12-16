@@ -104,7 +104,6 @@ const observer = new MutationObserver(() => {
         const filterText = inputField.value.toLowerCase();
 
         buttons.forEach(button => {
-            console.log(button.textContent)
             if (button.textContent.toLowerCase().includes(filterText)) {
                 button.classList.remove('hidden');
             } else {
