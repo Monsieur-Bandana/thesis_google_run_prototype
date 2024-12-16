@@ -19,7 +19,7 @@ setInterval(() => {
 }, 1000)
 
 function flask_call(input) {
-    dynamicContent.innerHTML = spinner;
+    dynamicContent.innerHTML = "<div style='width: 100%'>Text will be generated. This can take up to 1 minute.<p></p></div>" + spinner;
     dynamicContent.style = 'height: 90%';
     clock.style = "display: none";
     isOnButtonScreen = false;
@@ -94,8 +94,7 @@ inputField.addEventListener('input', function () {
 const observer = new MutationObserver(() => {
     // Buttons erneut abrufen
     let buttons = document.querySelectorAll('#dynamic-content .buttonContent');
-    console.log("Buttons gefunden:");
-    console.log(buttons);
+
 
     // Optional: UI aktualisieren
     if (buttons.length > 0) {
