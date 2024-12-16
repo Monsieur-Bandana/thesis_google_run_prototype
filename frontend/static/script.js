@@ -18,11 +18,27 @@ setInterval(() => {
     min.innerHTML = (currentTime.getMinutes() < 10 ? "0" : "") + currentTime.getMinutes();
 }, 1000)
 
+
+
 function flask_call(input) {
     dynamicContent.innerHTML = spinner;
     dynamicContent.style = 'height: 90%';
     clock.style = "display: none";
     isOnButtonScreen = false;
+    fetch('/check').then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    }).then(response => {
+        console.log(response);
+        htmlEl = response["message"] + spinner;
+
+
+        dynamicContent.innerHTML = htmlEl;
+    }).catch(error => {
+        console.error('Error fetching data:', error);
+    });
     fetch('/get-data', {
         method: 'POST', headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -94,12 +110,10 @@ inputField.addEventListener('input', function () {
 const observer = new MutationObserver(() => {
     // Buttons erneut abrufen
     let buttons = document.querySelectorAll('#dynamic-content .buttonContent');
-    console.log("Buttons gefunden:");
-    console.log(buttons);
+
 
     // Optional: UI aktualisieren
     if (buttons.length > 0) {
-        console.log(`Es wurden ${buttons.length} Buttons gefunden.`);
     }
     inputField.addEventListener('input', function () {
         const filterText = inputField.value.toLowerCase();

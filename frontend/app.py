@@ -42,7 +42,26 @@ def generate_button_texts():
 
     return phones
 
-def loadAnswer(name)->str:
+file_from_text: bool = False
+
+@app.route('/check', methods=['GET'])
+def check_for_file(name)->str:
+    global file_from_text
+    filecontent = search_for_file(name)
+    if filecontent == "":
+        file_from_text = False
+        return jsonify({'message': f"<p>Data for {name} not found on database. The text will be generated now. This can take up to 1 minute.</p>"})
+    else:
+        file_from_text = True
+        return jsonify({'message': f"<p>Loading data for {name} from database</p>"})
+
+def load_answer(filename):
+    with open(filename, 'r') as file:
+
+        file_content = file.read()
+        return file_content
+
+def search_for_file(name)->str:
     bucket = "raw_pdf_files"
     file_content = ""
     file_path = f"{folder}/temp/{name}.html"
@@ -89,11 +108,11 @@ def index():
 def response():
     name = request.form.get('input_text', '') # Retrieve the 'name' input value
     
-    message = loadAnswer(name)
-    if message=="":
+    if file_from_text == True:
+        return load_answer(f"{folder}/temp/{name}.html")
+    else:
         print("call api")
-        message = generateAnswer(name, folder)
-    return message
+        return generateAnswer(name, folder)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
