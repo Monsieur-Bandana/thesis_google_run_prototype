@@ -29,7 +29,7 @@ def access_list_of_phones():
     return phones
 
 
-create_temp_folder()
+create_temp_folder(source_folder)
 all_phones = access_list_of_phones()
 bucket_name = "raw_pdf_files"
 
