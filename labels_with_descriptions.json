@@ -92,7 +92,7 @@
     },
     {
         "name": "Location of Assembly",
-        "description": "Whare are the sites of assmebly of intermadiate products, such as the wired printing board, or the final smartphones? There are certain countries favoured by smartphone companies for low production costs, which howver often also have lower environment-regulations.",
+        "description": "Where are the sites of assembly of intermadiate products, such as the wired printing board, or the final smartphones? There are certain countries favoured by smartphone companies for low production costs, which howver often also have lower environment-regulations.",
         "parent": "Production",
         "tokens": [
             "supplier",
@@ -103,7 +103,7 @@
     },
     {
         "name": "Ease of Reparation",
-        "description": "How easy can the end user repare the phon by himself? Are parts, which are prone for replacement intentionally hard to access? Many Smartphones nowaydays use glue instead of screws, so the dissasmbly is more risky in damaging the whole phone.",
+        "description": "How easy can the end user repare the phon by himself? Are parts, which are prone for replacement intentionally hard to access? Many Smartphones nowaydays use glue instead of screws, so the disassembly is more risky in damaging the whole phone.",
         "parent": "Use",
         "tokens": [
             "reparability",
@@ -178,7 +178,7 @@
     },
     {
         "name": "Planned Obsolescence",
-        "description": "Does the manufacturer uses certain strategies, such as software updates which lower the performnace of the phone, to make the phone unatttractive over time, so the user feels the nessecity to bey a new phone after two years?",
+        "description": "Does the manufacturer uses certain strategies, such as software updates which lower the performance of the phone, to make the phone unatttractive over time, so the user feels the nessecity to bey a new phone after two years?",
         "parent": "End of Life",
         "tokens": [
             "Discontinuity of support",

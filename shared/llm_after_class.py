@@ -19,7 +19,27 @@ def replace_sentence_start(sentence: str, input, html_start):
     starting_phrases = [
         "Further the phone",
         "Additionally it",
-        "In addition the smartphone"
+        "In addition the smartphone",
+        "Moreover, the device",
+        "Furthermore, it",
+        "What's more, the smartphone",
+        "To add to this, the phone",
+        "On top of that, the device",
+        "In a similar vein, the smartphone",
+        "Not only that, but it",
+        "Besides this, the phone",
+        "Equally important, the device",
+        "As an additional point, the smartphone",
+        "To expand further, it",
+        "Additionally, the device",
+        "Building on this, the phone",
+        "Supplementing this, the smartphone",
+        "In continuation, it",
+        "Another noteworthy point is that the phone",
+        "Correspondingly, the smartphone",
+        "In the same regard, it",
+        "To elaborate, the device",
+        "Extending this idea, the phone"
     ]
     
     # Check if the sentence starts with "The HUAWEI Pura 70 Ultra"
@@ -194,8 +214,7 @@ def generateAnswer(input: str, sourcefolder):
                 parenttitle = entity["parent"]
                 responses.append(f'</ul><p>{parenttitle}</p><ul>')
             else:
-                response = replace_sentence_start(response, input, "<li>")
-            # responses.append(f"""<h2>{entity["name"]}</h2>{response}""")
+                response = replace_sentence_start(response, input, f"""<li class="{class_name}">""")
             responses.append(response)
            
     final_resp = " ".join(responses)
@@ -207,4 +226,7 @@ def generateAnswer(input: str, sourcefolder):
 
 
 ## Testsection
-# generateAnswer("HUAWEI nova 12i", "open_ai_based_prototype")
+"""
+str = generateAnswer("HUAWEI nova 12i", "frontend")
+print(str)
+"""

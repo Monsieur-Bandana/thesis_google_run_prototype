@@ -39,8 +39,9 @@ def create_list_of_already_rendered_phones():
 
 create_temp_folder(source_folder)
 all_phones = access_list_of_phones()
+already_rendered_phones = []
 already_rendered_phones = create_list_of_already_rendered_phones()
-print(already_rendered_phones)
+
 
 for phone in all_phones:
     if not phone in already_rendered_phones:
