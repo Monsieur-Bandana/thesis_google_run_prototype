@@ -1,7 +1,7 @@
 [
     {
         "name": "Raw Materials",
-        "description": "Which Raw Materials, especially rare earths, are used for Smartphone roduction?",
+        "description": "Which Raw Materials, especially rare earths, are used for Smartphone production?",
         "parent": "Materials",
         "tokens": [
             "Tungsten",
@@ -25,7 +25,7 @@
     },
     {
         "name": "Toxic Chemical Materials",
-        "description": "Which Chemical Materials are used for Smartphoneproduction?",
+        "description": "Which Chemical Materials are used for smartphone production?",
         "parent": "Materials",
         "tokens": [
             "beryllium",
@@ -40,7 +40,7 @@
     },
     {
         "name": "Alternative Materials",
-        "description": "Does the Manufacturer uses environment-friendly alternatives to lower the consumption of rare earths or toxic chemicals?",
+        "description": "Does the Manufacturer use environment-friendly alternatives to lower the consumption of rare earths or toxic chemicals?",
         "parent": "Materials",
         "tokens": [
             "bio-based plastic",
@@ -50,7 +50,7 @@
     },
     {
         "name": "Raw Materials Origin",
-        "description": "This is about the origin of the natural ressources. Where are the mines of the rare earths for electronic device production located?",
+        "description": "This is about the origin of the natural resources. Where are the mines of the rare earths for electronic device production located?",
         "parent": "Materials",
         "tokens": [
             "Mines",
@@ -70,7 +70,7 @@
     },
     {
         "name": "Production Process",
-        "description": "The process in which the raw ressources get processed to consumer electronics. This includes the production of intermediate products, such as the wired printing board, but also the assembly of the final smartphone.",
+        "description": "The process in which the raw resources get processed to consumer electronics. This includes the production of intermediate products, such as the wired printing board, but also the assembly of the final smartphone.",
         "parent": "Production",
         "tokens": [
             "device assembly",
@@ -80,7 +80,7 @@
     },
     {
         "name": "Production Waste",
-        "description": "How much waste occors during the manufacturing process. How is dealt with the waste?",
+        "description": "How much waste occurs during the manufacturing process. How is dealt with the waste?",
         "parent": "Production",
         "tokens": []
     },
@@ -92,7 +92,7 @@
     },
     {
         "name": "Location of Assembly",
-        "description": "Where are the sites of assembly of intermadiate products, such as the wired printing board, or the final smartphones? There are certain countries favoured by smartphone companies for low production costs, which howver often also have lower environment-regulations.",
+        "description": "Where are the sites of assembly of intermediate products, such as the wired printing board, or the final smartphones? There are certain countries favoured by smartphone companies for low production costs, which however often also have lower environment-regulations.",
         "parent": "Production",
         "tokens": [
             "supplier",
@@ -103,7 +103,7 @@
     },
     {
         "name": "Ease of Reparation",
-        "description": "How easy can the end user repare the phon by himself? Are parts, which are prone for replacement intentionally hard to access? Many Smartphones nowaydays use glue instead of screws, so the disassembly is more risky in damaging the whole phone.",
+        "description": "How easy can the end user repair the phone by himself? Are parts, which are prone for replacement intentionally hard to access? Many Smartphones nowadays use glue instead of screws, so the disassembly is more risky in damaging the whole phone.",
         "parent": "Use",
         "tokens": [
             "reparability",
@@ -115,7 +115,7 @@
     },
     {
         "name": "Ease of modification",
-        "description": "Can the perfomance of the phone be increased by the user?",
+        "description": "Can the performance of the phone be increased by the user?",
         "parent": "Use",
         "tokens": [
             "SD card slot",
