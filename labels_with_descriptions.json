@@ -88,7 +88,9 @@
         "name": "Supplier Energy Use",
         "description": "How much energy does is consumed at the production sites? Is the consumed energy clean?",
         "parent": "Production",
-        "tokens": []
+        "tokens": [
+            "kWh"
+        ]
     },
     {
         "name": "Location of Assembly",
