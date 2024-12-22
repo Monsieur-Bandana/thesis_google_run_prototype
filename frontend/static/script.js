@@ -1,6 +1,7 @@
 const dynamicContent = document.getElementById('dynamic-content');
 const buttonsdiv = document.getElementById('buttonContainer');
 const inputField = document.getElementById('text-field');
+const introText = document.getElementById('introductionText');
 let isOnButtonScreen = true;
 const backButton = `
 <button onclick="goBack()" style="display: block" class="return-button" id="backButton">Try other phone!</button>
@@ -9,6 +10,8 @@ const spinner = `<div id="loading-spinner" class="spinner"></div>`
 const clock = document.getElementById('clock');
 let hrs = document.getElementById("hrs");
 let min = document.getElementById("min");
+const introductionContainer = `
+`;
 
 setInterval(() => {
 
@@ -21,7 +24,9 @@ setInterval(() => {
 function flask_call(input) {
     dynamicContent.innerHTML = "<div style='width: 100%'>Text will be generated. This can take up to 1 minute.<p></p></div>" + spinner;
     dynamicContent.style = 'height: 90%';
-    clock.style = "display: none";
+    clock.style.display = "none";
+    introText.style.display = "none";
+
     isOnButtonScreen = false;
     fetch('/get-data', {
         method: 'POST', headers: {
@@ -47,7 +52,7 @@ function getButtons() {
         }
         return response.json();
     }).then(responseList => {
-        htmlEl = `<div style="width: 100%">Or choose from the provided list of buttons ... </div>`
+        htmlEl = ``
         responseList.forEach(tuple => {
             htmlEl = htmlEl + `
                     <div class="buttonContent" name="${tuple['text']}">
@@ -63,6 +68,7 @@ function getButtons() {
                     `
 
         })
+
 
         dynamicContent.innerHTML = htmlEl;
     }).catch(error => {

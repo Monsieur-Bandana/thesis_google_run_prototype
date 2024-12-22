@@ -1,7 +1,7 @@
 [
     {
-        "name": "Raw Materials",
-        "description": "Which Raw Materials, especially rare earths, are used for Smartphone production?",
+        "name": "Metals",
+        "description": "Which metals, especially rare earths are included in the smartphone?",
         "parent": "Materials",
         "tokens": [
             "Tungsten",
@@ -15,7 +15,8 @@
             "tantalum",
             "rares",
             "rare earths",
-            "rare earth elements"
+            "rare earth elements",
+            "ores"
         ],
         "fewshots": [
             "The Luminara-phone uses a lot of rare earths such as gold, lead or tin.",
@@ -24,8 +25,8 @@
         "additional_instructions": ""
     },
     {
-        "name": "Toxic Chemical Materials",
-        "description": "Which Chemical Materials are used for smartphone production?",
+        "name": "Toxic Chemicals",
+        "description": "Which Chemicals are are included in the smartphone?",
         "parent": "Materials",
         "tokens": [
             "beryllium",
@@ -141,20 +142,13 @@
     },
     {
         "name": "Quality of Battery",
-        "description": "How many years can the battery keep up with the expections of the user? If the battery dies the user can't use his phone and very probable decides for a new phone.",
+        "description": "How many years can the battery keep up with the expections of the user? If the battery dies the user can't use his phone and very probable decides for a new phone. Can the battery easily be replaced?",
         "parent": "Use",
         "tokens": [
             "battery life",
             "battery",
-            "recharge"
-        ]
-    },
-    {
-        "name": "Quality of display",
-        "description": "The display is one of the smartphone-modules most prone to break. The nescessity of replacing the display of course increases the ressource consumption.",
-        "parent": "Use",
-        "tokens": [
-            "display"
+            "recharge",
+            "replaceability of the "
         ]
     },
     {
