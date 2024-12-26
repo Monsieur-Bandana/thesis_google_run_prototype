@@ -25,18 +25,6 @@ def get_classification_json_files(folder_path):
     
     return json_list
 
-# den folgenden part später importieren lassen >>>
-"""
-folder_name = "file_classifier"
-classes = []
-
-with open(f'{folder_name}/temp/classes.json', 'r') as file:
-    data: list = json.load(file)
-
-    for el in data:
-        classes.append(el["name"])
-"""
-# <<< bis hierhin
 
 def add_footnotes(folder_name, classes):
     sources_list: list = get_classification_json_files(f"{folder_name}/temp")
@@ -58,3 +46,21 @@ def add_footnotes(folder_name, classes):
 
     upload_file("raw_pdf_files", f"{folder_name}/temp/footnotes.json","json_files/footnotes.json")
 
+
+# den folgenden part später importieren lassen >>>
+
+folder_name = "file_classifier"
+classes = []
+
+with open(f'{folder_name}/temp/classes.json', 'r') as file:
+    data: list = json.load(file)
+
+    for el in data:
+        classes.append(el["name"])
+
+sources_list: list = get_classification_json_files(f"{folder_name}/temp")
+json_file: list[dict] = []
+i = 1
+for sel in sources_list:
+    ...
+# <<< bis hierhin
