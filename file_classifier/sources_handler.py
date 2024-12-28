@@ -48,7 +48,7 @@ def add_footnotes(folder_name, classes):
 
 
 # den folgenden part später importieren lassen >>>
-
+"""
 folder_name = "file_classifier"
 classes = []
 
@@ -63,4 +63,5 @@ json_file: list[dict] = []
 i = 1
 for sel in sources_list:
     ...
+"""
 # <<< bis hierhin

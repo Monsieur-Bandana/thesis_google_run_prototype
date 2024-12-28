@@ -4,7 +4,7 @@ import os
 
 def load_class_data_from_git(parent: str):
     # URL to the raw JSON file in the GitHub repository
-    url = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/main/labels_with_descriptions.json"
+    url = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/2cd_cycle/labels_with_descriptions.json"
 
     # Local filename to save the downloaded JSON file
     local_filename = f"{parent}/temp/classes.json"

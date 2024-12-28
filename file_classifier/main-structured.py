@@ -5,6 +5,7 @@ from shared.git_handler import load_class_data_from_git
 from pdf_handler import create_pdf_temp_folder
 from shared.gcs_handler import upload_file, download_file_from_bucket, list_directories_in_bucket, create_temp_folder
 from sources_handler import add_footnotes
+import time
 
 classes = []
 tokens = []
@@ -12,6 +13,7 @@ bucket_name = "raw_pdf_files"
 folder_name = "file_classifier"
 
 def extract_classes():
+    print("i was here as well")
     load_class_data_from_git(folder_name)
     with open(f'{folder_name}/temp/classes.json', 'r') as file:
         data: list = json.load(file)
@@ -82,4 +84,4 @@ for directory in directories:
     # bucket_name, source_file_name, destination_blob_name, folder_name=None
     upload_file(bucket_name, f"{folder_name}/temp/{output_file}",output_file, "json_files")
 
-add_footnotes(folder_name, classes)
+# add_footnotes(folder_name, classes)
