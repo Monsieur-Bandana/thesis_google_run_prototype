@@ -7,6 +7,7 @@ ind_key.py
 temp_pdfs/
 !/labels_with_descriptions.json
 !/prefilter.json
+!/file_interpreter/labels_with_descriptions_structured.json
 *.pyc
 temp/
 */sel_scraper.py

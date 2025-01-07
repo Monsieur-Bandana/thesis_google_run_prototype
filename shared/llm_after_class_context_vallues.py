@@ -91,17 +91,19 @@ class FormatWithAdjective(BaseModel):
     summary: str
     adjective: str
 
-def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes: list[int])  -> dict:
+def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes: list[int], old_values = [])  -> dict:
     
     
     question: str = f"""Tell me about {class_name} of the {input}."""
     fewshot_question: str = f"""Tell me about {class_name} of the Luminara-phone."""
     # comment = f""" Give the responses in the style of the following examples: Question: {fewshot_question} Answer: {fewshots[0]} Question: {fewshot_question} Answer: {fewshots[1]}"""
+    old_context: str = ''.join(f'{text} ' for text in old_values)
 
     context = f"""You are a helpful assistant, giving reviews about {class_name} related to smartphones.
     The review consists of a description of the as-is situation and wether this benefits or increases it's impact on the environmental footprint.
     You only refer to the as-is situation and don't give any comments on how the footprint could potentially be improved.
     use exclusively the text between the <input> brackets as a source of information. <input> {rag_inf} </input>.
+    Ignore the following information resembling the information between the <old> brackets: <old>{old_context}</old>.
     Keep the answer informative but brief. The length of the response should be kept arround 50 tokens.
     Further create one or two adjective about the environmental impact according to your response.
     If you use two, add a fitting connector between, such as "and" or "but".
@@ -137,7 +139,6 @@ def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes:
 
     footnotes.sort()
     footnotes_span: str = ', '.join(map(str, footnotes))
-    footnotes_span = ""
 
     resp_dict: dict = {"class_name": class_name, "generated_adj": generated_adj, "html_output": html_output, "footnotes_span": footnotes_span}
 
@@ -220,6 +221,7 @@ def generateAnswer(input: str, sourcefolder):
 
     parenttitle = ""
     responses = []
+    context_values = []
     # Step 2: Process each class
     for entity in entities:
         class_name = entity["name"]
@@ -255,7 +257,8 @@ def generateAnswer(input: str, sourcefolder):
                 parenttitle = entity["parent"]
                 responses.append(f'</ul><p>{parenttitle}</p><ul>')
                 isParent = True
-            response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes)
+            response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes, old_values=context_values)
+            context_values.append(response_dic["html_output"])
             response = f"""<li class="{response_dic["class_name"]}"><span style="font-weight: bold">{response_dic["generated_adj"]} {class_name}:</span> {response_dic["html_output"]}<span class="sources">{response_dic["footnotes_span"]}</span></li>"""
             responses.append(response)
         print(response)
