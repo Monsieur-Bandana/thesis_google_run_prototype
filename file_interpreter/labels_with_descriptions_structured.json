@@ -1,6 +1,7 @@
 [
     {
         "name": "Materials",
+        "json_name": "materials",
         "list": [
             {
                 "name": "Metals",
@@ -69,6 +70,7 @@
     },
     {
         "name": "Transportation",
+        "json_name": "transportation",
         "list": [
             {
                 "name": "Transportation",
@@ -86,6 +88,7 @@
     },
     {
         "name": "Production",
+        "json_name": "production",
         "list": [
             {
                 "name": "Production Process",
@@ -130,6 +133,7 @@
     },
     {
         "name": "Use",
+        "json_name": "use",
         "list": [
             {
                 "name": "Ease of Reparation",
@@ -209,6 +213,7 @@
     },
     {
         "name": "End of Life",
+        "json_name": "end_od_life",
         "list": [
             {
                 "name": "Planned Obsolescence",

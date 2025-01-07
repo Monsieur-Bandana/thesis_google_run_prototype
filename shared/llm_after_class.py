@@ -227,19 +227,19 @@ def generateAnswer(input: str, sourcefolder):
 
         context = ""
         try:
-            download_file_from_bucket(bucket_name, f"summaries_struct_l/{dir}-{class_name}.txt", f"{sourcefolder}/temp/{dir}-{class_name}.txt")
+            download_file_from_bucket(bucket_name, f"summaries_struct_c/{dir}-{class_name}.txt", f"{sourcefolder}/temp/{dir}-{class_name}.txt")
             context = getContext(dir, class_name, sourcefolder)
         except NotFound:
-            print(f"file summaries_struct_l/{dir}-{class_name}.txt not found")
+            print(f"file summaries_struct_c/{dir}-{class_name}.txt not found")
 
 
 
         if not dir == "general":
             try:
-                download_file_from_bucket(bucket_name, f"summaries_struct_l/general-{class_name}.txt", f"{sourcefolder}/temp/general-{class_name}.txt")
+                download_file_from_bucket(bucket_name, f"summaries_struct_c/general-{class_name}.txt", f"{sourcefolder}/temp/general-{class_name}.txt")
                 context = get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input) + context + getContext("general", class_name, sourcefolder) 
             except NotFound:
-                print(f"file summaries_struct_l/general-{class_name}.txt not found")
+                print(f"file summaries_struct_c/general-{class_name}.txt not found")
             footnotes = footnotes + extract_footnotes(class_name, "general", foot_note_list)
      #   with open(f"{sourcefolder}/temp/{class_name}.txt", "w", encoding="utf-8") as file:
        #     file.write(context)

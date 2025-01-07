@@ -3,7 +3,7 @@ import os
 
 mainf = "file_interpreter"
 
-def process_json_to_text(json_file_path, classes, brandn) -> bool:
+def process_json_to_text(json_file_path, classes, brandn, file_n_opt="struct") -> bool:
     """
     - transforms json file in txt summaries
     - returns True if it successfull. The bool value is important to allow parent-process to skip the following steps, if json file doesnt exists
@@ -37,7 +37,7 @@ def process_json_to_text(json_file_path, classes, brandn) -> bool:
             merged_string = '\n\n'.join(collected_strings)
 
             # Save the merged string into a text file named after the key
-            output_file_path = f"{mainf}/temp/{brandn}-{file_n}-struct.txt"
+            output_file_path = f"{mainf}/temp/{brandn}-{file_n}-{file_n_opt}.txt"
             with open(output_file_path, 'w') as output_file:
                 output_file.write(merged_string)
 
