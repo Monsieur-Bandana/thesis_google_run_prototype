@@ -82,9 +82,9 @@ def main():
         filename = file.split("/")[1]
         if "classification" in filename:
             download_file_from_bucket(bucket_name, file, f"{main_folder}/temp/{filename}")
-
-    # load_class_data_from_git(main_folder)
-    with open(f"{main_folder}/labels_with_descriptions_structured.json", "r") as file:
+    url_d = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/2cd_cycle/labels_with_descriptions_structured.json"
+    load_class_data_from_git(main_folder, url_d)
+    with open(f"{main_folder}/temp/classes.json", "r") as file:
         entities = json.load(file)
     # get dirs, loop the following through dirs
     dirs = brandlist

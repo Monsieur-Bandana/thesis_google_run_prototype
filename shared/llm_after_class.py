@@ -216,20 +216,22 @@ def generateAnswer(input: str, sourcefolder):
 
     # extract model specific information
 
-    
+    entities = []
     # Step 1: Download and read JSON files
-    load_class_data_from_git(sourcefolder)
-    
+    url_d = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/2cd_cycle/labels_with_descriptions_structured.json"
+    load_class_data_from_git(sourcefolder, url_d)
     with open(f"{sourcefolder}/temp/classes.json", "r") as file:
-        entities = json.load(file)
-
+        data = json.load(file)
+        for d in data:
+            # transform data in llm format
+            entities = entities + d["list"]
     parenttitle = ""
     responses = []
     # Step 2: Process each class
     for entity in entities:
         class_name = entity["name"]
         footnotes = extract_footnotes(class_name, dir, foot_note_list)
-
+        css_name = entity["json_name"]
         context = ""
         try:
             download_file_from_bucket(bucket_name, f"summaries_struct_c/{dir}-{class_name}.txt", f"{sourcefolder}/temp/{dir}-{class_name}.txt")
@@ -254,14 +256,12 @@ def generateAnswer(input: str, sourcefolder):
         
         if context.strip():
             isParent: bool = False
-            fewshots = ["", ""] if entity.get("fewshots") is None else entity["fewshots"]
-            startsuggestion = "" if entity.get("sug") is None else entity["sug"]
             if not entity["parent"] == parenttitle:
                 parenttitle = entity["parent"]
                 responses.append(f'</ul><p>{parenttitle}</p><ul>')
                 isParent = True
             response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes)
-            response = f"""<li class="{response_dic["class_name"]}"><span style="font-weight: bold">{response_dic["generated_adj"]} {class_name}:</span> {response_dic["html_output"]}<span class="sources">{response_dic["footnotes_span"]}</span></li>"""
+            response = f"""<li class="{css_name}-css-class"><span style="font-weight: bold">{response_dic["generated_adj"]} {class_name}:</span> {response_dic["html_output"]}<span class="sources">{response_dic["footnotes_span"]}</span></li>"""
             responses.append(response)
         print(response)
            

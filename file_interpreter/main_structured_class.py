@@ -90,7 +90,10 @@ def main():
             files_to_intperprete.append(filen)
         print(files_to_intperprete)
         # Step 2: Process each class
-        with open(f"{main_folder}/labels_with_descriptions_structured.json", "r") as file:
+        # TODO: test if it works
+        url_d = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/2cd_cycle/labels_with_descriptions_structured.json"
+        load_class_data_from_git(main_folder, url_d)
+        with open(f"{main_folder}/temp/classes.json", "r") as file:
             entities = json.load(file)
         prompt = ""
         save_file = f"{main_folder}/temp/{dir}.json"
