@@ -1,0 +1,191 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <title>Hello there!</title>
+
+</head>
+
+<body>
+    <div class="bg-img"></div>
+    <div class="mobile">
+        <div class="phone">
+            <div class="phone-mirror">
+                <div class="topWrapper">
+                    <div class="camera"></div>
+                    <div class="line-rec"></div>
+                </div>
+                <div class="clock-frame" id="clock" style="display: none;">
+                    <div class="clock">
+                        <span id="hrs">13</span>
+                        <span>:</span>
+                        <span id="min">49</span>
+                    </div>
+                </div>
+
+                <div id="introductionText" style="display: none;">
+                    <span>Thank you</span> for deciding to use the platform to find out more about the
+                    environmental
+                    footprint of
+                    your next phone.
+                    You may either enter the phone's name in the input field above or select one of the suggested
+                    options from the buttons below.
+                    As a result, you will receive a footprint analysis covering the <span>whole lifecycle</span> of
+                    the
+                    phone "from cradle to grave".
+                    Please note, we don't have data of all phone models due to limitations considering the
+                    development
+                    time of this app.
+                </div>
+
+
+                <div class="search-container">
+                    <input type="text" class="search-input" id="text-field" name="name"
+                        placeholder="Enter name of your phone model here ... ">
+                    <button class="search-button" type="submit" id="load-content-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24"
+                            fill="#555">
+                            <path
+                                d="M796.9 856.8 601.5 661.3q-27.4 19.9-59.1 29.9-31.7 10-64.9 10-88.8 0-151.3-62.4T263.8 458.8q0-88.8 62.4-151.3T478.8 245q88.8 0 151.3 62.4t62.4 151.3q0 33.2-10 64.9t-29.9 59.1l195.4 195.4q12.2 12.1 12.1 29.7-.2 17.6-13.1 30.5-13 13-30.5 13.1-17.6.2-29.7-12.1ZM478.8 615q61.5 0 105.7-44.2t44.2-105.7q0-61.5-44.2-105.7T478.8 315q-61.5 0-105.7 44.2t-44.2 105.7q0 61.5 44.2 105.7T478.8 615Z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+
+
+
+                <div class="apps-area" id="dynamic-content" style="height: 90%;">
+                    <button onclick="goBack()" style="display: block" class="return-button" id="backButton">Try other
+                        phone!</button>
+                    <div style="display: block">
+                        <p>The Galaxy A54 5G has a concerning carbon footprint due to significant resource extraction,
+                            extensive transportation, and a complex production process. Despite some sustainable
+                            materials, its impact is compounded by low recycling rates and planned obsolescence,<span
+                                style="font-weight: bold"> indicating a rather bad environmental footprint
+                                overall.<span></span></span></p>Further Details:
+                    </div>
+                    <p>Materials</p>
+                    <ul>
+                        <li class="Metals"><span style="font-weight: bold">Significant and concerning Metals:</span> The
+                            Galaxy A54 5G incorporates critical metals like gold, lithium, cobalt, tantalum, tungsten,
+                            and tin, which are essential for its components and functionalities. The extraction and
+                            processing of these metals contribute significantly to environmental concerns. <span
+                                class="sources"></span></li>
+                        <li class="Toxic Chemicals"><span style="font-weight: bold">Harmful and concerning Toxic
+                                Chemicals:</span> Furthermore, it incorporates toxic chemicals such as beryllium,
+                            brominated flame retardants, PVC, phthalates, arsenic in glass, and mercury, all of which
+                            raise significant environmental and health concerns during production and disposal. <span
+                                class="sources"></span></li>
+                        <li class="Alternative Materials"><span style="font-weight: bold">Sustainable and innovative
+                                Alternative Materials:</span> Samsung's Galaxy A54 5G incorporates bio-based plastics
+                            and recycled materials, reducing reliance on rare earths and toxic chemicals, thus lowering
+                            environmental impact. <span class="sources"></span></li>
+                        <li class="Raw Materials Origin"><span style="font-weight: bold">Environmentally concerning and
+                                ethically challenging Raw Materials Origin:</span> The raw materials for the Galaxy A54
+                            5G are primarily sourced from global mining locations, with rare earth elements concentrated
+                            in China, the U.S., and Australia. Ethical sourcing and environmental impacts are
+                            significant concerns due to mining practices. <span class="sources"></span>
+                            <img src="https://projectsiq.co.za/images/Mines%20In%20SA_image%202.jpg" alt="Paris">
+                        </li>
+                    </ul>
+                    <p>Transportation</p>
+                    <ul>
+                        <li class="Transportation"><span style="font-weight: bold">Significant and complex
+                                Transportation:</span> Transportation logistics for the Galaxy A54 5G involve long
+                            distances, utilizing air and sea freight, which leads to a significant environmental impact.
+                            The extensive supply chain connects various global production sites, influencing overall
+                            emissions. <span class="sources"></span></li>
+                    </ul>
+                    <p>Production</p>
+                    <ul>
+                        <li class="Production Process"><span style="font-weight: bold">Resource-intensive and
+                                environmentally impactful Production Process:</span> The production process of the
+                            Galaxy A54 5G includes sourcing raw materials, manufacturing components like circuit boards,
+                            and final assembly. Production often occurs in lower-cost regions with automated systems,
+                            ensuring efficiency and aiming to minimize waste. The process is resource-intensive and
+                            environmentally impactful. <span class="sources"></span></li>
+                        <li class="Production Waste"><span style="font-weight: bold">Significant and concerning
+                                Production Waste:</span> The manufacturing of the Galaxy A54 5G generates substantial
+                            production waste, including defective components and excess materials. Significant efforts
+                            focus on recycling and minimizing this waste, but challenges remain due to inefficiencies
+                            and complexities in managing electronic waste. <span class="sources"></span></li>
+                        <li class="Supplier Energy Use"><span style="font-weight: bold">High and concerning Supplier
+                                Energy Use:</span> Supplier energy use during the production of the Galaxy A54 5G is
+                            closely monitored, with a focus on both renewable and non-renewable sources. While
+                            initiatives promote energy efficiency and sustainability, many suppliers still rely on
+                            fossil fuels, affecting their environmental impact. <span class="sources"></span></li>
+                        <li class="Location of Assembly"><span style="font-weight: bold">Unsustainable and concerning
+                                Location of Assembly:</span> Another noteworthy point is that the phone is typically
+                            assembled in low-cost regions like China, Vietnam, and India, which often have relaxed
+                            environmental regulations. This results in significant environmental concerns due to waste
+                            management practices and workers' safety. <span class="sources"></span></li>
+                    </ul>
+                    <p>Use</p>
+                    <ul>
+                        <li class="Ease of Reparation"><span style="font-weight: bold">Challenging and environmentally
+                                detrimental Ease of Reparation:</span> The Galaxy A54 5G employs adhesive in its design,
+                            making repairs like battery and screen replacements complex for users. Accessibility to
+                            parts varies, generally hindering user-driven repairs. <span class="sources"></span></li>
+                        <li class="Ease of modification"><span style="font-weight: bold">Restrictive and unsustainable
+                                Ease of modification:</span> Another noteworthy point is that the phone offers limited
+                            modification options due to the absence of SD card slots, restricting user customization and
+                            upgrades, thus impacting the environmental footprint negatively. <span
+                                class="sources"></span></li>
+                        <li class="top notch technology"><span style="font-weight: bold">Efficient and sustainable top
+                                notch technology:</span> Additionally, the device features cutting-edge technology like
+                            a 5G-capable processor and advanced camera systems, enhancing its longevity and relevance in
+                            the market. These innovations contribute to both efficiency and sustainability. <span
+                                class="sources"></span></li>
+                        <li class="Quality of Battery"><span style="font-weight: bold">Lasting and concerning Quality of
+                                Battery:</span> Correspondingly, the smartphone features a high-capacity 5000 mAh
+                            battery, providing impressive longevity and stable performance for up to 20 hours of
+                            internet usage. However, it has a non-removable design, which could lead to premature device
+                            obsolescence. <span class="sources"></span></li>
+                        <li class="Durability"><span style="font-weight: bold">Sustainable and challenging
+                                Durability:</span> Equally important, the device features robust design testing and
+                            quality materials that enhance its durability, potentially increasing its lifespan and
+                            reducing e-waste. However, market trends may still encourage premature replacements,
+                            revealing a complex relationship with environmental impacts. <span class="sources"></span>
+                        </li>
+                        <li class="Energy Consumption"><span style="font-weight: bold">Efficient and environmentally
+                                friendly Energy Consumption:</span> To elaborate, the device exhibits optimized energy
+                            consumption with features designed to enhance battery life and efficiency. Its performance
+                            aligns with sustainability goals by minimizing overall environmental impact. <span
+                                class="sources"></span></li>
+                    </ul>
+                    <p>End of Life</p>
+                    <ul>
+                        <li class="Planned Obsolescence"><span style="font-weight: bold">Detrimental and concerning
+                                Planned Obsolescence:</span> The Galaxy A54 5G may exhibit planned obsolescence through
+                            software updates that potentially degrade performance over time, nudging users to upgrade
+                            sooner. This indirectly increases its environmental footprint in a detrimental manner. <span
+                                class="sources"></span></li>
+                        <li class="Second Use"><span style="font-weight: bold">Sustainable and efficient Second
+                                Use:</span> The Samsung Galaxy A54 5G benefits from high durability and maintainability,
+                            making it suitable for refurbishment and resale in the second-use market. Its quality and
+                            condition after usage enhance prospects for reduced e-waste. <span class="sources"></span>
+                        </li>
+                        <li class="Recycling"><span style="font-weight: bold">Important and challenging
+                                Recycling:</span> Samsung's recycling initiatives address e-waste by recovering
+                            materials from old devices and promoting a circular economy. However, current recycling
+                            rates remain low, with many valuable components still ending up in landfills. <span
+                                class="sources"></span></li>
+                    </ul>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+</body>
+
+</html>

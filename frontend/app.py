@@ -45,11 +45,11 @@ def generate_button_texts():
 def loadAnswer(name)->str:
     bucket = "raw_pdf_files"
     file_content = ""
-    file_path = f"{folder}/temp/{name}.html"
+    file_path = f"{folder}/temp/{name}-str.html"
 
 
     try:
-        download_file_from_bucket(bucket, f"pre_rendered_texts/{name}.html", file_path)
+        download_file_from_bucket(bucket, f"pre_rendered_texts_str/{name}.html", file_path)
 
         with open(file_path, 'r') as file:
 

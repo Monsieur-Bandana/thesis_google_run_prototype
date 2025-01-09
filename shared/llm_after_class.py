@@ -80,6 +80,11 @@ def give_conlusion(previous_text:str, class_name, phone_name, count)->str:
     
     generated_text = completion.choices[0].message.content
     if conclusion_tester(generated_text):
+        text_parts: list[str] = generated_text.split(",")
+        print(f"outclist: {text_parts}")
+        bold_text: str = f"""<span style="font-weight: bold">{text_parts[len(text_parts)-1]}<span>"""
+        generated_text: str = ",".join(text_parts[:-1])
+        generated_text = generated_text + "," + bold_text
         return generated_text
     elif count < 4: 
         count = count + 1
@@ -263,12 +268,13 @@ def generateAnswer(input: str, sourcefolder):
     final_resp = " ".join(responses)
     
     final_resp = final_resp[len("</ul>"):]
-    final_resp = f"""<p>{give_conlusion(final_resp, entity["name"], input, 0)}</p><div style="display: block">Further Details:</div>{final_resp}</ul>"""
+    final_resp = f"""<div style="display: block"><p>{give_conlusion(final_resp, entity["name"], input, 0)}</p>Further Details:</div>{final_resp}</ul>"""
     return final_resp
 
 
 
 ## Testsection
-
+"""
 stri = generateAnswer("iPhone SE (2nd generation)", "frontend")
 print(stri)
+"""
