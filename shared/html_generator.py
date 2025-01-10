@@ -1,17 +1,17 @@
 # response = f"""<li class="{css_name}-css-class"><span style="font-weight: bold">{response_dic["generated_adj"]} {class_name}:</span> {response_dic["html_output"]}<span class="sources">{response_dic["footnotes_span"]}</span></li>"""
 
 
-def generate_html_output(resp: list[dict], parent: dict, score: float):
+def generate_html_output(resp: list[dict], parent: dict, score_dict: dict):
+    score = score_dict["score"]
+    reasoning = score_dict["reasoning"]
     header_html = f"""
                     <div class="headline" id="{parent["json_name"]}">
                         <span class="title_span">{parent["name"]}</span>
                         <span class="score_span">
-                            <i class="fa fa-leaf"></i>
-                            <i class="fa fa-leaf"></i>
-                            <i class="fa fa-leaf"></i>
-                            <i class="fa fa-leaf"></i>
-                            <i class="fa fa-leaf"></i>
-                        {str(score)}</span>
+                        {color_leafs(score)}
+                        {str(score)}
+                        <div class="tooltiptext">{reasoning}</div>
+                        </span>
                     </div>
     """
     final_response = "<ul>"
@@ -23,3 +23,19 @@ def generate_html_output(resp: list[dict], parent: dict, score: float):
     final_response = final_response + "</ul>"
     final_response = header_html + final_response
     return final_response
+
+def color_leafs(score: float):
+    returnhtml: str = ""
+    scd_digit = score%1
+    first_digit = score-scd_digit
+    first_digit = int(first_digit)
+    for i in range(0, first_digit):
+        returnhtml = returnhtml + """<i class="fa fa-leaf" style="color: green"></i>"""
+    border_percent = int(scd_digit * 100)
+    relative_icon = f"""<i class="fa fa-leaf" style="background: linear-gradient(to right, green 0% {str(border_percent)}%, white {str(border_percent)}% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>"""
+    returnhtml = returnhtml + relative_icon
+    for i in range(first_digit + 1 , 5):
+        returnhtml = returnhtml + """<i class="fa fa-leaf"></i>"""
+    return returnhtml
+
+# print(color_leafs(4.0))

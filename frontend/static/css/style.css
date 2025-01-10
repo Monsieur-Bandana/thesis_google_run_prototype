@@ -366,6 +366,31 @@ li {
     background-image: url(/static/images/eol.jpg);
 }
 
+.tooltiptext {
+    visibility: hidden;
+    font-size: 0.7rem;
+    width: 250px;
+    background-color: #1d1d1dd7;
+    color: #fff;
+    text-align: left;
+    border-radius: 5px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    /* Position above the element */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    /* Transparent by default */
+    transition: opacity 0.3s;
+}
+
+.score_span:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
 /* Styling for the return button */
 .return-button {
     display: inline-block;

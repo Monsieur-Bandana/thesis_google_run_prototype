@@ -22,14 +22,14 @@ def access_list_of_phones():
             download_file_from_bucket(bucket_name, json_file, dest)
             with open(dest, 'r') as file:
                 data: list = json.load(file)
-
-                for el in data:
+                #TODO: remove limit
+                for el in data[:1]:
                     phones.append(el["name"])
     # Replace this list with dynamic data generation logic
     return phones
 
 def create_list_of_already_rendered_phones():
-    existing_phones: list[str] = list_files_in_folder(bucket_name, "pre_rendered_texts")
+    existing_phones: list[str] = list_files_in_folder(bucket_name, "pre_rendered_texts_c")
     return_list = []
     for phone in existing_phones:
         phone = phone.split("/")[1]
@@ -49,7 +49,7 @@ for phone in all_phones:
         with open(f'{source_folder}/temp/{phone}.html', 'w', encoding='utf-8') as file:
         # Write the string to the file
             file.write(resp)
-        upload_file(bucket_name, f'{source_folder}/temp/{phone}.html', f'pre_rendered_texts/{phone}.html')
+        upload_file(bucket_name, f'{source_folder}/temp/{phone}.html', f'pre_rendered_texts_c/{phone}.html')
         print(f"{phone} completed")
     else:
         print(f"{phone} got already generated")

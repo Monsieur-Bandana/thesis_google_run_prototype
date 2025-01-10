@@ -38,18 +38,18 @@ def generate_button_texts():
 
                     phones.append({"text": name, "img": f"static/images/{image}.svg"})
     # Replace this list with dynamic data generation logic
-    random.shuffle(phones)
+    # random.shuffle(phones)
 
     return phones
 
 def loadAnswer(name)->str:
     bucket = "raw_pdf_files"
     file_content = ""
-    file_path = f"{folder}/temp/{name}-str.html"
+    file_path = f"{folder}/temp/{name}.html"
 
 
     try:
-        download_file_from_bucket(bucket, f"pre_rendered_texts_str/{name}.html", file_path)
+        download_file_from_bucket(bucket, f"pre_rendered_texts_c/{name}.html", file_path)
 
         with open(file_path, 'r') as file:
 

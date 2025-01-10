@@ -3,9 +3,7 @@ TODO: allow multiple entities
 """
 from openai import OpenAI
 from shared.ind_key import rand_k
-import os
 import json
-from google.cloud import storage
 from google.api_core.exceptions import NotFound
 from shared.gcs_handler import download_file_from_bucket, create_temp_folder
 from shared.git_handler import load_class_data_from_git
@@ -261,8 +259,8 @@ def generateAnswer(input: str, sourcefolder):
                 response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes)
                 responses.append(response_dic)
                 isParent = False
-        score: float = generate_score(responses)
-        final_responses.append(generate_html_output(resp=responses, parent=parentcl_, score=score))
+        score: dict = generate_score(responses)
+        final_responses.append(generate_html_output(resp=responses, parent=parentcl_, score_dict=score))
          
            
     final_resp = " ".join(final_responses)

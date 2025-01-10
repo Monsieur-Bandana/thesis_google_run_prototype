@@ -1,14 +1,6 @@
 from openai import OpenAI
 from shared.ind_key import rand_k
-import os
 import json
-from google.cloud import storage
-from google.api_core.exceptions import NotFound
-from shared.gcs_handler import download_file_from_bucket, create_temp_folder
-from shared.git_handler import load_class_data_from_git
-from shared.test_center import conclusion_tester
-import random
-
 from pydantic import BaseModel
 
 class AnswerWithReasoning(BaseModel):
@@ -18,7 +10,7 @@ class AnswerWithReasoning(BaseModel):
 sk = rand_k
 client = OpenAI(api_key=sk)
 
-def generate_score(respones: list[dict]):
+def generate_score(respones: list[dict])->dict:
 
     context: str = " "
     for el in respones:
@@ -50,5 +42,5 @@ def generate_score(respones: list[dict]):
     generated_answer_dict:dict = json.loads(generated_text)
     
 
-    return generated_answer_dict["score"]
+    return generated_answer_dict
 
