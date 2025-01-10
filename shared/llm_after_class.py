@@ -12,6 +12,8 @@ from shared.git_handler import load_class_data_from_git
 from shared.test_center import conclusion_tester
 import random
 from pydantic import BaseModel
+from shared.score_analyzer import generate_score
+from shared.html_generator import generate_html_output
 
 sk = rand_k
 client = OpenAI(api_key=sk)
@@ -53,9 +55,9 @@ def replace_sentence_start(sentence:str, input):
     return sentence
 
 # from ind_key import key
-def give_conlusion(previous_text:str, class_name, phone_name, count)->str:
+def give_conlusion(previous_text:str, phone_name, count)->str:
     context = f"""
-    You are a helpful assistant, giving conlusions about the {class_name} related to smartphones.
+    You are a helpful assistant, giving conlusions about the environmental footpint related to smartphones.
     You only refer to the as-is situation and don't give any comments on how the footprint could potentially be improved.
     The review consists of a description of the as-is situation as well as it's impact on the environmental footprint.
     use exclusively the text between the <input> brackets as a source of information. <input> {previous_text} </input>.
@@ -88,7 +90,7 @@ def give_conlusion(previous_text:str, class_name, phone_name, count)->str:
         return generated_text
     elif count < 4: 
         count = count + 1
-        return give_conlusion(previous_text, class_name, phone_name, count)
+        return give_conlusion(previous_text, phone_name, count)
     else:
         return "An Error happened generating the summary"
 
@@ -202,7 +204,6 @@ def generateAnswer(input: str, sourcefolder):
     foot_note_list: list[dict] = download_and_extract_json("footnotes", sourcefolder)
 
     print(foot_note_list)
-
     brandlist.append("general")
 
     dir = "general"
@@ -216,59 +217,56 @@ def generateAnswer(input: str, sourcefolder):
 
     # extract model specific information
 
-    entities = []
+    final_responses = []
     # Step 1: Download and read JSON files
     url_d = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/2cd_cycle/labels_with_descriptions_structured.json"
     load_class_data_from_git(sourcefolder, url_d)
+    data = []
     with open(f"{sourcefolder}/temp/classes.json", "r") as file:
         data = json.load(file)
-        for d in data:
-            # transform data in llm format
-            entities = entities + d["list"]
-    parenttitle = ""
-    responses = []
-    # Step 2: Process each class
-    for entity in entities:
-        class_name = entity["name"]
-        footnotes = extract_footnotes(class_name, dir, foot_note_list)
-        css_name = entity["json_name"]
-        context = ""
-        try:
-            download_file_from_bucket(bucket_name, f"summaries_struct_c/{dir}-{class_name}.txt", f"{sourcefolder}/temp/{dir}-{class_name}.txt")
-            context = getContext(dir, class_name, sourcefolder)
-        except NotFound:
-            print(f"file summaries_struct_c/{dir}-{class_name}.txt not found")
-
-
-
-        if not dir == "general":
+    for parentcl_ in data:
+        # transform data in llm format
+        entities = parentcl_["list"]
+        responses = []
+        isParent = True
+        # Step 2: Process each class
+        for entity in entities:
+            class_name = entity["name"]
+            footnotes = extract_footnotes(class_name, dir, foot_note_list)
+            css_name = entity["json_name"]
+            context = ""
             try:
-                download_file_from_bucket(bucket_name, f"summaries_struct_c/general-{class_name}.txt", f"{sourcefolder}/temp/general-{class_name}.txt")
-                context = get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input) + context + getContext("general", class_name, sourcefolder) 
+                download_file_from_bucket(bucket_name, f"summaries_struct_c/{dir}-{class_name}.txt", f"{sourcefolder}/temp/{dir}-{class_name}.txt")
+                context = getContext(dir, class_name, sourcefolder)
             except NotFound:
-                print(f"file summaries_struct_c/general-{class_name}.txt not found")
-            footnotes = footnotes + extract_footnotes(class_name, "general", foot_note_list)
-     #   with open(f"{sourcefolder}/temp/{class_name}.txt", "w", encoding="utf-8") as file:
-       #     file.write(context)
-        
-        # Summarize each PDF and compile into a text file
-        response = ""
-        
-        if context.strip():
-            isParent: bool = False
-            if not entity["parent"] == parenttitle:
-                parenttitle = entity["parent"]
-                responses.append(f'</ul><p>{parenttitle}</p><ul>')
-                isParent = True
-            response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes)
-            response = f"""<li class="{css_name}-css-class"><span style="font-weight: bold">{response_dic["generated_adj"]} {class_name}:</span> {response_dic["html_output"]}<span class="sources">{response_dic["footnotes_span"]}</span></li>"""
-            responses.append(response)
-        print(response)
+                print(f"file summaries_struct_c/{dir}-{class_name}.txt not found")
+
+
+
+            if not dir == "general":
+                try:
+                    download_file_from_bucket(bucket_name, f"summaries_struct_c/general-{class_name}.txt", f"{sourcefolder}/temp/general-{class_name}.txt")
+                    context = get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input) + context + getContext("general", class_name, sourcefolder) 
+                except NotFound:
+                    print(f"file summaries_struct_c/general-{class_name}.txt not found")
+                footnotes = footnotes + extract_footnotes(class_name, "general", foot_note_list)
+            #   with open(f"{sourcefolder}/temp/{class_name}.txt", "w", encoding="utf-8") as file:
+            #     file.write(context)
+            
+            # Summarize each PDF and compile into a text file
+            response = ""
+            
+            if context.strip():
+                    
+                response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes)
+                responses.append(response_dic)
+                isParent = False
+        score: float = generate_score(responses)
+        final_responses.append(generate_html_output(resp=responses, parent=parentcl_, score=score))
+         
            
-    final_resp = " ".join(responses)
-    
-    final_resp = final_resp[len("</ul>"):]
-    final_resp = f"""<div style="display: block"><p>{give_conlusion(final_resp, entity["name"], input, 0)}</p>Further Details:</div>{final_resp}</ul>"""
+    final_resp = " ".join(final_responses)
+    final_resp = f"""<div style="display: block"><p>{give_conlusion(final_resp, input, 0)}</p>Further Details:</div>{final_resp}"""
     return final_resp
 
 
@@ -277,4 +275,5 @@ def generateAnswer(input: str, sourcefolder):
 """
 stri = generateAnswer("iPhone SE (2nd generation)", "frontend")
 print(stri)
+
 """

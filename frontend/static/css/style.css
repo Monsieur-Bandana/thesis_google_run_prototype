@@ -19,6 +19,16 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 15px 0 0 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
 .bg-img {
     /* The image used */
     background-image: url("../images/nature.jpg");
@@ -65,7 +75,7 @@ body {
     background: linear-gradient(to bottom, #a8d5a8, #5ba5a5);
 
     border-radius: 40px;
-    padding: 0px 50px 50px 50px;
+    padding: 0px 30px 50px 50px;
     box-sizing: border-box;
 
     background: linear-gradient(to bottom, #0a9183, #add8e6 50%, rgb(255, 255, 255) 65%),
@@ -307,10 +317,59 @@ body {
     }
 }
 
+.headline {
+    padding: 10px;
+    color: white;
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 230px;
+    width: 100%;
+}
+
+.headline span {
+    background-color: #0000008a;
+    font-size: 2.3rem;
+    padding: 0 10px;
+    position: absolute;
+}
+
+.title_span {
+    top: 30px;
+    left: 30px;
+}
+
+.score_span {
+
+    bottom: 30px;
+    right: 30px;
+}
+
+#materials {
+    background-image: url(/static/images/origin.jpg);
+}
+
+#transportation {
+    background-image: url(/static/images/transportation.jpg);
+}
+
+#production {
+    background-image: url(/static/images/production.jpg);
+}
+
+#use {
+    background-image: url(/static/images/use-neg.jpg);
+}
+
+#end_od_life {
+    background-image: url(/static/images/eol.jpg);
+}
+
 /* Styling for the return button */
 .return-button {
     display: inline-block;
-    background-color: #5cb85c;
+    background-color: #292929;
     /* Primary blue */
     color: #ffffff;
     /* White text */
@@ -333,7 +392,7 @@ body {
 
 /* Hover effect */
 .return-button:hover {
-    background-color: #3e7e3e;
+    background-color: #000000;
     /* Darker blue for hover */
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     /* Enhanced shadow on hover */
