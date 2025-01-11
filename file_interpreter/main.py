@@ -8,6 +8,7 @@ from openai import OpenAI
 from shared.git_handler import load_class_data_from_git
 from shared.gcs_handler import list_files_in_folder, download_file_from_bucket, upload_file, list_directories_in_bucket
 from shared.ind_key import rand_k
+from test_string import test_string
 
 # Configure your Google Cloud and OpenAI API credentials
 sk = rand_k
@@ -15,33 +16,34 @@ main_folder = "file_interpreter"
 
 def summarize_pdf_content(pdf_file_path, focus_class, class_description, related_terms):
     """Summarizes the content of a PDF with focus on a class and related terms."""
-    reader = PdfReader(pdf_file_path)
-    content = ""
-    for page in reader.pages:
-        content += page.extract_text()
     
-    chunk_size = 30000  # Adjust chunk size to stay within token limits
-    content_chunks = [content[i:i + chunk_size] for i in range(0, len(content), chunk_size)]
 
     
     client = OpenAI(api_key=sk)
     
     summaries = []
-    for chunk in content_chunks:
-        prompt = f"""Summarize the following content with a focus on the class '{focus_class}' and related terms: {', '.join(related_terms)}.
-        You can use the following class-description as an oriention {class_description}. Don't write complete sentences, prefer concluding texts in bullet points. Content:\n{chunk}"""
-        
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
-            messages=[
-                {"role": "user", "content": prompt},
-            
-            ],
-            temperature=1  # Geringere Temperatur für deterministischere Ergebnisse
-        )
+    
+      #  if "Cordella" in pdf_file_path:
+      #      with open(f"""{main_folder}/temp/-------------metals-test.txt""", "w", encoding="utf-8") as txt_file:
+      #          txt_file.writelines(chunk)
+     #       input()
+      #  else:
+     #       return ""
 
-        summary = response.choices[0].message.content
-        summaries.append(summary)
+    prompt = f"""Summarize the following content with a focus on the class '{focus_class}' and related terms: {', '.join(related_terms)}.
+    You can use the following class-description as an oriention {class_description}. Don't write complete sentences, prefer concluding texts in bullet points. Content:\n{test_string}"""
+    
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
+        messages=[
+            {"role": "user", "content": prompt},
+        
+        ],
+        temperature=1  # Geringere Temperatur für deterministischere Ergebnisse
+    )
+
+    summary = response.choices[0].message.content
+    summaries.append(summary)
     return "\n".join(summaries)
 
 def create_temp_folder():
@@ -92,7 +94,7 @@ def main():
     entities = []
         
     create_temp_folder()
-    get_existing_summaries(bucket_name)
+    # get_existing_summaries(bucket_name)
     # Step 1: Download and read JSON files
     list_of_jsons = list_files_in_folder(bucket_name, "json_files")
     for file in list_of_jsons:
@@ -104,7 +106,7 @@ def main():
     with open(f"{main_folder}/temp/classes.json", "r") as file:
         entities = json.load(file)
     # get dirs, loop the following through dirs
-    dirs = brandlist
+    dirs = ["general"]
     for dir in dirs:
 
         with open(f"{main_folder}/temp/{dir}-classification.json", "r") as file:
@@ -146,7 +148,13 @@ def main():
                     with open(file_in_question, "a", encoding="utf-8") as txt_file:
                         txt_file.writelines(summaries)
                     print(f"Summaries added to {class_name}.txt")
-                upload_file(bucket_name,file_in_question,f"summaries/{dir}-{class_name}.txt")
+                # upload_file(bucket_name,file_in_question,f"summaries/{dir}-{class_name}.txt")
 
 if __name__ == "__main__":
-    main()
+    with open(f"{main_folder}/temp/classes.json", "r") as file:
+        entities = json.load(file)
+    for entity in entities[:1]:
+        class_name = entity["name"]
+        class_description = entity["description"]
+        related_terms = entity["tokens"]
+    print(summarize_pdf_content("", class_name, class_description, related_terms))
