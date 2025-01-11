@@ -24,6 +24,19 @@ def generate_html_output(resp: list[dict], parent: dict, score_dict: dict):
     final_response = header_html + final_response
     return final_response
 
+def generate_final_answer(conclusion, context, total_score: float):
+    header = f"""<div class="t-header">
+                    <div class="t-frame">
+                        <span class="score_span">
+                            {color_leafs(total_score)}
+                            {str(total_score)}
+                        </span>
+                        <span>Estimated score</span>
+                    </div>
+                </div>"""
+    final_resp = f"""{header}<div style="display: block"><p>{conclusion}</p>Further Details:</div>{context}"""
+    return final_resp
+
 def color_leafs(score: float):
     returnhtml: str = ""
     scd_digit = score%1
@@ -35,7 +48,7 @@ def color_leafs(score: float):
     relative_icon = f"""<i class="fa fa-leaf" style="background: linear-gradient(to right, green 0% {str(border_percent)}%, white {str(border_percent)}% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>"""
     returnhtml = returnhtml + relative_icon
     for i in range(first_digit + 1 , 5):
-        returnhtml = returnhtml + """<i class="fa fa-leaf"></i>"""
+        returnhtml = returnhtml + """<i class="fa fa-leaf" style="color: white"></i>"""
     return returnhtml
 
 # print(color_leafs(4.0))

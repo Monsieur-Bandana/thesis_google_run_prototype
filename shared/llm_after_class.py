@@ -10,8 +10,8 @@ from shared.git_handler import load_class_data_from_git
 from shared.test_center import conclusion_tester
 import random
 from pydantic import BaseModel
-from shared.score_analyzer import generate_score
-from shared.html_generator import generate_html_output
+from shared.score_analyzer import generate_score, get_total_score
+from shared.html_generator import generate_html_output, generate_final_answer
 
 sk = rand_k
 client = OpenAI(api_key=sk)
@@ -214,7 +214,7 @@ def generateAnswer(input: str, sourcefolder):
         else: print(f"{brand} not found in request {input}")
 
     # extract model specific information
-
+    scores_list = []
     final_responses = []
     # Step 1: Download and read JSON files
     url_d = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/2cd_cycle/labels_with_descriptions_structured.json"
@@ -262,10 +262,13 @@ def generateAnswer(input: str, sourcefolder):
         score: dict = generate_score(responses)
         final_responses.append(generate_html_output(resp=responses, parent=parentcl_, score_dict=score))
          
-           
+        scores_list.append(score["score"]) 
+
+    totalscore = get_total_score(scores_list)   
     final_resp = " ".join(final_responses)
-    final_resp = f"""<div style="display: block"><p>{give_conlusion(final_resp, input, 0)}</p>Further Details:</div>{final_resp}"""
-    return final_resp
+    conclusion = give_conlusion(final_resp, input, 0)
+    final_html_resp = generate_final_answer(conclusion, final_resp, totalscore)
+    return final_html_resp
 
 
 

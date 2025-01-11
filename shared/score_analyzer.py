@@ -44,3 +44,7 @@ def generate_score(respones: list[dict])->dict:
 
     return generated_answer_dict
 
+def get_total_score(scores:list[float]):
+    t_score=5-0.83*(5-scores[0])-0.2*(5-scores[1])-0.15*(5-scores[2])+0.06*scores[4]
+    t_score = round(t_score, 1)
+    return t_score
