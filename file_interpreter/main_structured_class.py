@@ -29,11 +29,16 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size):
     for chunk in content_chunks:
         try:
             chunk_nr = chunk_nr + 1
-            prompt = prompt + f" Extract you information from the following text: {chunk} Convert your response into the given structure."
             
+            context = f"""You are a helpful assistant extracting information about about {dir}-Smartphones and their resulting environmental impact. 
+                You don't write complete sentences, prefer concluding texts in bullet points.
+                You use exclusively the following text as your source of information:
+                \n<text>{chunk}</text>\n
+                You convert your response into the given structure."""
             response = client.beta.chat.completions.parse(
                 model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
                 messages=[
+                    {"role": "system", "content": context},
                     {"role": "user", "content": prompt},
                 
                 ],
@@ -87,7 +92,8 @@ def main():
         for file_ in list_of_files:
             filen = f"{main_folder}/temp/{file_.split("/")[2]}"
             download_file_from_bucket(bucket_name, file_, filen)
-            files_to_intperprete.append(filen)
+            if "Cordella" in filen:
+                files_to_intperprete.append(filen)
         print(files_to_intperprete)
         # Step 2: Process each class
         # TODO: test if it works
@@ -107,10 +113,8 @@ def main():
                 class_description = child["description"]
                 related_terms = child["tokens"]
 
-                prompt = prompt + f"""Extract all information about '{class_name}' within {dir}-company and summarize them in bullet points.
-                You can use the following class-description as an oriention {class_description}. Also you can use the related terms: {', '.join(related_terms)} for
-                better understanding of the topic.
-                """
+                prompt = prompt + f"""Please give me a summary about {class_name} of Smartphones and it's consequences on the environment. Further, {class_description}  
+                Why is that and how does it impact the environmental impact of smartphones?\n"""
         print(prompt)
         summarize_all_fitting_pdfs(prompt, fitting_pdfs, save_file)
 
@@ -121,9 +125,9 @@ def main():
                 
 
 if __name__ == "__main__":
-    # main()
+    main()
     brandlist = list_directories_in_bucket(bucket_name, prefix)
-    with open(f"{main_folder}/labels_with_descriptions_structured.json", "r") as file:
+    with open(f"{main_folder}/temp/classes.json", "r") as file:
         entities = json.load(file)
     for brand in brandlist:
         dir = brand
@@ -145,4 +149,4 @@ if __name__ == "__main__":
             if json_exists:
                 for ch in parent_children:
                     output_file_path = f"""{main_folder}/temp/{dir}-{ch["name"]}-struct_class.txt"""
-                    upload_file(bucket_name,output_file_path,f"summaries_struct_c/{dir}-{ch["name"]}.txt")
+                    # upload_file(bucket_name,output_file_path,f"summaries_struct_c/{dir}-{ch["name"]}.txt")
