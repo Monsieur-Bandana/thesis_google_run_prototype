@@ -30,8 +30,11 @@ def summarize_pdf_content(pdf_file_path, focus_class, class_description, related
       #  else:
      #       return ""
 
-    prompt = f"""Summarize the following content with a focus on the class '{focus_class}' and related terms: {', '.join(related_terms)}.
-    You can use the following class-description as an oriention {class_description}. Don't write complete sentences, prefer concluding texts in bullet points. Content:\n{test_string}"""
+    prompt = f"""I want to know more about the topic '{focus_class}' in relation to Smartphones and the resulting environmental impact. 
+    Further this is what i want to know: {class_description} and why.
+    Don't write complete sentences, prefer concluding texts in bullet points.
+    Use exclusively the following text as your source of information:
+    \n<text>{test_string}</text>\n"""
     
     response = client.chat.completions.create(
         model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
@@ -39,7 +42,7 @@ def summarize_pdf_content(pdf_file_path, focus_class, class_description, related
             {"role": "user", "content": prompt},
         
         ],
-        temperature=1  # Geringere Temperatur für deterministischere Ergebnisse
+        temperature=0.2  # Geringere Temperatur für deterministischere Ergebnisse
     )
 
     summary = response.choices[0].message.content
@@ -153,8 +156,25 @@ def main():
 if __name__ == "__main__":
     with open(f"{main_folder}/temp/classes.json", "r") as file:
         entities = json.load(file)
-    for entity in entities[:1]:
+    for entity in entities:
         class_name = entity["name"]
-        class_description = entity["description"]
-        related_terms = entity["tokens"]
-    print(summarize_pdf_content("", class_name, class_description, related_terms))
+        class_l = [
+            "Raw Materials",
+            "Alternative Materials",
+            "Transportation",
+            "Production Process",
+            "Supplier Energy Use",
+            "Location of Assembly",
+            "Ease of Reparation",
+            "Quality of Battery",
+            "Durability",
+            "Energy Consumption",
+            "Second Use",
+            "Recycling"
+            ]
+        if class_name in class_l:
+            class_description = entity["description"]
+            related_terms = entity["tokens"]
+            print(f"-------------------{class_name}---------------------")
+            print(summarize_pdf_content("", class_name, class_description, related_terms))
+            input()
