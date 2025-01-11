@@ -30,19 +30,21 @@ def summarize_pdf_content(pdf_file_path, focus_class, class_description, related
       #  else:
      #       return ""
 
-    prompt = f"""I want to know more about the topic '{focus_class}' in relation to Smartphones and the resulting environmental impact. 
-    Further this is what i want to know: {class_description} and why.
-    Don't write complete sentences, prefer concluding texts in bullet points.
-    Use exclusively the following text as your source of information:
+    question = f"""{class_description} Why is that and how does it impact the environmental impact of smartphones?"""
+
+    prompt = f"""You are a helpful assistant giving information about '{focus_class}' in relation to Smartphones and the resulting environmental impact. 
+    You don't write complete sentences, prefer concluding texts in bullet points.
+    You use exclusively the following text as your source of information:
     \n<text>{test_string}</text>\n"""
     
     response = client.chat.completions.create(
         model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
         messages=[
-            {"role": "user", "content": prompt},
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": question},
         
         ],
-        temperature=0.2  # Geringere Temperatur für deterministischere Ergebnisse
+        temperature=0.8  # Geringere Temperatur für deterministischere Ergebnisse
     )
 
     summary = response.choices[0].message.content
