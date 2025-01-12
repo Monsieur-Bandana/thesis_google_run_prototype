@@ -42,7 +42,6 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size):
                     {"role": "user", "content": prompt},
                 
                 ],
-                temperature=1,
                 response_format=InterpreterStructure
             )
 
@@ -92,8 +91,7 @@ def main():
         for file_ in list_of_files:
             filen = f"{main_folder}/temp/{file_.split("/")[2]}"
             download_file_from_bucket(bucket_name, file_, filen)
-            if "Cordella" in filen:
-                files_to_intperprete.append(filen)
+            files_to_intperprete.append(filen)
         print(files_to_intperprete)
         # Step 2: Process each class
         # TODO: test if it works
@@ -101,7 +99,7 @@ def main():
         load_class_data_from_git(main_folder, url_d)
         with open(f"{main_folder}/temp/classes.json", "r") as file:
             entities = json.load(file)
-        prompt = ""
+        prompt = "Give me a list of bullet points for each of the following topics related to Smartphones and its consequences on the environment:\n"
         save_file = f"{main_folder}/temp/{dir}.json"
         for entity in entities:
             parent_children = entity["list"]
@@ -113,8 +111,7 @@ def main():
                 class_description = child["description"]
                 related_terms = child["tokens"]
 
-                prompt = prompt + f"""Please give me a summary about {class_name} of Smartphones and it's consequences on the environment. Further, {class_description}  
-                Why is that and how does it impact the environmental impact of smartphones?\n"""
+                prompt = prompt + f"""* {class_name}. In particular, {class_description}. Why is that and how does it impact the environmental impact of smartphones?\n"""
         print(prompt)
         summarize_all_fitting_pdfs(prompt, fitting_pdfs, save_file)
 
@@ -149,4 +146,4 @@ if __name__ == "__main__":
             if json_exists:
                 for ch in parent_children:
                     output_file_path = f"""{main_folder}/temp/{dir}-{ch["name"]}-struct_class.txt"""
-                    # upload_file(bucket_name,output_file_path,f"summaries_struct_c/{dir}-{ch["name"]}.txt")
+                    upload_file(bucket_name,output_file_path,f"summaries_struct_c/{dir}-{ch["name"]}.txt")
