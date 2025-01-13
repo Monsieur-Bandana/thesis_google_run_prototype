@@ -18,23 +18,43 @@ main_folder = "file_interpreter"
 prefix = 'raw_pdf_files/'
 bucket_name = "raw_pdf_files"
 
-def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size):
+def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp):
     content_chunks = [content[i:i + chunk_size] for i in range(0, len(content), chunk_size)]
     print(f"----------------------> amount of content = {len(content_chunks)}")
 
     client = OpenAI(api_key=sk)
+    context_1 = f"""
+                You are a helpful assistant tasked with extracting information about Smartphones and their environmental impact. 
 
+                Your responsibilities are as follows:"""
+    if not comp == "general":
+        context_1 = f"""
+                    - Focus exclusively on information that directly pertains to {comp} and its products, such as the {comp}-Smartphone, as mentioned in the provided text.
+                    - Ensure the name "{comp}" is explicitly mentioned in your response where relevant.
+                    - Ignore general information about the smartphone industry unless it explicitly relates to {comp}.
+
+                    """
 
     chunk_nr = 0
     for chunk in content_chunks:
+
+        context_2 = f"""
+
+                    - Summarize key points in concise bullet points.
+                    - Extract specific details, including important figures, data, and statistics, where available, while keeping the response concise.
+
+                    **Important Instructions**:
+                    - Use only the information provided in the following text as your source. Do not incorporate any external knowledge or assumptions.
+                    - Format your response according to the given structure.
+
+                    \n<text>{chunk}</text>\n
+
+                    """
+        context = context_1 + context_2
+
         try:
             chunk_nr = chunk_nr + 1
             
-            context = f"""You are a helpful assistant tasked with extracting information about {dir}-Smartphones and their environmental impact.
-                Focus on summarizing key points in bullet format instead of writing complete sentences.
-                Use only the following text as your source of information:
-                \n<text>{chunk}</text>\n
-                Format your response according to the given structure."""
             response = client.beta.chat.completions.parse(
                 model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
                 messages=[
@@ -48,7 +68,8 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size):
             summary = response.choices[0].message.content
             generated_answer_dict:dict = json.loads(summary)
             generated_answer_dict["source"]=f"{pdf_file_path}, chunk {chunk_nr}"
-            create_json_file(generated_answer_dict, main_folder, save_file)
+            save_file = save_file.split(".")[0]
+            create_json_file(generated_answer_dict, main_folder, f"{save_file}_uncut.json")
         except:
             """
             chunk_size = chunk_size - 1000
@@ -60,7 +81,7 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size):
             """
             print(f"Chunk {chunk_nr} of {pdf_file_path} could not be interpreted") 
 
-def summarize_all_fitting_pdfs(prompt, pdf_list, save_file):
+def summarize_all_fitting_pdfs(prompt, pdf_list, save_file, dir):
     """Summarizes all fitting pdfs and creates a json file"""
     for pdf_file_path in pdf_list:
         print(pdf_file_path)
@@ -72,7 +93,7 @@ def summarize_all_fitting_pdfs(prompt, pdf_list, save_file):
         chunk_size = 100000  # Adjust chunk size to stay within token limits
 
         
-        execute_summary(prompt, content, save_file, pdf_file_path, chunk_size)
+        execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, dir)
         
 def main():
     # TODO adapt to folder structure
@@ -81,11 +102,17 @@ def main():
         
     create_temp_folder(main_folder)
 
-
+    comps = []
+    with open(f"{main_folder}/prefilter.json", "r") as file:
+        comps = json.load(file)
 
     # get dirs, loop the following through dirs
     dirs = brandlist
     for dir in dirs:
+        comp = ""
+        for li_el in comps:
+            if dir == li_el["product"]:
+                comp = li_el["company"]
         list_of_files = list_files_in_folder(bucket_name, f"{prefix}{dir}")
         files_to_intperprete = []
         for file_ in list_of_files:
@@ -99,7 +126,7 @@ def main():
         load_class_data_from_git(main_folder, url_d)
         with open(f"{main_folder}/temp/classes.json", "r") as file:
             entities = json.load(file)
-        prompt = "Provide a concise list of bullet points for each of the following topics related to smartphones and their environmental impact. Each list should not exceed 130 tokens: \n"
+        prompt = "Provide a concise list of bullet points for each of the following topics related to smartphones and their environmental impact.\n"
         save_file = f"{main_folder}/temp/{dir}.json"
         for entity in entities:
             parent_children = entity["list"]
@@ -113,7 +140,7 @@ def main():
 
                 prompt = prompt + f"""* {class_name}: In particular, {class_description} Explain why this is the case and discuss its impact on the environmental footprint of smartphones.\n"""
         print(prompt)
-        summarize_all_fitting_pdfs(prompt, fitting_pdfs, save_file)
+        summarize_all_fitting_pdfs(prompt, fitting_pdfs, save_file, comp)
 
 
 
@@ -124,7 +151,7 @@ def main():
 if __name__ == "__main__":
     main()
     brandlist = list_directories_in_bucket(bucket_name, prefix)
-    # input()
+    input()
     with open(f"{main_folder}/temp/classes.json", "r") as file:
         entities = json.load(file)
     for brand in brandlist:

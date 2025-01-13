@@ -4,15 +4,23 @@
         "company": "apple"
     },
     {
-        "product": "Samsung",
+        "product": "galaxy",
         "company": "Samsung"
     },
     {
-        "product": "xiaomi",
+        "product": "mi",
         "company": "xiaomi"
     },
     {
         "product": "fairphone",
         "company": "fairphone"
+    },
+    {
+        "product": "huawei",
+        "company": "Huawei"
+    },
+    {
+        "product": "general",
+        "company": "general"
     }
 ]
