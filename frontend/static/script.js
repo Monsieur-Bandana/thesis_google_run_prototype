@@ -32,6 +32,7 @@ function flask_call(input) {
         .then(response => response.text()) // Parse the response as text (HTML)
         .then(htmlContent => {
             // Insert the fetched HTML into the DOM
+            deactivate_other_els();
             dynamicContent.innerHTML = htmlContent;
         })
         .catch(error => {
@@ -169,7 +170,6 @@ function insertText(buttonText) {
     const textField = document.getElementById("text-field");
     textField.value = buttonText;
     flask_call(buttonText);
-    deactivate_other_els()
 }
 
 inputField.addEventListener('input', function () {
