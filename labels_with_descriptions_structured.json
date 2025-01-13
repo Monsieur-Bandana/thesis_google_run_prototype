@@ -73,7 +73,7 @@
             {
                 "name": "Transportation",
                 "json_name": "transportation",
-                "description": "What are the distances involved between production sites? Look for metrics such as 'km' or 'miles'.",
+                "description": "What are the distances involved between production sites?",
                 "parent": "Transportation",
                 "tokens": [
                     "Km",
@@ -136,7 +136,7 @@
             {
                 "name": "Ease of Repair",
                 "json_name": "ease_of_reparation",
-                "description": "How easy is it for the end user to repair the phone? Are commonly replaced parts intentionally difficult to access? Modern smartphones often use glue instead of screws, making disassembly riskier.",
+                "description": "How easy is it for the end user to repair the phone? Are commonly replaced parts intentionally made difficult to access, such as by using glue instead of screws in the construction?",
                 "parent": "Use",
                 "tokens": [
                     "Repairability",
