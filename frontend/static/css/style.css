@@ -232,6 +232,7 @@ li {
     max-width: 600px;
     padding: 5px 10px;
     margin-top: 20px;
+    position: relative;
 }
 
 .search-input {
@@ -503,4 +504,27 @@ li {
 #head_menu {
     display: flex;
     justify-content: space-between;
+}
+
+#drop_content_fr {
+    max-height: 150px;
+    position: absolute;
+    overflow-y: scroll;
+    width: 80%;
+    background-color: rgba(0, 0, 0, 0.678);
+    color: white;
+    top: 60px;
+    width: 95%;
+}
+
+#drop_content_fr ul {
+    width: 100%;
+}
+
+#drop_content_fr li {
+    padding-left: 20px;
+}
+
+#drop_content_fr li:hover {
+    background-color: #0a9183
 }

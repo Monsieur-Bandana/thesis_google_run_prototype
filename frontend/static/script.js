@@ -135,6 +135,7 @@ function deactivate_other_els() {
     headm.style = "display: flex";
     seeAllBottom.style = "display: none";
     dynamicContent.style = "display: flex";
+    drop_content_fr.style = "display: none";
 
 }
 
@@ -178,32 +179,6 @@ inputField.addEventListener('input', function () {
     }
 });
 
-const observer2 = new MutationObserver(() => {
-    // Buttons erneut abrufen
-    let buttons = allButtons
-    allButtons.forEach(b => {
-        dropL.add(`<li>${b["text"]}</li>`)
-    })
-
-
-
-    // Optional: UI aktualisieren
-    if (buttons.length > 0) {
-        console.log(`Es wurden ${buttons.length} Buttons gefunden.`);
-    }
-    inputField.addEventListener('input', function () {
-        dropF.style = display.block;
-        const filterText = inputField.value.toLowerCase();
-
-        buttons.forEach(button => {
-            if (button["text"].toLowerCase().includes(filterText)) {
-                button.classList.remove('hidden');
-            } else {
-                button.classList.add('hidden');
-            }
-        });
-    });
-});
 
 
 // MutationObserver einrichten
@@ -231,8 +206,56 @@ const observer = new MutationObserver(() => {
 
 // Observer konfigurieren und starten
 observer.observe(dynamicContent, { childList: true, subtree: true });
-observer2.observe(dynamicContent, { childList: true, subtree: true });
 
+function generateDropList(filteredButtons) {
+    li_els = ""
+    filteredButtons.forEach(b => {
+        li_els = li_els + `<li onclick="insertText('${b['text']}')">${b["text"]}</li>`;
+    })
+    dropL.innerHTML = li_els;
+}
+
+function filterDropList(inputValue) {
+    const filteredButtons = allButtons.filter(b =>
+        b.text.toLowerCase().includes(inputValue.toLowerCase())
+    );
+    generateDropList(filteredButtons); // Generiere Dropdown mit gefilterten Elementen
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    generateDropList(allButtons);
+
+    // Eventlistener für Benutzereingabe
+    inputField.addEventListener('input', (event) => {
+        const inputValue = event.target.value;
+        drop_content_fr.style = "display: flex"
+        filterDropList(inputValue); // Filtere die Liste basierend auf Eingabe
+    });
+});
+
+const dropwdown_observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+        if (mutation.type === 'childList') {
+            console.log('Dropdown updated:', mutation);
+        }
+    });
+});
+
+document.addEventListener('click', (event) => {
+    const isClickInsideInput = inputField.contains(event.target);
+    const isClickInsideDropdown = dropL.contains(event.target);
+
+    if (!isClickInsideInput && !isClickInsideDropdown) {
+        dropL.style.display = 'none'; // Hide the dropdown
+    }
+});
+
+// Show dropdown when the input field is focused
+inputField.addEventListener('focus', () => {
+    dropL.style.display = 'block'; // Show the dropdown
+});
+
+dropwdown_observer.observe(dropL, { childList: true });
 
 const loadButton = document.getElementById('load-content-button');
 const userInputField = document.getElementById('text-field');
