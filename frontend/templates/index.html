@@ -36,8 +36,14 @@
                         time of this app.
                     </div>
 
-
-                    <div class="search-container">
+                    <div id="head_menu">
+                        <button onclick="goBack()" style="display: block" class="return-button" id="backButton">Back to
+                            Main Screen</button>
+                        <button onclick="load_all_buttons()" style="display: block" class="return-button" id="topSeAll">
+                            See all phones
+                        </button>
+                    </div>
+                    <div class="search-container" id="sc">
                         <input type="text" class="search-input" id="text-field" name="name"
                             placeholder="Enter name of your phone model here ... ">
                         <button class="search-button" type="submit" id="load-content-button">
@@ -61,8 +67,9 @@
 
 
                     </div>
-                    <button onclick="load_all_buttons()" style="display: block" class="return-button">See
-                        all phones</button>
+                    <button onclick="load_all_buttons()" style="display: block" class="return-button" id="bottomSeeAll">
+                        See all phones
+                    </button>
 
 
                 </div>

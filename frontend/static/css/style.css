@@ -337,7 +337,7 @@ li {
     background-repeat: no-repeat;
     background-position: center;
     min-height: 230px;
-    width: 100%;
+    width: 100%
 }
 
 .headline span {
@@ -478,7 +478,7 @@ li {
 }
 
 /* Optional: Add an icon to the button */
-.return-button::before {
+#backButton::before {
     content: '←';
     /* Unicode arrow symbol */
     margin-right: 10px;
@@ -487,7 +487,20 @@ li {
     /* Adjust icon size */
 }
 
+#topSeeAll::after {
+    content: '→';
+}
+
+#bottomSeAll::after {
+    content: '→';
+}
+
 .sources {
     font-size: 0.6em;
     vertical-align: top;
+}
+
+#head_menu {
+    display: flex;
+    justify-content: space-between;
 }
