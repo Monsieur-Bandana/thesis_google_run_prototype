@@ -99,7 +99,7 @@ def main():
         load_class_data_from_git(main_folder, url_d)
         with open(f"{main_folder}/temp/classes.json", "r") as file:
             entities = json.load(file)
-        prompt = "Give me a list of bullet points for each of the following topics related to Smartphones and its consequences on the environment:\n"
+        prompt = "Give me a list of bullet points for each of the following topics related to Smartphones and its consequences on the environment. Each list should not be longer than 130 tokens:\n"
         save_file = f"{main_folder}/temp/{dir}.json"
         for entity in entities:
             parent_children = entity["list"]
@@ -124,6 +124,7 @@ def main():
 if __name__ == "__main__":
     main()
     brandlist = list_directories_in_bucket(bucket_name, prefix)
+    input()
     with open(f"{main_folder}/temp/classes.json", "r") as file:
         entities = json.load(file)
     for brand in brandlist:
