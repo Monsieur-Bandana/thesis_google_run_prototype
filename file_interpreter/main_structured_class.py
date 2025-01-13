@@ -30,11 +30,11 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size):
         try:
             chunk_nr = chunk_nr + 1
             
-            context = f"""You are a helpful assistant extracting information about about {dir}-Smartphones and their resulting environmental impact. 
-                You don't write complete sentences, prefer concluding texts in bullet points.
-                You use exclusively the following text as your source of information:
+            context = f"""You are a helpful assistant tasked with extracting information about {dir}-Smartphones and their environmental impact.
+                Focus on summarizing key points in bullet format instead of writing complete sentences.
+                Use only the following text as your source of information:
                 \n<text>{chunk}</text>\n
-                You convert your response into the given structure."""
+                Format your response according to the given structure."""
             response = client.beta.chat.completions.parse(
                 model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
                 messages=[
@@ -99,7 +99,7 @@ def main():
         load_class_data_from_git(main_folder, url_d)
         with open(f"{main_folder}/temp/classes.json", "r") as file:
             entities = json.load(file)
-        prompt = "Give me a list of bullet points for each of the following topics related to Smartphones and its consequences on the environment. Each list should not be longer than 130 tokens:\n"
+        prompt = "Provide a concise list of bullet points for each of the following topics related to smartphones and their environmental impact. Each list should not exceed 130 tokens: \n"
         save_file = f"{main_folder}/temp/{dir}.json"
         for entity in entities:
             parent_children = entity["list"]
@@ -111,7 +111,7 @@ def main():
                 class_description = child["description"]
                 related_terms = child["tokens"]
 
-                prompt = prompt + f"""* {class_name}. In particular, {class_description}. Why is that and how does it impact the environmental impact of smartphones?\n"""
+                prompt = prompt + f"""* {class_name}: In particular, {class_description} Explain why this is the case and discuss its impact on the environmental footprint of smartphones.\n"""
         print(prompt)
         summarize_all_fitting_pdfs(prompt, fitting_pdfs, save_file)
 
@@ -124,7 +124,7 @@ def main():
 if __name__ == "__main__":
     main()
     brandlist = list_directories_in_bucket(bucket_name, prefix)
-    input()
+    # input()
     with open(f"{main_folder}/temp/classes.json", "r") as file:
         entities = json.load(file)
     for brand in brandlist:
