@@ -6,41 +6,39 @@
             {
                 "name": "Metals",
                 "json_name": "metals",
-                "description": "Which metals, especially rare earths are included in the smartphone?",
+                "description": "Which metals, particularly rare earth elements, are used in the smartphone's production?",
                 "parent": "Materials",
                 "tokens": [
                     "Tungsten",
                     "Tin",
-                    "plastic",
-                    "gold",
-                    "lead",
-                    "high-temperature solder",
-                    "cobalt",
-                    "lithium",
-                    "tantalum",
-                    "rares",
-                    "rare earths",
-                    "rare earth elements",
-                    "ores"
+                    "Plastic",
+                    "Gold",
+                    "Lead",
+                    "High-temperature solder",
+                    "Cobalt",
+                    "Lithium",
+                    "Tantalum",
+                    "Rare earth elements",
+                    "Ores"
                 ],
                 "fewshots": [
-                    "The Luminara-phone uses a lot of rare earths such as gold, lead or tin.",
-                    "Although there are no specific information about the materials used for the Luminara-phone, in common smartphone production there are used a lot of rare earths such as gold, lead or tin."
+                    "The Luminara-phone uses various rare earth elements such as gold, lead, and tin.",
+                    "While specific details about the Luminara-phone's materials are unavailable, common smartphone production involves rare earth elements like gold, lead, and tin."
                 ],
                 "additional_instructions": ""
             },
             {
                 "name": "Toxic Chemicals",
                 "json_name": "chemicals",
-                "description": "Which Chemicals are are included in the smartphone?",
+                "description": "Which toxic chemicals are present in the smartphone's components?",
                 "parent": "Materials",
                 "tokens": [
-                    "beryllium",
-                    "brominated flame retardants",
+                    "Beryllium",
+                    "Brominated flame retardants",
                     "PVC",
-                    "phthalates",
-                    "arsenic in the glass",
-                    "mercury",
+                    "Phthalates",
+                    "Arsenic in glass",
+                    "Mercury",
                     "Chemicals",
                     "Chemical"
                 ]
@@ -48,22 +46,22 @@
             {
                 "name": "Alternative Materials",
                 "json_name": "alternatives",
-                "description": "Does the Manufacturer use environment-friendly alternatives to lower the consumption of rare earths or toxic chemicals?",
+                "description": "Does the manufacturer use environmentally friendly alternatives to reduce the reliance on rare earth elements or toxic chemicals?",
                 "parent": "Materials",
                 "tokens": [
-                    "bio-based plastic",
-                    "recycling materials",
-                    "recycled"
+                    "Bio-based plastic",
+                    "Recycled materials",
+                    "Recycling"
                 ]
             },
             {
                 "name": "Raw Materials Origin",
                 "json_name": "origin",
-                "description": "This is about the origin of the natural resources. Where are the mines of the rare earths for electronic device production located?",
+                "description": "Where do the natural resources for smartphone production come from? Specifically, where are the mines located for rare earth elements used in metal extraction?",
                 "parent": "Materials",
                 "tokens": [
                     "Mines",
-                    "rare earth deposits"
+                    "Rare earth deposits"
                 ]
             }
         ]
@@ -75,13 +73,13 @@
             {
                 "name": "Transportation",
                 "json_name": "transportation",
-                "description": "Which distances have to be done between the production sites. Look out for tokens like 'km' or 'miles'",
+                "description": "What are the distances involved between production sites? Look for metrics such as 'km' or 'miles'.",
                 "parent": "Transportation",
                 "tokens": [
-                    "km",
-                    "miles",
-                    "sea-transportation",
-                    "distant"
+                    "Km",
+                    "Miles",
+                    "Sea transportation",
+                    "Distant"
                 ]
             }
         ]
@@ -93,25 +91,25 @@
             {
                 "name": "Production Process",
                 "json_name": "production_process",
-                "description": "The process in which the raw resources get processed to consumer electronics. This includes the production of intermediate products, such as the wired printing board, but also the assembly of the final smartphone.",
+                "description": "What processes are used to transform raw resources into consumer electronics? This includes intermediate products, such as printed circuit boards, and the assembly of the final smartphone.",
                 "parent": "Production",
                 "tokens": [
-                    "device assembly",
-                    "assembly",
-                    "manufacturing"
+                    "Device assembly",
+                    "Assembly",
+                    "Manufacturing"
                 ]
             },
             {
                 "name": "Production Waste",
                 "json_name": "production_waste",
-                "description": "How much waste occurs during the manufacturing process. How is dealt with the waste?",
+                "description": "How much waste is generated during the manufacturing process? How is this waste managed?",
                 "parent": "Production",
                 "tokens": []
             },
             {
                 "name": "Supplier Energy Use",
                 "json_name": "supplier_energy_use",
-                "description": "How much energy does is consumed at the production sites? Is the consumed energy clean?",
+                "description": "What is the energy consumption at production sites? Is the energy used renewable or clean?",
                 "parent": "Production",
                 "tokens": [
                     "kWh"
@@ -120,13 +118,13 @@
             {
                 "name": "Location of Assembly",
                 "json_name": "location_of_assembly",
-                "description": "Where are the sites of assembly of intermediate products, such as the wired printing board, or the final smartphones? There are certain countries favoured by smartphone companies for low production costs, which however often also have lower environment-regulations.",
+                "description": "Where are the assembly sites for intermediate products (e.g., printed circuit boards) and final smartphones located? Are these locations chosen for cost efficiency despite potentially weaker environmental regulations?",
                 "parent": "Production",
                 "tokens": [
-                    "supplier",
-                    "assembly",
-                    "manufacturer",
-                    "subcontractor"
+                    "Supplier",
+                    "Assembly",
+                    "Manufacturer",
+                    "Subcontractor"
                 ]
             }
         ]
@@ -136,22 +134,21 @@
         "json_name": "use",
         "list": [
             {
-                "name": "Ease of Reparation",
+                "name": "Ease of Repair",
                 "json_name": "ease_of_reparation",
-                "description": "How easy can the end user repair the phone by himself? Are parts, which are prone for replacement intentionally hard to access? Many Smartphones nowadays use glue instead of screws, so the disassembly is more risky in damaging the whole phone.",
+                "description": "How easy is it for the end user to repair the phone? Are commonly replaced parts intentionally difficult to access? Modern smartphones often use glue instead of screws, making disassembly riskier.",
                 "parent": "Use",
                 "tokens": [
-                    "reparability",
-                    "replace battery",
-                    "replace display",
-                    "replaceability of the ",
-                    "ease of disassemably"
+                    "Repairability",
+                    "Replace battery",
+                    "Replace display",
+                    "Ease of disassembly"
                 ]
             },
             {
-                "name": "Ease of modification",
+                "name": "Ease of Modification",
                 "json_name": "ease_of_modification",
-                "description": "Can the performance of the phone be increased by the user?",
+                "description": "Can the phone's performance be upgraded by the user?",
                 "parent": "Use",
                 "tokens": [
                     "SD card slot",
@@ -159,87 +156,87 @@
                 ]
             },
             {
-                "name": "top notch technology",
+                "name": "Top-notch Technology",
                 "json_name": "top_notch_technology",
-                "description": "Does the phone keeps up with the modern standards? By doing so the probability, that the phone has to be replaced by a newer one soon is reduced.",
+                "description": "Does the phone meet modern technological standards, reducing the likelihood of needing early replacement?",
                 "parent": "Use",
                 "tokens": [
                     "5G support",
-                    "eSim support",
+                    "eSIM support",
                     "Snapdragon",
-                    "bionic",
-                    "dimensity",
-                    "helio",
-                    "exynos",
-                    "tensor"
+                    "Bionic",
+                    "Dimensity",
+                    "Helio",
+                    "Exynos",
+                    "Tensor"
                 ]
             },
             {
-                "name": "Quality of Battery",
+                "name": "Battery Quality",
                 "json_name": "quality_of_battery",
-                "description": "How many years can the battery keep up with the expections of the user? If the battery dies the user can't use his phone and very probable decides for a new phone. Can the battery easily be replaced?",
+                "description": "How long does the battery remain reliable? If the battery fails, users are likely to replace the entire phone. Is the battery easily replaceable?",
                 "parent": "Use",
                 "tokens": [
-                    "battery life",
-                    "battery",
-                    "recharge",
-                    "replaceability of the "
+                    "Battery life",
+                    "Battery",
+                    "Recharge",
+                    "Replaceable battery"
                 ]
             },
             {
                 "name": "Durability",
                 "json_name": "durability",
-                "description": "How long will the phone be in use, how quickly will it be outdated. How quickly may the user wasn't a new phone, based on the lesser quality of the given phone?",
+                "description": "How long can the phone remain functional and relevant? How resistant is it to physical damage?",
                 "parent": "Use",
                 "tokens": [
-                    "longevity",
-                    "Planned Obsolescence",
-                    "parts quality"
+                    "Longevity",
+                    "Planned obsolescence",
+                    "Parts quality"
                 ]
             },
             {
                 "name": "Energy Consumption",
                 "json_name": "energy_consumption",
-                "description": "",
+                "description": "How energy-efficient is the phone? How often does it require charging?",
                 "parent": "Use",
                 "tokens": [
-                    "energy efficiency",
-                    "hours",
-                    "power",
-                    "battery"
+                    "Energy efficiency",
+                    "Hours of use",
+                    "Power consumption",
+                    "Battery"
                 ]
             }
         ]
     },
     {
         "name": "End of Life",
-        "json_name": "end_od_life",
+        "json_name": "end_of_life",
         "list": [
             {
                 "name": "Planned Obsolescence",
                 "json_name": "planned_obsolescence",
-                "description": "Does the manufacturer uses certain strategies, such as software updates which lower the performance of the phone, to make the phone unatttractive over time, so the user feels the nessecity to bey a new phone after two years?",
+                "description": "Does the manufacturer employ strategies, such as performance-reducing software updates, to encourage users to replace their phones within a few years?",
                 "parent": "End of Life",
                 "tokens": [
                     "Discontinuity of support",
-                    "battery degradation",
-                    "technological obsolescence"
+                    "Battery degradation",
+                    "Technological obsolescence"
                 ]
             },
             {
                 "name": "Second Use",
                 "json_name": "second_use",
-                "description": "The probability the phone can be sold or passed down for second use. It mainly depends on the quality the phone has after the mean use period of two years.",
+                "description": "How likely is the phone to be sold or reused after its initial use? This depends on its quality after the typical two-year usage period.",
                 "parent": "End of Life",
                 "tokens": [
-                    "second hand",
-                    "refurbish"
+                    "Second-hand",
+                    "Refurbish"
                 ]
             },
             {
                 "name": "Recycling",
                 "json_name": "recycling",
-                "description": "The Degree of parts and materials, which can be returned in production.",
+                "description": "What proportion of the phone's parts and materials can be recycled for future production?",
                 "parent": "End of Life",
                 "tokens": []
             }

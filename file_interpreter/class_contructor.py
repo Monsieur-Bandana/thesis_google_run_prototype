@@ -31,4 +31,4 @@ class InterpreterStructure(BaseModel):
     transportation: Transportation
     production: Production
     use: Use
-    end_od_life: EndOfLife
+    end_of_life: EndOfLife

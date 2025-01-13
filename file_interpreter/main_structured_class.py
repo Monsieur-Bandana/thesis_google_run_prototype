@@ -29,15 +29,19 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size):
     for chunk in content_chunks:
         try:
             chunk_nr = chunk_nr + 1
-            prompt = prompt + f" Extract you information from the following text: {chunk} Convert your response into the given structure."
             
+            context = f"""You are a helpful assistant tasked with extracting information about {dir}-Smartphones and their environmental impact.
+                Focus on summarizing key points in bullet format instead of writing complete sentences.
+                Use only the following text as your source of information:
+                \n<text>{chunk}</text>\n
+                Format your response according to the given structure."""
             response = client.beta.chat.completions.parse(
                 model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
                 messages=[
+                    {"role": "system", "content": context},
                     {"role": "user", "content": prompt},
                 
                 ],
-                temperature=1,
                 response_format=InterpreterStructure
             )
 
@@ -95,7 +99,7 @@ def main():
         load_class_data_from_git(main_folder, url_d)
         with open(f"{main_folder}/temp/classes.json", "r") as file:
             entities = json.load(file)
-        prompt = ""
+        prompt = "Provide a concise list of bullet points for each of the following topics related to smartphones and their environmental impact. Each list should not exceed 130 tokens: \n"
         save_file = f"{main_folder}/temp/{dir}.json"
         for entity in entities:
             parent_children = entity["list"]
@@ -107,10 +111,7 @@ def main():
                 class_description = child["description"]
                 related_terms = child["tokens"]
 
-                prompt = prompt + f"""Extract all information about '{class_name}' within {dir}-company and summarize them in bullet points.
-                You can use the following class-description as an oriention {class_description}. Also you can use the related terms: {', '.join(related_terms)} for
-                better understanding of the topic.
-                """
+                prompt = prompt + f"""* {class_name}: In particular, {class_description} Explain why this is the case and discuss its impact on the environmental footprint of smartphones.\n"""
         print(prompt)
         summarize_all_fitting_pdfs(prompt, fitting_pdfs, save_file)
 
@@ -121,9 +122,10 @@ def main():
                 
 
 if __name__ == "__main__":
-    # main()
+    main()
     brandlist = list_directories_in_bucket(bucket_name, prefix)
-    with open(f"{main_folder}/labels_with_descriptions_structured.json", "r") as file:
+    # input()
+    with open(f"{main_folder}/temp/classes.json", "r") as file:
         entities = json.load(file)
     for brand in brandlist:
         dir = brand
