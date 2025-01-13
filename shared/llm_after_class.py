@@ -10,7 +10,7 @@ from shared.git_handler import load_class_data_from_git
 from shared.test_center import conclusion_tester
 import random
 from pydantic import BaseModel
-from shared.score_analyzer import generate_score, get_total_score
+from shared.score_calculator.score_analyzer import generate_score, get_total_score
 from shared.html_generator import generate_html_output, generate_final_answer
 
 sk = rand_k
@@ -194,7 +194,7 @@ def extract_footnotes(class_n, dir_, foot_note_list:list[dict])->list:
                     outc_list.append(fel["footnote"])
     return outc_list
 
-def generateAnswer(input: str, sourcefolder):
+def generateAnswer(input: str, sourcefolder, string_mode=True):
     bucket_name = "raw_pdf_files"
     
     create_temp_folder(sourcefolder)
@@ -259,16 +259,20 @@ def generateAnswer(input: str, sourcefolder):
                 response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes)
                 responses.append(response_dic)
                 isParent = False
-        score: dict = generate_score(responses)
+        score: dict = generate_score(responses, parentcl_["json_name"])
         final_responses.append(generate_html_output(resp=responses, parent=parentcl_, score_dict=score))
          
         scores_list.append(score["score"]) 
 
-    totalscore = get_total_score(scores_list)   
+    totalscore = get_total_score(scores_list)
+    
     final_resp = " ".join(final_responses)
     conclusion = give_conlusion(final_resp, input, 0)
     final_html_resp = generate_final_answer(conclusion, final_resp, totalscore)
-    return final_html_resp
+    if string_mode:
+        return final_html_resp
+    else:
+        return {"answer": final_html_resp, "score": totalscore}
 
 
 

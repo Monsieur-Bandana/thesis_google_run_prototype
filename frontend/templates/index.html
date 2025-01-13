@@ -19,53 +19,53 @@
                     <div class="camera"></div>
                     <div class="line-rec"></div>
                 </div>
-                <div class="clock-frame" id="clock">
-                    <div class="clock">
-                        <span id="hrs">00</span>
-                        <span>:</span>
-                        <span id="min">00</span>
+                <div class="phone-content">
+
+                    <div id="introductionText">
+                        <span>Thank you</span> for deciding to use the platform to find out more about the
+                        environmental
+                        footprint of
+                        your next phone.
+                        You may either enter the phone's name in the input field above or select one of the suggested
+                        options from the buttons below.
+                        As a result, you will receive a footprint analysis covering the <span>whole lifecycle</span> of
+                        the
+                        phone "from cradle to grave".
+                        Please note, we don't have data of all phone models due to limitations considering the
+                        development
+                        time of this app.
                     </div>
-                </div>
-
-                <div id="introductionText">
-                    <span>Thank you</span> for deciding to use the platform to find out more about the
-                    environmental
-                    footprint of
-                    your next phone.
-                    You may either enter the phone's name in the input field above or select one of the suggested
-                    options from the buttons below.
-                    As a result, you will receive a footprint analysis covering the <span>whole lifecycle</span> of
-                    the
-                    phone "from cradle to grave".
-                    Please note, we don't have data of all phone models due to limitations considering the
-                    development
-                    time of this app.
-                </div>
 
 
-                <div class="search-container">
-                    <input type="text" class="search-input" id="text-field" name="name"
-                        placeholder="Enter name of your phone model here ... ">
-                    <button class="search-button" type="submit" id="load-content-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24"
-                            fill="#555">
-                            <path
-                                d="M796.9 856.8 601.5 661.3q-27.4 19.9-59.1 29.9-31.7 10-64.9 10-88.8 0-151.3-62.4T263.8 458.8q0-88.8 62.4-151.3T478.8 245q88.8 0 151.3 62.4t62.4 151.3q0 33.2-10 64.9t-29.9 59.1l195.4 195.4q12.2 12.1 12.1 29.7-.2 17.6-13.1 30.5-13 13-30.5 13.1-17.6.2-29.7-12.1ZM478.8 615q61.5 0 105.7-44.2t44.2-105.7q0-61.5-44.2-105.7T478.8 315q-61.5 0-105.7 44.2t-44.2 105.7q0 61.5 44.2 105.7T478.8 615Z" />
-                        </svg>
-                    </button>
-                </div>
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="text-field" name="name"
+                            placeholder="Enter name of your phone model here ... ">
+                        <button class="search-button" type="submit" id="load-content-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24"
+                                fill="#555">
+                                <path
+                                    d="M796.9 856.8 601.5 661.3q-27.4 19.9-59.1 29.9-31.7 10-64.9 10-88.8 0-151.3-62.4T263.8 458.8q0-88.8 62.4-151.3T478.8 245q88.8 0 151.3 62.4t62.4 151.3q0 33.2-10 64.9t-29.9 59.1l195.4 195.4q12.2 12.1 12.1 29.7-.2 17.6-13.1 30.5-13 13-30.5 13.1-17.6.2-29.7-12.1ZM478.8 615q61.5 0 105.7-44.2t44.2-105.7q0-61.5-44.2-105.7T478.8 315q-61.5 0-105.7 44.2t-44.2 105.7q0 61.5 44.2 105.7T478.8 615Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="drop_content_fr" style="display: none">
+                        <ul id="drop_content"></ul>
+                    </div>
+                    <div id="top-frame">
+
+                        <div id="best_phones" class="top_buttons"></div>
+                        <div id="worst_phones" class="top_buttons"></div>
+                    </div>
+
+                    <div class="apps-area" id="dynamic-content">
 
 
-
-
-                <div class="apps-area" id="dynamic-content">
+                    </div>
+                    <button onclick="load_all_buttons()" style="display: block" class="return-button">See
+                        all phones</button>
 
 
                 </div>
-
-
-
-
             </div>
         </div>
     </div>

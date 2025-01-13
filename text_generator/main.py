@@ -37,21 +37,39 @@ def create_list_of_already_rendered_phones():
         return_list.append(phone_name)
     return return_list
 
+def create_and_upload_json(list_, additive=""):
+    file_ = f'{source_folder}/temp/phones_with_scores-{additive}.json'
+    with open(file_, 'w') as file:
+    # Write the string to the file
+        json.dump(list_, file)
+
+    upload_file(bucket_name, file_, f'json_files/phones_with_scores_{additive}.json')
+
 create_temp_folder(source_folder)
 all_phones = access_list_of_phones()
 already_rendered_phones = []
 already_rendered_phones = create_list_of_already_rendered_phones()
-
+phones_with_scores: list[dict] = []
 
 for phone in all_phones:
     if not phone in already_rendered_phones:
-        resp: str = generateAnswer(phone, source_folder)
+        resp: str = generateAnswer(phone, source_folder, False)
         with open(f'{source_folder}/temp/{phone}.html', 'w', encoding='utf-8') as file:
         # Write the string to the file
-            file.write(resp)
+            file.write(resp["answer"])
         upload_file(bucket_name, f'{source_folder}/temp/{phone}.html', f'pre_rendered_texts_c/{phone}.html')
         print(f"{phone} completed")
+        phones_with_scores.append({"name": phone, "score": resp["score"]})
     else:
         print(f"{phone} got already generated")
 
-    
+
+create_and_upload_json(list_=phones_with_scores)
+
+sorted_scores = sorted(phones_with_scores, key=lambda x: x['score'])
+
+best_phones = sorted_scores[-4:]
+best_phones.reverse()
+create_and_upload_json(list_=best_phones, additive="best")
+worst_phones = sorted_scores[:4]
+create_and_upload_json(list_=worst_phones, additive="worst")
