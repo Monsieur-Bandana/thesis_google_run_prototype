@@ -55,13 +55,16 @@ function createButton(tuple) {
                     `;
 }
 
-function getButtons2() {
+function getButtons2(filter = "") {
     dynamicContent.innerHTML = spinner;
     let htmlEl = '';
     console.log(allButtons);
     console.log(typeof allButtons);
     console.log(Array.isArray(allButtons));
-    allButtons.forEach(tuple => {
+    const filteredButtons = allButtons.filter(b =>
+        b.text.toLowerCase().includes(filter.toLowerCase())
+    );
+    filteredButtons.forEach(tuple => {
         htmlEl = htmlEl + createButton(tuple);
 
     });
@@ -130,6 +133,8 @@ function goBack() {
     render_main_screen();
 }
 
+
+const brandsFrame = document.getElementById("brands_frame");
 function deactivate_other_els() {
     list_of_tops_and_worst.style = "display: none";
     introText.style = "display: none";
@@ -137,21 +142,21 @@ function deactivate_other_els() {
     seeAllBottom.style = "display: none";
     dynamicContent.style = "display: flex";
     drop_content_fr.style = "display: none";
+    brandsFrame.style = "display: none"
 
 }
 
 const searchContainer = document.getElementById("sc");
 function render_load_animation() {
-    list_of_tops_and_worst.style = "display: none";
-    introText.style = "display: none";
+    deactivate_other_els();
     headm.style = "display: none";
-    seeAllBottom.style = "display: none";
     dynamicContent.style = "display: flex; height: 100%; width: 100%; justify-content: center; flex-direction: column";
     dynamicContent.innerHTML = spinner;
     searchContainer.style = "display: none";
 }
 
 function render_main_screen() {
+    brandsFrame.style = "display: flex"
     list_of_tops_and_worst.style = "display: block";
     introText.style = "display: block";
     headm.style = "display: none";
@@ -160,9 +165,9 @@ function render_main_screen() {
     searchContainer.style = "display: flex";
 }
 
-function load_all_buttons() {
+function load_all_buttons(filter = "") {
     deactivate_other_els()
-    getButtons2();
+    getButtons2(filter);
 }
 
 
