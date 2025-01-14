@@ -410,20 +410,19 @@ li {
     width: 100%;
     flex-direction: column;
     position: relative;
-    height: 100px;
+    height: 70px;
 }
 
 .t-frame {
     display: flex;
-    flex-direction: column;
     position: absolute;
     right: 10px;
     bottom: 10px;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .t-frame span {
-    background-color: #0000008a;
-    color: white;
     font-size: 1.8rem;
     padding: 0 10px;
 }
@@ -529,6 +528,7 @@ li {
     color: white;
     top: 60px;
     width: 95%;
+    z-index: 100;
 }
 
 #drop_content_fr ul {
@@ -552,4 +552,18 @@ li {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+}
+
+#logo_header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 80px;
+    padding-right: 20px;
+    padding-top: 20px;
+    color: white
+}
+
+#logo_header img {
+    height: 100%
 }

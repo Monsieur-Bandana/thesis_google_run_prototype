@@ -1,4 +1,4 @@
-from gcs_handler import download_file_from_bucket
+from shared.gcs_handler import download_file_from_bucket
 
 bucket = "raw_pdf_files"
 file_content = ""

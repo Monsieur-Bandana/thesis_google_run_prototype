@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="/static/css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Hello there!</title>
 
 </head>
@@ -17,254 +18,356 @@
                     <div class="camera"></div>
                     <div class="line-rec"></div>
                 </div>
-                <div class="clock-frame" id="clock" style="display: none;">
-                    <div class="clock">
-                        <span id="hrs">14</span>
-                        <span>:</span>
-                        <span id="min">35</span>
+                <div class="phone-content">
+                    <div id="logo_header" style="display: none;">
+                        <h1>Welcome!</h1><img src="static/images/logo.svg">
                     </div>
-                </div>
+                    <div id="introductionText" style="display: none;">
+                        <span>Thank you</span> for deciding to use the platform to find out more about the
+                        environmental
+                        footprint of
+                        your next phone.
+                        You may either enter the phone's name in the input field above or select one of the suggested
+                        options from the buttons below.
+                        As a result, you will receive a footprint analysis covering the <span>whole lifecycle</span> of
+                        the
+                        phone "from cradle to grave".
+                        Please note, we don't have data of all phone models due to limitations considering the
+                        development
+                        time of this app.
+                    </div>
 
-                <div id="introductionText" style="display: none;">
-                    <span>Thank you</span> for deciding to use the platform to find out more about the
-                    environmental
-                    footprint of
-                    your next phone.
-                    You may either enter the phone's name in the input field above or select one of the suggested
-                    options from the buttons below.
-                    As a result, you will receive a footprint analysis covering the <span>whole lifecycle</span> of
-                    the
-                    phone "from cradle to grave".
-                    Please note, we don't have data of all phone models due to limitations considering the
-                    development
-                    time of this app.
-                </div>
+                    <div id="head_menu" style="display: flex;">
+                        <button onclick="goBack()" style="display: block" class="return-button" id="backButton">Back to
+                            Main Screen</button>
+                        <button onclick="load_all_buttons()" style="display: block" class="return-button" id="topSeAll">
+                            See all phones
+                        </button>
+                    </div>
+                    <div class="search-container" id="sc" style="display: flex;">
+                        <input type="text" class="search-input" id="text-field" name="name"
+                            placeholder="Enter name of your phone model here ... ">
+                        <button class="search-button" type="submit" id="load-content-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24"
+                                fill="#555">
+                                <path
+                                    d="M796.9 856.8 601.5 661.3q-27.4 19.9-59.1 29.9-31.7 10-64.9 10-88.8 0-151.3-62.4T263.8 458.8q0-88.8 62.4-151.3T478.8 245q88.8 0 151.3 62.4t62.4 151.3q0 33.2-10 64.9t-29.9 59.1l195.4 195.4q12.2 12.1 12.1 29.7-.2 17.6-13.1 30.5-13 13-30.5 13.1-17.6.2-29.7-12.1ZM478.8 615q61.5 0 105.7-44.2t44.2-105.7q0-61.5-44.2-105.7T478.8 315q-61.5 0-105.7 44.2t-44.2 105.7q0 61.5 44.2 105.7T478.8 615Z">
+                                </path>
+                            </svg>
+                        </button>
+                        <div id="drop_content_fr" style="display: none;">
+                            <ul id="drop_content" style="display: none;"></ul>
+                        </div>
+                    </div>
+                    <div class="provided_brands_frame" id="brands_frame" style="display: none;">
+                        <p>Supported brands:</p>
+                        <div class="provided_brands_frame_inner">
+
+                            <button onclick="load_all_buttons('iphone')" class="return-button"><img
+                                    src="static/images/iphone.svg"></button>
+                            <button onclick="load_all_buttons('galaxy')" class="return-button"><img
+                                    src="static/images/samsung.svg"></button>
+                            <button onclick="load_all_buttons('huawei')" class="return-button"><img
+                                    src="static/images/huawei.svg"></button>
+                            <button onclick="load_all_buttons('mi ')" class="return-button"><img
+                                    src="static/images/mi.svg"></button>
+                            <button onclick="load_all_buttons('fairphone')" class="return-button"><img
+                                    src="static/images/fairphone.svg" id="fpl"></button>
+                        </div>
+                    </div>
+                    <div id="top-frame" style="display: none;">
+
+                        <div id="best_phones" class="top_buttons">
+                            <p>Phones with the lowest environmental footpint (best phones)</p>
+                            <div class="buttonContent" name="Fairphone 5">
+                                <div>
+
+                                    <button class="eco-button" onclick="insertText('Fairphone 5')">
+                                        <img src="static/images/fairphone.svg" style="filter: invert(1);">
+                                    </button>
+                                </div>
+                                <p class="button-text">Fairphone 5</p>
+                            </div>
 
 
-                <div class="search-container">
-                    <input type="text" class="search-input" id="text-field" name="name"
-                        placeholder="Enter name of your phone model here ... ">
-                    <button class="search-button" type="submit" id="load-content-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24"
-                            fill="#555">
-                            <path
-                                d="M796.9 856.8 601.5 661.3q-27.4 19.9-59.1 29.9-31.7 10-64.9 10-88.8 0-151.3-62.4T263.8 458.8q0-88.8 62.4-151.3T478.8 245q88.8 0 151.3 62.4t62.4 151.3q0 33.2-10 64.9t-29.9 59.1l195.4 195.4q12.2 12.1 12.1 29.7-.2 17.6-13.1 30.5-13 13-30.5 13.1-17.6.2-29.7-12.1ZM478.8 615q61.5 0 105.7-44.2t44.2-105.7q0-61.5-44.2-105.7T478.8 315q-61.5 0-105.7 44.2t-44.2 105.7q0 61.5 44.2 105.7T478.8 615Z">
-                            </path>
-                        </svg>
+                            <div class="buttonContent" name="iPhone 16">
+                                <div>
+
+                                    <button class="eco-button" onclick="insertText('iPhone 16')">
+                                        <img src="static/images/iphone.svg">
+                                    </button>
+                                </div>
+                                <p class="button-text">iPhone 16</p>
+                            </div>
+
+
+                            <div class="buttonContent" name="Redmi 14C">
+                                <div>
+
+                                    <button class="eco-button" onclick="insertText('Redmi 14C')">
+                                        <img src="static/images/mi.svg">
+                                    </button>
+                                </div>
+                                <p class="button-text">Redmi 14C</p>
+                            </div>
+
+
+                            <div class="buttonContent" name="Galaxy S24 Ultra">
+                                <div>
+
+                                    <button class="eco-button" onclick="insertText('Galaxy S24 Ultra')">
+                                        <img src="static/images/samsung.svg">
+                                    </button>
+                                </div>
+                                <p class="button-text">Galaxy S24 Ultra</p>
+                            </div>
+
+                        </div>
+                        <div id="worst_phones" class="top_buttons">
+                            <p>Phones with the highest environmental footpint (worst phones)</p>
+                            <div class="buttonContent" name="HUAWEI Pura 70 Ultra">
+                                <div>
+
+                                    <button class="eco-button" onclick="insertText('HUAWEI Pura 70 Ultra')">
+                                        <img src="static/images/huawei.svg">
+                                    </button>
+                                </div>
+                                <p class="button-text">HUAWEI Pura 70 Ultra</p>
+                            </div>
+
+
+                            <div class="buttonContent" name="Galaxy S24 Ultra">
+                                <div>
+
+                                    <button class="eco-button" onclick="insertText('Galaxy S24 Ultra')">
+                                        <img src="static/images/samsung.svg">
+                                    </button>
+                                </div>
+                                <p class="button-text">Galaxy S24 Ultra</p>
+                            </div>
+
+
+                            <div class="buttonContent" name="Redmi 14C">
+                                <div>
+
+                                    <button class="eco-button" onclick="insertText('Redmi 14C')">
+                                        <img src="static/images/mi.svg">
+                                    </button>
+                                </div>
+                                <p class="button-text">Redmi 14C</p>
+                            </div>
+
+
+                            <div class="buttonContent" name="iPhone 16">
+                                <div>
+
+                                    <button class="eco-button" onclick="insertText('iPhone 16')">
+                                        <img src="static/images/iphone.svg">
+                                    </button>
+                                </div>
+                                <p class="button-text">iPhone 16</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="apps-area" id="dynamic-content" style="display: flex;">
+                        <div class="t-header">
+                            <div class="t-frame">
+                                <span class="score_span">
+                                    <i class="fa fa-leaf" style="color: green"></i><i class="fa fa-leaf"
+                                        style="color: green"></i><i class="fa fa-leaf" style="color: green"></i><i
+                                        class="fa fa-leaf" style="color: green"></i><i class="fa fa-leaf"
+                                        style="background: linear-gradient(to right, green 0% 9%, white 9% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                                    4.1
+                                </span>
+                                <span>Estimated score</span>
+                            </div>
+                        </div>
+                        <div style="display: block">
+                            <p>The Fairphone 5 has a relatively good carbon footprint due to its use of sustainable
+                                materials, ethical sourcing, and energy-efficient production. However, long-distance
+                                transportation and variable supplier energy use might contribute negatively.
+                                Overall,<span style="font-weight: bold"> its impact seems balanced with strong
+                                    sustainability practices.<span></span></span></p>Further Details:
+                        </div>
+                        <div class="headline" id="materials">
+                            <span class="title_span">Materials</span>
+                            <span class="score_span">
+                                <i class="fa fa-leaf" style="color: green"></i><i class="fa fa-leaf"
+                                    style="color: green"></i><i class="fa fa-leaf" style="color: green"></i><i
+                                    class="fa fa-leaf" style="color: green"></i><i class="fa fa-leaf"
+                                    style="background: linear-gradient(to right, green 0% 50%, white 50% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                                4.5
+                                <div class="tooltiptext"></div>
+                            </span>
+                        </div>
+                        <ul>
+                            <li><span style="font-weight: bold">Sustainable and ethical Metals:</span> The Fairphone 5
+                                incorporates ethically sourced metals including Tungsten, Cobalt, and Lithium,
+                                emphasizing sustainability through over 70% recycled materials, such as aluminum and
+                                plastics. This approach fosters transparency in the supply chain. <span
+                                    class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Sustainable and responsible Toxic Chemicals:</span> To
+                                elaborate, the device demonstrates a strong commitment to avoiding toxic chemicals such
+                                as arsenic, mercury, and PVC, enhancing both product safety and environmental standards
+                                throughout its lifecycle. <span class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Sustainable and responsible Alternative
+                                    Materials:</span> Additionally it utilizes over 70% fair and recycled materials,
+                                including bio-based plastics and recycled metals, reducing reliance on harmful materials
+                                and supporting sustainable practices. <span class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Significant and ethically responsible Raw Materials
+                                    Origin:</span> On top of that, the device sources over 70% of its raw materials from
+                                fair or recycled origins, focusing on community-friendly practices in mining, especially
+                                cobalt from the DRC, and lithium from IRMA-assessed mines. The environmental impact is
+                                significant and ethically responsible. <span class="sources"></span></li>
+                        </ul>
+                        <div class="headline" id="transportation">
+                            <span class="title_span">Transportation</span>
+                            <span class="score_span">
+                                <i class="fa fa-leaf" style="color: green"></i><i class="fa fa-leaf"
+                                    style="color: green"></i><i class="fa fa-leaf" style="color: green"></i><i
+                                    class="fa fa-leaf"
+                                    style="background: linear-gradient(to right, green 0% 50%, white 50% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i><i
+                                    class="fa fa-leaf" style="color: white"></i>
+                                3.5
+                                <div class="tooltiptext"></div>
+                            </span>
+                        </div>
+                        <ul>
+                            <li><span style="font-weight: bold">Significant and environmentally impactful
+                                    Transportation:</span> Fairphone 5 relies on long-distance transportation for
+                                components, averaging thousands of kilometers, often using air freight. The emphasis on
+                                low-emission methods aims to reduce overall carbon impact while navigating complex
+                                global supply chains. <span class="sources"></span></li>
+                        </ul>
+                        <div class="headline" id="production">
+                            <span class="title_span">Production</span>
+                            <span class="score_span">
+                                <i class="fa fa-leaf" style="color: green"></i><i class="fa fa-leaf"
+                                    style="color: green"></i><i class="fa fa-leaf"
+                                    style="background: linear-gradient(to right, green 0% 0%, white 0% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i><i
+                                    class="fa fa-leaf" style="color: white"></i><i class="fa fa-leaf"
+                                    style="color: white"></i>
+                                2.0
+                                <div class="tooltiptext"></div>
+                            </span>
+                        </div>
+                        <ul>
+                            <li><span style="font-weight: bold">Sustainable and responsible Production Process:</span>
+                                The Fairphone 5's production process emphasizes sustainability and ethical practices,
+                                leveraging modular design for easy repairs and upgrades, thus reducing waste. It
+                                involves sourcing fair materials, energy-efficient assembly, and a commitment to social
+                                compliance, aiming for minimal environmental impact. <span class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Sustainable and efficient Production Waste:</span> Not
+                                only that, but it emphasizes minimizing production waste via efficient processes and
+                                recyclable materials. It also aims for e-waste neutrality by offsetting electronics
+                                brought to market, reflecting a commitment to sustainability. <span
+                                    class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Sustainable and variable Supplier Energy Use:</span>
+                                Supplier energy use for the Fairphone 5 emphasizes the transition to renewable energy,
+                                leveraging 100% renewable energy for final assembly. However, the energy mix varies by
+                                supplier, impacting overall carbon emissions due to reliance on fossil fuels in other
+                                regions. <span class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Ethical and challenging Location of Assembly:</span>
+                                Supplementing this, the smartphone is assembled in China and Europe, adhering to strict
+                                labor and environmental standards. While these locations enable ethical practices, they
+                                still grapple with challenges related to lesser environmental regulations compared to
+                                Europe. <span class="sources"></span></li>
+                        </ul>
+                        <div class="headline" id="use">
+                            <span class="title_span">Use</span>
+                            <span class="score_span">
+                                <i class="fa fa-leaf" style="color: green"></i><i class="fa fa-leaf"
+                                    style="color: green"></i><i class="fa fa-leaf" style="color: green"></i><i
+                                    class="fa fa-leaf" style="color: green"></i><i class="fa fa-leaf"
+                                    style="color: green"></i><i class="fa fa-leaf"
+                                    style="background: linear-gradient(to right, green 0% 0%, white 0% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                                5.0
+                                <div class="tooltiptext"></div>
+                            </span>
+                        </div>
+                        <ul>
+                            <li><span style="font-weight: bold">Sustainable and user-friendly Ease of Reparation:</span>
+                                The Fairphone 5 features a modular design and user-friendly repairability, allowing easy
+                                replacement of critical components without professional tools. This promotes longevity
+                                and reduces electronic waste significantly. <span class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Sustainable and innovative Ease of modification:</span>
+                                Equally important, the device features a modular design that allows for easy repairs and
+                                upgrades, such as replacing the battery, display, and SD card expansion. This design
+                                promotes longevity, reducing the need for new devices. <span class="sources"></span>
+                            </li>
+
+                            <li><span style="font-weight: bold">Sustainable and innovative top notch technology:</span>
+                                What's more, the smartphone integrates advanced technologies like 5G compatibility and
+                                modular design for easy repairs, helping to extend its lifecycle and sustainability.
+                                <span class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Sustainable and fair Quality of Battery:</span> Building
+                                on this, the phone features a 4200mAh removable Li-ion battery designed for longevity
+                                and easy replacement. It emphasizes fairness in materials, like fair lithium and
+                                Fairtrade gold, to enhance sustainability. The battery's replaceable nature minimizes
+                                waste and supports environmental initiatives. <span class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Sustainable and durable Durability:</span> Additionally,
+                                the device features a modular design, allowing easy repairs and replacements of parts,
+                                enhancing its durability. With a robust build quality and long-lasting materials, it
+                                aims to extend the phone's lifecycle significantly, positively impacting environmental
+                                sustainability. <span class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Sustainable and responsible Energy Consumption:</span>
+                                What's more, the smartphone is designed for energy efficiency, consuming around 14.8 kWh
+                                over three years, promoting the use of renewable energy. This approach leads to reduced
+                                environmental impact, reflecting sustainability and responsibility. <span
+                                    class="sources"></span></li>
+                        </ul>
+                        <div class="headline" id="end_od_life">
+                            <span class="title_span">End of Life</span>
+                            <span class="score_span">
+                                <i class="fa fa-leaf" style="color: green"></i><i class="fa fa-leaf"
+                                    style="color: green"></i><i class="fa fa-leaf" style="color: green"></i><i
+                                    class="fa fa-leaf" style="color: green"></i><i class="fa fa-leaf"
+                                    style="color: green"></i><i class="fa fa-leaf"
+                                    style="background: linear-gradient(to right, green 0% 0%, white 0% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                                5.0
+                                <div class="tooltiptext"></div>
+                            </span>
+                        </div>
+                        <ul>
+                            <li><span style="font-weight: bold">Sustainable and responsible Planned Obsolescence:</span>
+                                The Fairphone 5 actively resists planned obsolescence through its long-term software
+                                support and modular design, allowing for easy repairs and upgrades, ultimately promoting
+                                device longevity. <span class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Sustainable and impactful Second Use:</span> Equally
+                                important, the device's modular design and durable materials allow for effective
+                                refurbishment and high resale value, promoting second-hand use and reducing e-waste
+                                generation. <span class="sources"></span></li>
+
+                            <li><span style="font-weight: bold">Sustainable and responsible Recycling:</span>
+                                Additionally it promotes comprehensive recycling programs and is designed for
+                                recyclability, achieving e-waste neutrality. Its modular design eases repairs and
+                                recycling, maximizing material recovery for sustainability. <span
+                                    class="sources"></span></li>
+                        </ul>
+                    </div>
+                    <button onclick="load_all_buttons()" style="display: none;" class="return-button" id="bottomSeeAll">
+                        See all phones
                     </button>
+
+
                 </div>
-
-
-
-
-                <div class="apps-area" id="dynamic-content" style="height: 90%;">
-                    <button onclick="goBack()" style="display: block" class="return-button" id="backButton">Try other
-                        phone!</button>
-                    <div style="display: block">
-                        <p>The HUAWEI P60 has a significant carbon footprint due to substantial material extraction,
-                            intensive production processes, long-distance transportation, and low recycling rates.
-                            Overall,<span style="font-weight: bold"> it presents a rather bad environmental
-                                footprint.<span></span></span></p>Further Details:
-                    </div>
-                    <p>Materials</p>
-                    <ul style="list-style-type: none; padding: 0; margin: 0">
-                        <li class="metals-css-class" style="margin: 20px 0px;">
-                            <div
-                                style="padding: 10px; color: white; position: relative; background-image: url(/static/images/metals.jpg); background-size: cover; background-repeat: no-repeat; background-position: center; min-height: 250px;">
-                                <span
-                                    style="font-weight: bold; display: block; font-size: x-large; background-color: rgba(0, 0, 0, 0.541);">Detrimental
-                                    and substantial
-                                    Metals:</span>
-                                <div
-                                    style="position: absolute; bottom: 10; right: 10; width: 90%; text-align: right; background-color: rgba(0, 0, 0, 0.541)">
-
-                                    The HUAWEI P60 incorporates various essential metals such as
-                                    tungsten,
-                                    tin, gold, lead, cobalt, lithium, and tantalum, critical for its functionality. The
-                                    extraction and processing of these metals significantly elevate its environmental
-                                    footprint.
-
-                                </div>
-                                <span class="sources"></span>
-
-
-                            </div>
-                        </li>
-                        <li class="chemicals-css-class" style="margin: 20px 0px;">
-                            <div
-                                style="padding: 10px; color: white; position: relative; background-image: url(/static/images/chemicals.jpg); background-size: cover; background-repeat: no-repeat; background-position: center; min-height: 250px;">
-                                <span
-                                    style="font-weight: bold; display: block; font-size: x-large; background-color: rgba(0, 0, 0, 0.541); text-align: right;">Hazardous
-                                    and concerning Toxic
-                                    Chemicals:</span>
-                                <div
-                                    style="position: absolute; bottom: 10; left: 10; width: 90%; text-align: left; background-color: rgba(0, 0, 0, 0.541)">
-
-                                    Besides this, the phone likely contains toxic chemicals such as
-                                    beryllium, brominated flame retardants, PVC, phthalates, arsenic in glass, and
-                                    mercury.
-                                    These substances pose significant environmental and health risks during production
-                                    and
-                                    disposal stages.
-
-                                </div>
-                                <span class="sources"></span>
-
-
-                            </div>
-                        </li>
-
-                        <li class="alternatives-css-class" style="margin: 20px 0px;">
-                            <div
-                                style="padding: 10px; color: white; position: relative; background-image: url(/static/images/alternatives.jpg); background-size: cover; background-repeat: no-repeat; background-position: center; min-height: 250px;">
-                                <span
-                                    style="font-weight: bold; display: block; font-size: x-large; background-color: rgba(0, 0, 0, 0.541);">Sustainable
-                                    and
-                                    environmentally-friendly Alternative Materials:</span>
-                                <div
-                                    style="position: absolute; bottom: 10; right: 10; width: 90%; text-align: right; background-color: rgba(0, 0, 0, 0.541)">
-
-                                    Sustainable and
-                                    environmentally-friendly Alternative Materials:</span> Manufacturers are
-                                    increasingly
-                                    utilizing bio-based plastics and recycled materials to reduce reliance on rare
-                                    earths and
-                                    toxic chemicals in the HUAWEI P60, promoting a more eco-friendly approach.
-
-                                </div>
-                                <span class="sources"></span>
-
-
-                            </div>
-                        </li>
-
-                        <li class="origin-css-class" style="margin: 20px 0px;">
-                            <div
-                                style="padding: 10px; color: white; position: relative; background-image: url(/static/images/origin.jpg); background-size: cover; background-repeat: no-repeat; background-position: center; min-height: 250px;">
-                                <span
-                                    style="font-weight: bold; display: block; font-size: x-large; background-color: rgba(0, 0, 0, 0.541); text-align: right; ">Problematic
-                                    and unsustainable Raw
-                                    Materials Origin:</span>
-                                <div
-                                    style="position: absolute; bottom: 10; left: 10; width: 90%; text-align: left; background-color: rgba(0, 0, 0, 0.541)">
-
-                                    What's more, the smartphone sources raw materials, primarily
-                                    rare earth elements, from mining operations in China, Australia, and the United
-                                    States,
-                                    raising significant environmental and ethical concerns in the process.
-
-                                </div>
-                                <span class="sources"></span>
-
-
-                            </div>
-                        </li>
-
-
-                    </ul>
-                    <div class="headline" id="transportation">
-                        <span>Transportation</span>
-
-                    </div>
-                    <ul>
-                        <li class="transportation-css-class"><span style="font-weight: bold">Substantial and concerning
-                                Transportation:</span> The transportation logistics for the HUAWEI P60 involve
-                            significant distances, often spanning thousands of kilometers, impacting its carbon
-                            footprint. The use of both air and sea transport contributes to considerable greenhouse gas
-                            emissions. <span class="sources"></span></li>
-                    </ul>
-                    <div class="headline" id="production">
-                        <p>Production</p>
-                    </div>
-                    <ul>
-                        <li class="production_process-css-class"><span style="font-weight: bold">Resource-intensive and
-                                impactful Production Process:</span> The production process of the HUAWEI P60 includes
-                            raw material extraction, component manufacturing, and final assembly. Each stage involves
-                            complex methodologies and significant energy use, contributing to its environmental
-                            footprint. <span class="sources"></span></li>
-                        <li class="production_waste-css-class"><span style="font-weight: bold">Significant and
-                                concerning Production Waste:</span> The manufacturing of the HUAWEI P60 generates
-                            substantial production waste, including defective products, excess materials, and packaging
-                            waste. Companies are increasingly adopting recycling initiatives and sustainable practices
-                            to manage waste effectively, aiming to repurpose materials and minimize environmental
-                            impact. <span class="sources"></span></li>
-                        <li class="supplier_energy_use-css-class"><span style="font-weight: bold">Critical and
-                                concerning Supplier Energy Use:</span> Supplier energy use for the HUAWEI P60 involves
-                            significant energy consumption at production sites, often relying on a mix of renewable and
-                            non-renewable sources. This raises concerns about the overall carbon footprint, emphasizing
-                            the need for energy efficiency and cleaner practices. <span class="sources"></span></li>
-                        <li class="location_of_assembly-css-class"><span style="font-weight: bold">Cost-effective and
-                                concerning Location of Assembly:</span> As an additional point, the smartphone is likely
-                            assembled in low-cost labor countries such as China and Vietnam, facilitating quick
-                            production but raising concerns about environmental regulations and worker safety. <span
-                                class="sources"></span></li>
-                    </ul>
-                    <div class="headline" id="use">
-                        <p>Use</p>
-                    </div>
-                    <ul>
-                        <li class="ease_of_reparation-css-class"><span style="font-weight: bold">Challenging and
-                                environmentally damaging Ease of Reparation:</span> The HUAWEI P60's ease of reparation
-                            is limited due to the use of adhesive in its design, complicating battery and screen
-                            replacements. This increases its environmental impact as it may lead to more e-waste. <span
-                                class="sources"></span></li>
-                        <li class="ease_of_modification-css-class"><span style="font-weight: bold">Restrictive and
-                                detrimental Ease of modification:</span> In the same regard, it has limited ease of
-                            modification, lacking expandable storage options like SD card slots, reflected in a trend
-                            toward streamlined devices that reduce user customization options. <span
-                                class="sources"></span></li>
-                        <li class="top_notch_technology-css-class"><span style="font-weight: bold">Sustainable and
-                                impressive top notch technology:</span> To expand further, it integrates
-                            state-of-the-art technology, including 5G capability, advanced Snapdragon processors, and
-                            high-resolution cameras, promoting device longevity and reducing obsolescence. <span
-                                class="sources"></span></li>
-                        <li class="quality_of_battery-css-class"><span style="font-weight: bold">Sustainable but
-                                concerning Quality of Battery:</span> Additionally, the device features a 4815 mAh
-                            battery providing decent longevity, supporting fast charging. However, it has a
-                            non-removable design, which may accelerate obsolescence and limit recycling opportunities.
-                            <span class="sources"></span>
-                        </li>
-                        <li class="durability-css-class"><span style="font-weight: bold">Sustainable and resilient
-                                Durability:</span> In addition the smartphone features robust materials and an IP68
-                            rating for water and dust resistance, contributing to longevity in everyday use. Its durable
-                            design reduces the frequency of replacements, which positively impacts e-waste concerns.
-                            <span class="sources"></span>
-                        </li>
-                        <li class="energy_consumption-css-class"><span style="font-weight: bold">Environmentally
-                                friendly and effective Energy Consumption:</span> Further the phone is optimized for
-                            energy efficiency, featuring advanced processors and battery technology that minimize power
-                            consumption, reducing its environmental footprint. This results in environmentally friendly
-                            and effective energy use. <span class="sources"></span></li>
-                    </ul>
-                    <div class="headline" id="end_of_life">
-
-                        <p>End of Life</p>
-                    </div>
-                    <ul>
-                        <li class="planned_obsolescence-css-class"><span style="font-weight: bold">Environmentally
-                                detrimental and unsustainable Planned Obsolescence:</span> The HUAWEI P60 employs
-                            planned obsolescence strategies through performance-degrading software updates and
-                            non-repairable designs, steering consumers towards quicker replacements. This leads to
-                            increased electronic waste and sustainability concerns. <span class="sources"></span></li>
-                        <li class="second_use-css-class"><span style="font-weight: bold">Sustainable and impactful
-                                Second Use:</span> Correspondingly, the smartphone's high build quality and features
-                            enhance its potential for second use, supporting refurbishment and resale markets
-                            effectively. This positively contributes to sustainability and significantly reduces
-                            electronic waste. <span class="sources"></span></li>
-                        <li class="recycling-css-class"><span style="font-weight: bold">Promising but challenging
-                                Recycling:</span> Recycling initiatives for the HUAWEI P60 focus on recovering valuable
-                            materials like metals and plastics, yet current recycling rates remain low, causing
-                            significant materials to end up in landfills. Progress is being made, but challenges persist
-                            in efficiently recycling smartphones. <span class="sources"></span></li>
-                    </ul>
-                </div>
-
-
-
-
             </div>
         </div>
     </div>
+    <script src="/static/script.js"></script>
 
 
 

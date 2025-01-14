@@ -28,7 +28,7 @@ def generate_final_answer(conclusion, context, total_score: float):
     header = f"""<div class="t-header">
                     <div class="t-frame">
                         <span class="score_span">
-                            {color_leafs(total_score)}
+                            {color_leafs(total_score, "black")}
                             {str(total_score)}
                         </span>
                         <span>Estimated score</span>
@@ -37,7 +37,7 @@ def generate_final_answer(conclusion, context, total_score: float):
     final_resp = f"""{header}<div style="display: block"><p>{conclusion}</p>Further Details:</div>{context}"""
     return final_resp
 
-def color_leafs(score: float):
+def color_leafs(score: float, default_color="white"):
     returnhtml: str = ""
     scd_digit = score%1
     first_digit = score-scd_digit
@@ -45,10 +45,10 @@ def color_leafs(score: float):
     for i in range(0, first_digit):
         returnhtml = returnhtml + """<i class="fa fa-leaf" style="color: green"></i>"""
     border_percent = int(scd_digit * 100)
-    relative_icon = f"""<i class="fa fa-leaf" style="background: linear-gradient(to right, green 0% {str(border_percent)}%, white {str(border_percent)}% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>"""
+    relative_icon = f"""<i class="fa fa-leaf" style="background: linear-gradient(to right, green 0% {str(border_percent)}%, {default_color} {str(border_percent)}% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>"""
     returnhtml = returnhtml + relative_icon
     for i in range(first_digit + 1 , 5):
-        returnhtml = returnhtml + """<i class="fa fa-leaf" style="color: white"></i>"""
+        returnhtml = returnhtml + f"""<i class="fa fa-leaf" style="color: {default_color}"></i>"""
     return returnhtml
 
 # print(color_leafs(4.0))

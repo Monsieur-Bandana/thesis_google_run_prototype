@@ -2,10 +2,11 @@ const dynamicContent = document.getElementById('dynamic-content');
 const buttonsdiv = document.getElementById('buttonContainer');
 const inputField = document.getElementById('text-field');
 const introText = document.getElementById('introductionText');
-const list_of_tops_and_worst = document.getElementById('top-frame')
+const list_of_tops_and_worst = document.getElementById('top-frame');
 let isOnButtonScreen = true;
 
 const spinner = `<div style="display: block; width: 100%"><div id="loading-spinner" class="spinner"></div></div>`
+const logoHeader = document.getElementById('logo_header');
 
 const introductionContainer = `
 `;
@@ -18,6 +19,7 @@ const seeAllBottom = document.getElementById('bottomSeeAll');
 let allButtons = [];
 
 function flask_call(input) {
+    deactivate_other_els();
     dynamicContent.innerHTML = "<div style='width: 100%'>Text will be generated. This can take up to 1 minute.<p></p></div>" + spinner;
     dynamicContent.style = 'display: block';
     introText.style.display = "none";
@@ -32,7 +34,6 @@ function flask_call(input) {
         .then(response => response.text()) // Parse the response as text (HTML)
         .then(htmlContent => {
             // Insert the fetched HTML into the DOM
-            deactivate_other_els();
             dynamicContent.innerHTML = htmlContent;
         })
         .catch(error => {
@@ -41,12 +42,16 @@ function flask_call(input) {
 }
 
 function createButton(tuple) {
+    extension = ""
+    if (tuple["text"].includes("Fairphone")) {
+        extension = `style="filter: invert(1);"`
+    }
     return `
                     <div class="buttonContent" name="${tuple['text']}">
                         <div>
     
                             <button class="eco-button" onclick="insertText('${tuple['text']}')">
-                                <img src="${tuple['img']}">
+                                <img src="${tuple['img']}" ${extension}>
                             </button>
                         </div>
                         <p class="button-text">${tuple['text']}</p>
@@ -138,12 +143,12 @@ const brandsFrame = document.getElementById("brands_frame");
 function deactivate_other_els() {
     list_of_tops_and_worst.style = "display: none";
     introText.style = "display: none";
-    headm.style = "display: flex";
+    headm.style = "display: flex; margin-top: 20px";
     seeAllBottom.style = "display: none";
     dynamicContent.style = "display: flex";
     drop_content_fr.style = "display: none";
-    brandsFrame.style = "display: none"
-
+    brandsFrame.style = "display: none";
+    logoHeader.style = "display: none";
 }
 
 const searchContainer = document.getElementById("sc");
@@ -163,6 +168,7 @@ function render_main_screen() {
     seeAllBottom.style = "display: block";
     dynamicContent.style = "display: none";
     searchContainer.style = "display: flex";
+    logoHeader.style = "display: flex";
 }
 
 function load_all_buttons(filter = "") {
