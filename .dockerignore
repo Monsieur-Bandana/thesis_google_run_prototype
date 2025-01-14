@@ -1,2 +1,4 @@
 **/temp
 **/__pycache__
+file_interpreter/main.py
+file_interpreter/main_structured_list.py

@@ -1,7 +1,4 @@
-import os
 import json
-import openai
-from google.cloud import storage
 from PyPDF2 import PdfReader
 from openai import OpenAI
 # from ind_key import rand_k

@@ -1,7 +1,4 @@
-import os
 import json
-import openai
-from google.cloud import storage
 from PyPDF2 import PdfReader
 from openai import OpenAI
 # from ind_key import rand_k
@@ -151,7 +148,7 @@ def main():
 if __name__ == "__main__":
     main()
     brandlist = list_directories_in_bucket(bucket_name, prefix)
-    input()
+    # input()
     with open(f"{main_folder}/temp/classes.json", "r") as file:
         entities = json.load(file)
     for brand in brandlist:
