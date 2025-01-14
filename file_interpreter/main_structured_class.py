@@ -65,8 +65,8 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp)
             summary = response.choices[0].message.content
             generated_answer_dict:dict = json.loads(summary)
             generated_answer_dict["source"]=f"{pdf_file_path}, chunk {chunk_nr}"
-            save_file = save_file.split(".")[0]
-            create_json_file(generated_answer_dict, main_folder, f"{save_file}_uncut.json")
+            
+            create_json_file(generated_answer_dict, main_folder, save_file)
         except:
             """
             chunk_size = chunk_size - 1000
