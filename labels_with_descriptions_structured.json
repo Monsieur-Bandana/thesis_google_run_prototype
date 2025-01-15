@@ -236,7 +236,7 @@
             {
                 "name": "Recycling",
                 "json_name": "recycling",
-                "description": "What proportion of the <replacer>-phone's parts and materials can be recycled for future production?",
+                "description": "To what extent can the parts of a <replacer>-phone be recycled for future production?",
                 "parent": "End of Life",
                 "tokens": []
             }
