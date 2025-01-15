@@ -6,7 +6,7 @@
             {
                 "name": "Metals",
                 "json_name": "metals",
-                "description": "Which metals, particularly rare earth elements, are used in the smartphone's production?",
+                "description": "Which metals, particularly rare earth elements, are used in the production of <replacer> smartphones?",
                 "parent": "Materials",
                 "tokens": [
                     "Tungsten",
@@ -30,7 +30,7 @@
             {
                 "name": "Toxic Chemicals",
                 "json_name": "chemicals",
-                "description": "Which toxic chemicals are present in the smartphone's components?",
+                "description": "Which toxic chemicals are present in the components of <replacer> Smartphones?",
                 "parent": "Materials",
                 "tokens": [
                     "Beryllium",
@@ -46,7 +46,7 @@
             {
                 "name": "Alternative Materials",
                 "json_name": "alternatives",
-                "description": "Does the manufacturer use environmentally friendly alternatives to reduce the reliance on rare earth elements or toxic chemicals?",
+                "description": "Do <replacer> Smartphones contain environmentally friendly alternatives to reduce the reliance on rare earth elements or toxic chemicals?",
                 "parent": "Materials",
                 "tokens": [
                     "Bio-based plastic",
@@ -57,7 +57,7 @@
             {
                 "name": "Raw Materials Origin",
                 "json_name": "origin",
-                "description": "Where do the natural resources for smartphone production come from? Specifically, where are the mines located for rare earth elements used in metal extraction?",
+                "description": "Where are the natural resources used in the <replacer> smartphone production coming from? Specifically, where are the mines located for rare earth elements used in metal extraction?",
                 "parent": "Materials",
                 "tokens": [
                     "Mines",
@@ -73,7 +73,7 @@
             {
                 "name": "Transportation",
                 "json_name": "transportation",
-                "description": "What are the distances involved between production sites?",
+                "description": "What are the distances involved, not only between production sites, but also to the final point of distribution of <replacer>-Smartphones?",
                 "parent": "Transportation",
                 "tokens": [
                     "Km",
@@ -91,7 +91,7 @@
             {
                 "name": "Production Process",
                 "json_name": "production_process",
-                "description": "What processes are used to transform raw resources into consumer electronics? This includes intermediate products, such as printed circuit boards, and the assembly of the final smartphone.",
+                "description": "What processes are used to transform raw resources into consumer electronics? This includes intermediate products, such as printed circuit boards, and the assembly of the final smartphone. How does the <replacer>-Company act to improve those, from a sustainable point of view?",
                 "parent": "Production",
                 "tokens": [
                     "Device assembly",
@@ -102,14 +102,14 @@
             {
                 "name": "Production Waste",
                 "json_name": "production_waste",
-                "description": "How much waste is generated during the manufacturing process? How is this waste managed?",
+                "description": "How much waste is generated during the manufacturing process of the <replacer>-Smartphone? How is this waste managed?",
                 "parent": "Production",
                 "tokens": []
             },
             {
                 "name": "Supplier Energy Use",
                 "json_name": "supplier_energy_use",
-                "description": "What is the energy consumption at production sites? Is the energy used renewable or clean?",
+                "description": "What is the energy consumption at production sites of the <replacer>-Smartphones? Is the energy used renewable or clean?",
                 "parent": "Production",
                 "tokens": [
                     "kWh"
@@ -118,7 +118,7 @@
             {
                 "name": "Location of Assembly",
                 "json_name": "location_of_assembly",
-                "description": "Where are the assembly sites for intermediate products (e.g., printed circuit boards) and final smartphones located? Are these locations chosen for cost efficiency despite potentially weaker environmental regulations?",
+                "description": "Where are the assembly sites for intermediate products (e.g., printed circuit boards) and final <replacer>-smartphones located? Are these locations chosen for cost efficiency despite potentially weaker environmental regulations?",
                 "parent": "Production",
                 "tokens": [
                     "Supplier",
@@ -136,7 +136,7 @@
             {
                 "name": "Ease of Repair",
                 "json_name": "ease_of_reparation",
-                "description": "How easy is it for the end user to repair the phone? Are commonly replaced parts intentionally made difficult to access, such as by using glue instead of screws in the construction?",
+                "description": "How easy is it for the end user to repair the <replacer>-phone?",
                 "parent": "Use",
                 "tokens": [
                     "Repairability",
@@ -148,7 +148,7 @@
             {
                 "name": "Ease of Modification",
                 "json_name": "ease_of_modification",
-                "description": "Can the phone's performance be upgraded by the user?",
+                "description": "Can the <replacer>-phone's performance be upgraded by the user?",
                 "parent": "Use",
                 "tokens": [
                     "SD card slot",
@@ -158,7 +158,7 @@
             {
                 "name": "Top-notch Technology",
                 "json_name": "top_notch_technology",
-                "description": "Does the phone meet modern technological standards, reducing the likelihood of needing early replacement?",
+                "description": "Does the <replacer>-phone meet modern technological standards, reducing the likelihood of needing early replacement?",
                 "parent": "Use",
                 "tokens": [
                     "5G support",
@@ -174,7 +174,7 @@
             {
                 "name": "Battery Quality",
                 "json_name": "quality_of_battery",
-                "description": "How long does the battery remain reliable? If the battery fails, users are likely to replace the entire phone. Is the battery easily replaceable?",
+                "description": "How long does the battery of a <replacer>-phone remain reliable? Is the battery easily replaceable?",
                 "parent": "Use",
                 "tokens": [
                     "Battery life",
@@ -186,7 +186,7 @@
             {
                 "name": "Durability",
                 "json_name": "durability",
-                "description": "How long can the phone remain functional and relevant? How resistant is it to physical damage?",
+                "description": "How long can the <replacer>-phone remain functional and relevant? How resistant is it to physical damage?",
                 "parent": "Use",
                 "tokens": [
                     "Longevity",
@@ -197,7 +197,7 @@
             {
                 "name": "Energy Consumption",
                 "json_name": "energy_consumption",
-                "description": "How energy-efficient is the phone? How often does it require charging?",
+                "description": "How energy-efficient is a <replacer>-phone? How often does it require charging?",
                 "parent": "Use",
                 "tokens": [
                     "Energy efficiency",
@@ -215,7 +215,7 @@
             {
                 "name": "Planned Obsolescence",
                 "json_name": "planned_obsolescence",
-                "description": "Does the manufacturer employ strategies, such as performance-reducing software updates, to encourage users to replace their phones within a few years?",
+                "description": "Does the <replacer> Company employ strategies, such as performance-reducing software updates, to encourage users to replace their phones within a few years?",
                 "parent": "End of Life",
                 "tokens": [
                     "Discontinuity of support",
@@ -226,7 +226,7 @@
             {
                 "name": "Second Use",
                 "json_name": "second_use",
-                "description": "How likely is the phone to be sold or reused after its initial use? This depends on its quality after the typical two-year usage period.",
+                "description": "How likely is the <replacer>-phone to be sold or reused after its initial use? This depends on its quality after the typical two-year usage period.",
                 "parent": "End of Life",
                 "tokens": [
                     "Second-hand",
@@ -236,7 +236,7 @@
             {
                 "name": "Recycling",
                 "json_name": "recycling",
-                "description": "What proportion of the phone's parts and materials can be recycled for future production?",
+                "description": "What proportion of the <replacer>-phone's parts and materials can be recycled for future production?",
                 "parent": "End of Life",
                 "tokens": []
             }
