@@ -109,7 +109,7 @@ def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes:
     class_description = description
     class_description = class_description.replace("<replacer>", input)
     if not comp == "general":
-        question_part2 = f"Consider that the {input} is manufactured by {comp}, what efforts are done by {comp} to improve this?"
+        question_part2 = f"Considering that the {input} is manufactured by {comp}, what efforts are done by {comp} to improve {class_name}?"
 
         comp_add = f", and summarize {comp}'s {class_name}-related improvement efforts"
         comp_add2 = f"- Ensure the improvement efforts described are strictly related to {class_name}."
@@ -126,8 +126,8 @@ def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes:
     - Base your response strictly on the content provided between the <input> brackets: <input> {rag_inf} </input>.\n
     {comp_add2}\n
     - Avoid suggesting improvements or discussing potential changes to the environmental footprint.\n
-    - Keep your response brief and informative, aiming for approximately 50 tokens in length.\n
     - Conclude with one or two adjectives summarizing the environmental impact. If two adjectives are used, connect them with an appropriate conjunction like "and" or "but."\n
+    - Keep your response brief and informative, aiming for not more than 50 tokens in length.\n
 
     **Structure:**\n
     1. A concise description of the as-is situation and its environmental impact {comp_add3}.\n
@@ -148,7 +148,7 @@ def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes:
                 "content": question
             }
         ],
-        max_tokens=200,
+        temperature=0.5,
         response_format=FormatWithAdjective
     )
 
@@ -299,6 +299,5 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
 
 
 ## Testsection
-##print(generateAnswer("Fairphone 5","frontend"))
-
+# print(generateAnswer("Fairphone 5","frontend"))
 

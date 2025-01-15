@@ -4,10 +4,13 @@
 def generate_html_output(resp: list[dict], parent: dict, score_dict: dict):
     score = score_dict["score"]
     reasoning = score_dict["reasoning"]
+    add_html = ""
+    if score == 5.0:
+        add_html = """style= "color: green" """
     header_html = f"""
                     <div class="headline" id="{parent["json_name"]}">
                         <span class="title_span">{parent["name"]}</span>
-                        <span class="score_span">
+                        <span class="score_span" {add_html}>
                         {color_leafs(score)}
                         {str(score)}
                         <div class="tooltiptext">{reasoning}</div>
@@ -44,9 +47,10 @@ def color_leafs(score: float, default_color="white"):
     first_digit = int(first_digit)
     for i in range(0, first_digit):
         returnhtml = returnhtml + """<i class="fa fa-leaf" style="color: green"></i>"""
-    border_percent = int(scd_digit * 100)
-    relative_icon = f"""<i class="fa fa-leaf" style="background: linear-gradient(to right, green 0% {str(border_percent)}%, {default_color} {str(border_percent)}% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>"""
-    returnhtml = returnhtml + relative_icon
+    if first_digit < 5:
+        border_percent = int(scd_digit * 100)
+        relative_icon = f"""<i class="fa fa-leaf" style="background: linear-gradient(to right, green 0% {str(border_percent)}%, {default_color} {str(border_percent)}% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>"""
+        returnhtml = returnhtml + relative_icon
     for i in range(first_digit + 1 , 5):
         returnhtml = returnhtml + f"""<i class="fa fa-leaf" style="color: {default_color}"></i>"""
     return returnhtml
