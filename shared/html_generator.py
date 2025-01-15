@@ -27,11 +27,11 @@ def generate_html_output(resp: list[dict], parent: dict, score_dict: dict):
 def generate_final_answer(conclusion, context, total_score: float):
     header = f"""<div class="t-header">
                     <div class="t-frame">
+                        <span>Estimated score</span>
                         <span class="score_span">
                             {color_leafs(total_score, "black")}
                             {str(total_score)}
                         </span>
-                        <span>Estimated score</span>
                     </div>
                 </div>"""
     final_resp = f"""{header}<div style="display: block"><p>{conclusion}</p>Further Details:</div>{context}"""

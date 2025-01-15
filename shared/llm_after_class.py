@@ -12,6 +12,7 @@ import random
 from pydantic import BaseModel
 from shared.score_calculator.score_analyzer import generate_score, get_total_score
 from shared.html_generator import generate_html_output, generate_final_answer
+from shared.prefilter_extractor import extract_comp_name
 
 sk = rand_k
 client = OpenAI(api_key=sk)
@@ -55,16 +56,22 @@ def replace_sentence_start(sentence:str, input):
 # from ind_key import key
 def give_conlusion(previous_text:str, phone_name, count)->str:
     context = f"""
-    You are a helpful assistant, giving conlusions about the environmental footpint related to smartphones.
-    You only refer to the as-is situation and don't give any comments on how the footprint could potentially be improved.
-    The review consists of a description of the as-is situation as well as it's impact on the environmental footprint.
-    use exclusively the text between the <input> brackets as a source of information. <input> {previous_text} </input>.
-    Keep the answer informative but brief. The length of the response should be kept arround 50 tokens.
+    You are a knowledgeable and concise assistant providing conclusions about the environmental footprint of smartphones.
+    Your task is to analyze and describe the as-is situation and its direct impact on the environmental footprint.
+    - Base your response exclusively on the information provided between the <input> brackets: <input> {previous_text} </input>.
+    - Avoid suggesting improvements or speculating on ways to reduce the environmental footprint.
+    - Keep your answer brief yet informative, aiming for approximately 50 tokens in length.
+    - Maintain a professional and objective tone in your response.
 
+    Stay focused on the provided content and deliver clear, concise conclusions.
     """
 
-    question = f"""Give a brief summary about the carbon footprint of the {phone_name}. 
-    Please mention in you summary wether the phone might have a good footprint or a rather bad one"""
+
+    question = f"""
+    Provide a brief summary of the carbon footprint of the {phone_name}. 
+    In your summary, indicate whether the phone likely has a positive (good) or negative (bad) impact on the environmental footprint.
+    """
+
     
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -96,22 +103,32 @@ class FormatWithAdjective(BaseModel):
     summary: str
     adjective: str
 
-def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes: list[int])  -> dict:
-    
-    
-    question: str = f"""Tell me about {class_name} of the {input}."""
+def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes: list[int], comp)  -> dict:
+    question_part2 = ""
+    if not comp == "general":
+        question_part2 = f"manufactured by {comp}"
+    question = f"""
+    Can you provide insights into the {class_name} of the {input} {question_part2}?
+    """
+
     fewshot_question: str = f"""Tell me about {class_name} of the Luminara-phone."""
     # comment = f""" Give the responses in the style of the following examples: Question: {fewshot_question} Answer: {fewshots[0]} Question: {fewshot_question} Answer: {fewshots[1]}"""
 
-    context = f"""You are a helpful assistant, giving reviews about {class_name} related to smartphones.
-    The review consists of a description of the as-is situation and wether this benefits or increases it's impact on the environmental footprint.
-    You only refer to the as-is situation and don't give any comments on how the footprint could potentially be improved.
-    use exclusively the text between the <input> brackets as a source of information. <input> {rag_inf} </input>.
-    Keep the answer informative but brief. The length of the response should be kept arround 50 tokens.
-    Further create one or two adjective about the environmental impact according to your response.
-    If you use two, add a fitting connector between, such as "and" or "but".
-    Convert your response into the given structure.
+    context = f"""
+    You are a knowledgeable and concise assistant providing reviews about {class_name}, focusing specifically on smartphones.
+    Your task is to analyze the provided information regarding the as-is situation and evaluate its impact on the environmental footprint.
+    - Base your response strictly on the content provided between the <input> brackets: <input> {rag_inf} </input>.
+    - Avoid suggesting improvements or discussing potential changes to the environmental footprint.
+    - Keep your response brief and informative, aiming for approximately 50 tokens in length.
+    - Conclude with one or two adjectives summarizing the environmental impact. If two adjectives are used, connect them with an appropriate conjunction like "and" or "but."
+
+    **Structure:**
+    1. A concise description of the as-is situation and its environmental impact.
+    2. One or two adjectives summarizing the environmental impact.
+
+    Stay focused, objective, and concise in your analysis.
     """
+
     sk = rand_k
     client = OpenAI(api_key=sk)
     
@@ -251,12 +268,10 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
             #   with open(f"{sourcefolder}/temp/{class_name}.txt", "w", encoding="utf-8") as file:
             #     file.write(context)
             
-            # Summarize each PDF and compile into a text file
-            response = ""
-            
+
             if context.strip():
-                    
-                response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes)
+                comp = extract_comp_name(dir)
+                response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes, comp=comp)
                 responses.append(response_dic)
                 isParent = False
         score: dict = generate_score(responses, parentcl_["json_name"])
@@ -277,8 +292,6 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
 
 
 ## Testsection
-"""
-stri = generateAnswer("iPhone SE (2nd generation)", "frontend")
-print(stri)
 
-"""
+
+
