@@ -103,30 +103,37 @@ class FormatWithAdjective(BaseModel):
     summary: str
     adjective: str
 
-def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes: list[int], comp)  -> dict:
+def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes: list[int], comp, description:str)  -> dict:
     question_part2 = ""
+    comp_add = ""
+    class_description = description
+    class_description = class_description.replace("<replacer>", input)
     if not comp == "general":
-        question_part2 = f"manufactured by {comp}"
+        question_part2 = f"Consider that the {input} is manufactured by {comp}, what efforts are done by {comp} to improve this?"
+
+        comp_add = f", and summarize {comp}'s {class_name}-related improvement efforts"
+        comp_add2 = f"- Ensure the improvement efforts described are strictly related to {class_name}."
+        comp_add3 = f"and {comp}'s {class_name}-related improvement efforts"
+
     question = f"""
-    Can you provide insights into the {class_name} of the {input} {question_part2}?
+    {class_description} {question_part2}
     """
 
-    fewshot_question: str = f"""Tell me about {class_name} of the Luminara-phone."""
     # comment = f""" Give the responses in the style of the following examples: Question: {fewshot_question} Answer: {fewshots[0]} Question: {fewshot_question} Answer: {fewshots[1]}"""
-
     context = f"""
-    You are a knowledgeable and concise assistant providing reviews about {class_name}, focusing specifically on smartphones.
-    Your task is to analyze the provided information regarding the as-is situation and evaluate its impact on the environmental footprint.
-    - Base your response strictly on the content provided between the <input> brackets: <input> {rag_inf} </input>.
-    - Avoid suggesting improvements or discussing potential changes to the environmental footprint.
-    - Keep your response brief and informative, aiming for approximately 50 tokens in length.
-    - Conclude with one or two adjectives summarizing the environmental impact. If two adjectives are used, connect them with an appropriate conjunction like "and" or "but."
+    You are a knowledgeable and concise assistant providing reviews about {class_name}, focusing specifically on smartphones.\n
+    Your task is to analyze the provided information regarding the as-is situation, evaluate its environmental impact{comp_add}.\n
+    - Base your response strictly on the content provided between the <input> brackets: <input> {rag_inf} </input>.\n
+    {comp_add2}\n
+    - Avoid suggesting improvements or discussing potential changes to the environmental footprint.\n
+    - Keep your response brief and informative, aiming for approximately 50 tokens in length.\n
+    - Conclude with one or two adjectives summarizing the environmental impact. If two adjectives are used, connect them with an appropriate conjunction like "and" or "but."\n
 
-    **Structure:**
-    1. A concise description of the as-is situation and its environmental impact.
-    2. One or two adjectives summarizing the environmental impact.
+    **Structure:**\n
+    1. A concise description of the as-is situation and its environmental impact {comp_add3}.\n
+    2. One or two adjectives summarizing the environmental impact.\n
 
-    Stay focused, objective, and concise in your analysis.
+    Stay focused, objective, and concise in your analysis.\n
     """
 
     sk = rand_k
@@ -234,8 +241,7 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
     scores_list = []
     final_responses = []
     # Step 1: Download and read JSON files
-    url_d = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/2cd_cycle/labels_with_descriptions_structured.json"
-    load_class_data_from_git(sourcefolder, url_d)
+    load_class_data_from_git(sourcefolder)
     data = []
     with open(f"{sourcefolder}/temp/classes.json", "r") as file:
         data = json.load(file)
@@ -248,6 +254,7 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
         for entity in entities:
             class_name = entity["name"]
             footnotes = extract_footnotes(class_name, dir, foot_note_list)
+            descr = entity["description"]
             css_name = entity["json_name"]
             context = ""
             try:
@@ -271,7 +278,7 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
 
             if context.strip():
                 comp = extract_comp_name(dir)
-                response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes, comp=comp)
+                response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes, comp=comp, description=descr)
                 responses.append(response_dic)
                 isParent = False
         score: dict = generate_score(responses, parentcl_["json_name"])
@@ -292,6 +299,6 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
 
 
 ## Testsection
-
+##print(generateAnswer("Fairphone 5","frontend"))
 
 

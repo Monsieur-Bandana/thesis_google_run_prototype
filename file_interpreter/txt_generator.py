@@ -3,6 +3,8 @@ import os
 
 mainf = "file_interpreter"
 
+collection_of_ignore_terms = ["are not detailed", "The text does not", "is not addressed in the text", "not outlined in the text"]
+
 def process_json_to_text(json_file_path, classes, brandn, file_n_opt="struct") -> bool:
     """
     - transforms json file in txt summaries
@@ -29,7 +31,11 @@ def process_json_to_text(json_file_path, classes, brandn, file_n_opt="struct") -
             # Collect string values from all elements for the current key
             for element in data:
                 if key in element and isinstance(element[key], str):
-                    collected_strings.append(element[key])
+                    var_text: str = element[key]
+                    for ig_t in collection_of_ignore_terms:
+                        if ig_t in var_text:
+                            var_text = ""
+                    collected_strings.append(var_text)
                 else:
                     collected_strings.append('')  # Handle missing or non-string values
 

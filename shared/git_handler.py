@@ -1,7 +1,7 @@
 import requests
 from shared.ind_key import git
 import os
-url_def = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/2cd_cycle/labels_with_descriptions.json"
+url_def = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/main/labels_with_descriptions_structured.json"
 
 def load_class_data_from_git(parent: str, url=url_def):
     # URL to the raw JSON file in the GitHub repository
