@@ -30,7 +30,7 @@
             {
                 "name": "Toxic Chemicals",
                 "json_name": "chemicals",
-                "description": "Which toxic chemicals are present in the components of <replacer> Smartphones?",
+                "description": "Which toxic chemicals and plastics are present in the components of <replacer> Smartphones?",
                 "parent": "Materials",
                 "tokens": [
                     "Beryllium",
@@ -41,17 +41,6 @@
                     "Mercury",
                     "Chemicals",
                     "Chemical"
-                ]
-            },
-            {
-                "name": "Alternative Materials",
-                "json_name": "alternatives",
-                "description": "Do <replacer> Smartphones contain environmentally friendly alternatives to reduce the reliance on rare earth elements or toxic chemicals?",
-                "parent": "Materials",
-                "tokens": [
-                    "Bio-based plastic",
-                    "Recycled materials",
-                    "Recycling"
                 ]
             },
             {
