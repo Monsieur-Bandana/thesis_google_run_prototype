@@ -225,7 +225,7 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
     brandlist: list[str] = download_and_extract_json("all_companies", sourcefolder)
     foot_note_list: list[dict] = download_and_extract_json("footnotes", sourcefolder)
 
-    print(foot_note_list)
+    # print(foot_note_list)
     brandlist.append("general")
 
     dir = "general"
@@ -299,5 +299,5 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
 
 
 ## Testsection
-# print(generateAnswer("Fairphone 5","frontend"))
-
+#print(generateAnswer("iPhone 16","frontend"))
+#print(generateAnswer("Fairphone 5","frontend"))
