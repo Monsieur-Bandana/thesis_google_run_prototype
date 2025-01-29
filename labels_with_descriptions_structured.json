@@ -6,7 +6,7 @@
             {
                 "name": "Metals",
                 "json_name": "metals",
-                "description": "Which metals, particularly rare earth elements, are used in the production of <replacer> smartphones?",
+                "description": "Which metals, particularly rare earth elements, are used in the production of <replacer> smartphones? Are components created from recycled materials, all components or only some particular components?",
                 "parent": "Materials",
                 "tokens": [
                     "Tungsten",
