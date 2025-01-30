@@ -15,12 +15,12 @@ with open(f"shared/score_calculator/score_examples.json", "r") as file:
         example_dict = json.load(file)
 
 
-def generate_score(respones: list[dict], json_name)->dict:
+def generate_score(respone: str, json_name)->float:
 
+    """
     context: str = " "
     for el in respones:
         context = context + el["html_output"]
-    """
     prompt=f"{context}\nPress Enter to continue..."
     input(prompt)
     """
@@ -41,7 +41,7 @@ def generate_score(respones: list[dict], json_name)->dict:
              """},
             {
                 "role": "user",
-                "content": f"[{context}] //"
+                "content": f"[{respone}] //"
             }
             
         ],
@@ -53,7 +53,7 @@ def generate_score(respones: list[dict], json_name)->dict:
     # print(generated_text)
     float_value = float(generated_text)
 
-    return {"score": float_value, "reasoning": ""}
+    return float_value
 
 def get_total_score(scores:list[float]):
     t_score=5-0.83*(5-scores[0])-0.2*(5-scores[1])-0.15*(5-scores[2])+0.06*scores[4]

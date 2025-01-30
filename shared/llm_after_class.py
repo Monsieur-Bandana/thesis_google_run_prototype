@@ -11,8 +11,9 @@ from shared.test_center import conclusion_tester
 import random
 from pydantic import BaseModel
 from shared.score_calculator.score_analyzer import generate_score, get_total_score
-from shared.html_generator import generate_html_output, generate_final_answer
+from shared.html_generator import generate_html_output, generate_conclusional_header
 from shared.prefilter_extractor import extract_comp_name
+from shared.structured_output_creator import InterpreterFormatWithAdjectiveucture
 
 sk = rand_k
 client = OpenAI(api_key=sk)
@@ -87,11 +88,13 @@ def give_conlusion(previous_text:str, phone_name, count)->str:
     
     generated_text = completion.choices[0].message.content
     if conclusion_tester(generated_text):
+        """
         text_parts: list[str] = generated_text.split(",")
         print(f"outclist: {text_parts}")
-        bold_text: str = f"""<span style="font-weight: bold">{text_parts[len(text_parts)-1]}<span>"""
+        bold_text: str = f"<span style="font-weight: bold">{text_parts[len(text_parts)-1]}<span>"
         generated_text: str = ",".join(text_parts[:-1])
         generated_text = generated_text + "," + bold_text
+        """
         return generated_text
     elif count < 4: 
         count = count + 1
@@ -99,38 +102,31 @@ def give_conlusion(previous_text:str, phone_name, count)->str:
     else:
         return "An Error happened generating the summary"
 
-class FormatWithAdjective(BaseModel):
-    summary: str
-    adjective: str
 
-def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes: list[int], comp, description:str)  -> dict:
-    question_part2 = ""
+def activate_api(input: str, question: str, rag_inf: str, comp)  -> dict:
+
     comp_add = ""
-    class_description = description
-    class_description = class_description.replace("<replacer>", input)
+
     if not comp == "general":
-        question_part2 = f"Considering that the {input} is manufactured by {comp}, what efforts are done by {comp} to improve {class_name}?"
 
-        comp_add = f", and summarize {comp}'s {class_name}-related improvement efforts"
-        comp_add2 = f"- Ensure the improvement efforts described are strictly related to {class_name}."
-        comp_add3 = f"and {comp}'s {class_name}-related improvement efforts"
+        comp_add = f", and summarize {comp}'s improvement efforts"
 
-    question = f"""
-    {class_description} {question_part2}
-    """
+
+
 
     # comment = f""" Give the responses in the style of the following examples: Question: {fewshot_question} Answer: {fewshots[0]} Question: {fewshot_question} Answer: {fewshots[1]}"""
     context = f"""
-    You are a knowledgeable and concise assistant providing reviews about {class_name}, focusing specifically on smartphones.\n
+    You are a knowledgeable and concise assistant providing reviews about the environmental footprint of the {input} by {comp}.\n
     Your task is to analyze the provided information regarding the as-is situation, evaluate its environmental impact{comp_add}.\n
+    For that you will receive textual documents about various environmet-related aspects. \n
     - Base your response strictly on the content provided between the <input> brackets: <input> {rag_inf} </input>.\n
-    {comp_add2}\n
     - Avoid suggesting improvements or discussing potential changes to the environmental footprint.\n
-    - Conclude with one or two adjectives summarizing the environmental impact. If two adjectives are used, connect them with an appropriate conjunction like "and" or "but."\n
-    - Keep your response brief and informative, aiming for not more than 50 tokens in length.\n
+    - Each category should receive one or two adjectives summarizing the environmental impact. If two adjectives are used, connect them with an appropriate conjunction like "and" or "but."\n
+
 
     **Structure:**\n
-    1. A concise description of the as-is situation and its environmental impact {comp_add3}.\n
+    Give a structured response, by provoding text for the presented categories and sub-categories. Further each subcategory consists of...
+    1. A concise description of the as-is situation and its environmental impact {comp_add}.\n
     2. One or two adjectives summarizing the environmental impact.\n
 
     Stay focused, objective, and concise in your analysis.\n
@@ -149,28 +145,25 @@ def activate_api(input: str, class_name: str, rag_inf: str, isParent, footnotes:
             }
         ],
         temperature=0.5,
-        response_format=FormatWithAdjective
+        response_format=InterpreterFormatWithAdjectiveucture
     )
 
     generated_answer:str = completion.choices[0].message.content
+    """
     generated_answer_dict:dict = json.loads(generated_answer)
     
     generated_text:str = generated_answer_dict["summary"]
     generated_adj:str = generated_answer_dict["adjective"]
     generated_adj = generated_adj.capitalize()
-
     if not isParent:
         generated_text = replace_sentence_start(generated_text, input)
 
     html_output = ''.join(f'{line} ' for line in generated_text.split('\n') if line.strip())
 
-    footnotes.sort()
-    footnotes_span: str = ', '.join(map(str, footnotes))
-    footnotes_span = ""
-
     resp_dict: dict = {"class_name": class_name, "generated_adj": generated_adj, "html_output": html_output, "footnotes_span": footnotes_span}
+    """
 
-    return resp_dict
+    return json.loads(generated_answer)
 
 def getContext(dir, class_name, sourcefolder):
     local_file_path = f"{sourcefolder}/temp/{dir}-{class_name}.txt"
@@ -205,7 +198,6 @@ def download_and_extract_json(file_name, sourcefolder)->list:
     outc_list = []
     with open(f"{sourcefolder}/temp/{file_name}.json", "r") as file:
         outc_list = json.load(file)
-    print(outc_list)
     return outc_list
 
 def extract_footnotes(class_n, dir_, foot_note_list:list[dict])->list:
@@ -217,6 +209,20 @@ def extract_footnotes(class_n, dir_, foot_note_list:list[dict])->list:
                 if fel["category"] == dir_:
                     outc_list.append(fel["footnote"])
     return outc_list
+
+def get_parent_name(data: list, json_code: str)->dict:
+    for el in data:
+        if el["json_name"] == json_code:
+            inner_items = el["list"]
+            return {"name": el["name"], "list": inner_items}
+    return "Couldn't find name"
+
+def get_entity_name(data: list[dict], json_code: str)->str:
+    for el in data:
+        if el["json_name"] == json_code:
+            return el["name"]
+    return "Couldn't find name"
+
 
 def generateAnswer(input: str, sourcefolder, string_mode=True):
     bucket_name = "raw_pdf_files"
@@ -245,59 +251,96 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
     data = []
     with open(f"{sourcefolder}/temp/classes.json", "r") as file:
         data = json.load(file)
+    context = ""
+    comp = extract_comp_name(dir)
+    prompt = f"""In the following there is a list of questions. 
+    Please describe for each the status quo related to the {input} and what the {comp} is doing to improve the situation.\n
+    """
+    count = 0
+    score_name_list: list[str] = []
     for parentcl_ in data:
         # transform data in llm format
         entities = parentcl_["list"]
         responses = []
         isParent = True
+        score_name = parentcl_["json_name"]
+        score_name_list.append(score_name)
         # Step 2: Process each class
         for entity in entities:
             class_name = entity["name"]
             footnotes = extract_footnotes(class_name, dir, foot_note_list)
             descr = entity["description"]
             css_name = entity["json_name"]
-            context = ""
+            context = context + f"\n \n##{class_name}##\n \n"
             try:
                 download_file_from_bucket(bucket_name, f"summaries_struct_c/{dir}-{class_name}.txt", f"{sourcefolder}/temp/{dir}-{class_name}.txt")
-                context = getContext(dir, class_name, sourcefolder)
+                context =  context + getContext(dir, class_name, sourcefolder) +"\n"
             except NotFound:
                 print(f"file summaries_struct_c/{dir}-{class_name}.txt not found")
 
 
 
-            if not dir == "general":
-                try:
-                    download_file_from_bucket(bucket_name, f"summaries_struct_c/general-{class_name}.txt", f"{sourcefolder}/temp/general-{class_name}.txt")
-                    context = get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input) + context + getContext("general", class_name, sourcefolder) 
-                except NotFound:
-                    print(f"file summaries_struct_c/general-{class_name}.txt not found")
                 footnotes = footnotes + extract_footnotes(class_name, "general", foot_note_list)
             #   with open(f"{sourcefolder}/temp/{class_name}.txt", "w", encoding="utf-8") as file:
             #     file.write(context)
+            class_description: str = descr
+            class_description = class_description.replace("<replacer>", input)
             
 
-            if context.strip():
-                comp = extract_comp_name(dir)
-                response_dic: dict = activate_api(input=input, class_name=class_name, rag_inf=context, isParent=isParent, footnotes=footnotes, comp=comp, description=descr)
-                responses.append(response_dic)
-                isParent = False
-        score: dict = generate_score(responses, parentcl_["json_name"])
-        final_responses.append(generate_html_output(resp=responses, parent=parentcl_, score_dict=score))
-         
-        scores_list.append(score["score"]) 
+            prompt = prompt + class_description + "\n"
+            count = count + 1
+            
+    prompt = prompt + f"Your answer should in total consist at least of {str(count * 50  + 100)} tokens."
+    if not dir == "general":
+        try:
+            download_file_from_bucket(bucket_name, f"summaries_struct_c/general-{class_name}.txt", f"{sourcefolder}/temp/general-{class_name}.txt")
+            context = get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input) + context + getContext("general", class_name, sourcefolder) 
+        except NotFound:
+            print(f"file summaries_struct_c/general-{class_name}.txt not found")
+    if context.strip():
+
+        response_dic: dict = activate_api(input=input, question=prompt, rag_inf=context, comp=comp)
+        
+
+
+
+    final_resp = ""
+    for sc_ in score_name_list:
+        enity_dic: dict = response_dic[sc_]
+        summary_col: str = ""
+        sc_dict = get_parent_name(data=data, json_code=sc_)
+        for value in enity_dic.values(): 
+            summary: str = value["summary"]
+            summary_col = f"{summary_col} {summary}"
+            value["class_name"] = get_entity_name(data=sc_dict["list"], json_code=value)
+        response_dic[sc_]["name"] = sc_dict["name"]
+        score: dict = generate_score(summary_col, sc_)
+        response_dic[sc_]["score"] = score
+        scores_list.append(score)            
+        final_resp = final_resp + f" {summary_col}"
+    total_score = get_total_score(scores_list)
+    conclusion = give_conlusion(final_resp, input, 0)
+    response_dic["conclusion"] = {"summary": conclusion, "score": total_score}
+
+    html_out = generate_html_output(response_dic)
+    print(html_out)
+
+    """
+    final_responses.append(generate_html_output(resp=responses, parent=parentcl_, score_dict=score))
+        
+    scores_list.append(score["score"]) 
 
     totalscore = get_total_score(scores_list)
     
-    final_resp = " ".join(final_responses)
-    conclusion = give_conlusion(final_resp, input, 0)
     final_html_resp = generate_final_answer(conclusion, final_resp, totalscore)
     if string_mode:
         return final_html_resp
     else:
         return {"answer": final_html_resp, "score": totalscore}
+    """
 
 
 
 ## Testsection
 #print(generateAnswer("iPhone 16","frontend"))
-#print(generateAnswer("Fairphone 5","frontend"))
+print(generateAnswer("Fairphone 5","frontend"))
