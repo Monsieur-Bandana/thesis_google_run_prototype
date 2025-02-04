@@ -1,0 +1,8 @@
+Metadata-Version: 2.2
+Name: score_calculator
+Version: 0.1
+Requires-Dist: openai
+Requires-Dist: google-api-core
+Requires-Dist: google-cloud-core
+Requires-Dist: google-cloud-storage
+Dynamic: requires-dist

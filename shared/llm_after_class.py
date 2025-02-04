@@ -10,10 +10,11 @@ from shared.git_handler import load_class_data_from_git
 from shared.test_center import conclusion_tester
 import random
 from pydantic import BaseModel
-from shared.score_calculator.score_analyzer import generate_score, get_total_score
+
 from shared.html_generator import generate_html_output, generate_conclusional_header
 from shared.prefilter_extractor import extract_comp_name
 from shared.structured_output_creator import InterpreterFormatWithAdjectiveucture
+from shared.json_processor import create_json_file
 
 sk = rand_k
 client = OpenAI(api_key=sk)
@@ -314,16 +315,19 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
             summary_col = f"{summary_col} {summary}"
             value["class_name"] = get_entity_name(data=sc_dict["list"], json_code=value)
         response_dic[sc_]["name"] = sc_dict["name"]
-        score: dict = generate_score(summary_col, sc_)
-        response_dic[sc_]["score"] = score
-        scores_list.append(score)            
+           
         final_resp = final_resp + f" {summary_col}"
-    total_score = get_total_score(scores_list)
-    conclusion = give_conlusion(final_resp, input, 0)
-    response_dic["conclusion"] = {"summary": conclusion, "score": total_score}
 
-    html_out = generate_html_output(response_dic)
-    print(html_out)
+    conclusion = give_conlusion(final_resp, input, 0)
+    response_dic["conclusion"] = {"summary": conclusion}
+    response_dic["name"] = input
+
+    save_file = f"{sourcefolder}/temp/generated_reviews_no_score.json"
+    create_json_file(response_dic, "", save_file)
+
+    return
+
+
 
     """
     final_responses.append(generate_html_output(resp=responses, parent=parentcl_, score_dict=score))
@@ -343,4 +347,4 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
 
 ## Testsection
 #print(generateAnswer("iPhone 16","frontend"))
-print(generateAnswer("Fairphone 5","frontend"))
+print(generateAnswer("Fairphone 5","text_generator"))
