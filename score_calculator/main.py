@@ -30,6 +30,7 @@ def _ex(response_dic:dict, sourcefolder:str):
 
 
 
+"""
 resp_dic = {
         "materials": {
             "metals": {
@@ -139,3 +140,5 @@ resp_dic = {
 
 src = "text_generator"
 _ex(resp_dic, src)
+
+"""

@@ -3,7 +3,8 @@ from setuptools import setup, find_packages
 setup(
     name="score_calculator",
     version="0.1",
-    packages=find_packages(),  # Automatically find the `shared` package
+    author="Nicolas W",
+    packages=find_packages(),
     install_requires=[
         "openai",
         "google-api-core",

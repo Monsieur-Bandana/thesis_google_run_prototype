@@ -225,7 +225,7 @@ def get_entity_name(data: list[dict], json_code: str)->str:
     return "Couldn't find name"
 
 
-def generateAnswer(input: str, sourcefolder, string_mode=True):
+def generateAnswer(input: str, sourcefolder, string_mode=True)->dict:
     bucket_name = "raw_pdf_files"
     
     create_temp_folder(sourcefolder)
@@ -325,7 +325,7 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
     save_file = f"{sourcefolder}/temp/generated_reviews_no_score.json"
     create_json_file(response_dic, "", save_file)
 
-    return
+    return response_dic
 
 
 
@@ -347,4 +347,4 @@ def generateAnswer(input: str, sourcefolder, string_mode=True):
 
 ## Testsection
 #print(generateAnswer("iPhone 16","frontend"))
-print(generateAnswer("Fairphone 5","text_generator"))
+#print(generateAnswer("Fairphone 5","text_generator"))

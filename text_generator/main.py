@@ -5,8 +5,10 @@ retrieve texts
 upload text to google cloud storage
 TODO: remove hashtag preventing file upload
 """
+
 from shared.llm_after_class import generateAnswer
 from shared.gcs_handler import download_file_from_bucket, list_files_in_folder, upload_file, create_temp_folder
+from score_calculator import main
 import json
 
 source_folder = "text_generator"
@@ -43,30 +45,26 @@ def create_and_upload_json(list_, additive=""):
     # Write the string to the file
         json.dump(list_, file)
 
-    upload_file(bucket_name, file_, f'json_files/phones_with_scores_{additive}.json')
+    # upload_file(bucket_name, file_, f'json_files/phones_with_scores_{additive}.json')
 
 create_temp_folder(source_folder)
 all_phones = access_list_of_phones()
 already_rendered_phones = []
 already_rendered_phones = create_list_of_already_rendered_phones()
-phones_with_scores: list[dict] = []
+
 
 for phone in all_phones:
     if not phone in already_rendered_phones:
-        resp: str = generateAnswer(phone, source_folder, False)
-        with open(f'{source_folder}/temp/{phone}.html', 'w', encoding='utf-8') as file:
-        # Write the string to the file
-            file.write(resp["answer"])
-        upload_file(bucket_name, f'{source_folder}/temp/{phone}.html', f'pre_rendered_texts_c/{phone}.html')
-        print(f"{phone} completed")
-        phones_with_scores.append({"name": phone, "score": resp["score"]})
+        resp: dict = generateAnswer(phone, source_folder, False)
+        main._ex(resp)
+
     else:
         print(f"{phone} got already generated")
+with open("generated_reviews_with_score.json", "r") as file:
 
+    phones_with_scores = json.load(file)
 
-create_and_upload_json(list_=phones_with_scores)
-
-sorted_scores = sorted(phones_with_scores, key=lambda x: x['score'])
+sorted_scores = sorted(phones_with_scores, key=lambda x: x['conclusion']['score'])
 
 best_phones = sorted_scores[-4:]
 best_phones.reverse()
