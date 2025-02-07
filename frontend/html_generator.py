@@ -18,7 +18,7 @@ def create_header(title: str, json_name: str, score: float):
 def generate_html_output(resp: dict):
     final_response = ""
     for key, val in resp.items():
-        if not key == "conclusion":
+        if key not in ["conclusion", "name"]:
             h_ = create_header(title=val["name"], json_name=key, score=val["score"])
             final_response = final_response + h_
             sub_dic_list: dict = val
