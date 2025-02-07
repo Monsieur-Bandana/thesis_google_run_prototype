@@ -10,8 +10,6 @@ from shared.git_handler import load_class_data_from_git
 from shared.test_center import conclusion_tester
 import random
 from pydantic import BaseModel
-
-from shared.html_generator import generate_html_output, generate_conclusional_header
 from shared.prefilter_extractor import extract_comp_name
 from shared.structured_output_creator import InterpreterFormatWithAdjectiveucture
 from shared.json_processor import create_json_file

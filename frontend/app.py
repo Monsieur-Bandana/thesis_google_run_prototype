@@ -52,7 +52,9 @@ def loadAnswer(name)->str:
     file_content = ""
     file_path = f"{folder}/temp/{name}.html"
 
-
+    # download json
+    # find element or maybe el is in name
+    # generate_html_anser
     try:
         download_file_from_bucket(bucket, f"pre_rendered_texts_c/{name}.html", file_path)
 

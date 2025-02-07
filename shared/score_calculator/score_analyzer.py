@@ -11,7 +11,7 @@ class AnswerWithReasoning(BaseModel):
 sk = rand_k
 client = OpenAI(api_key=sk)
 example_dict:dict = {}
-with open(f"score_calculator/score_examples.json", "r") as file:
+with open(f"shared/score_calculator/score_examples.json", "r") as file:
         example_dict = json.load(file)
 
 

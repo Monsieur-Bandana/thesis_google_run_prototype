@@ -1,4 +1,4 @@
-from score_analyzer import generate_score, get_total_score
+from shared.score_calculator.score_analyzer import generate_score, get_total_score
 from shared.json_processor import create_json_file
 
 def _ex(response_dic:dict, sourcefolder:str):
@@ -140,5 +140,6 @@ resp_dic = {
 
 src = "text_generator"
 _ex(resp_dic, src)
+
 
 """

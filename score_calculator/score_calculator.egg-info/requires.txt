@@ -1,4 +1,0 @@
-openai
-google-api-core
-google-cloud-core
-google-cloud-storage
