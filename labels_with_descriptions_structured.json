@@ -47,7 +47,7 @@
     },
     {
         "name": "Repairability and Modifability",
-        "json_name": "repairability_and_modifiablity",
+        "json_name": "repairability_and_modifiability",
         "list": [
             {
                 "name": "Ease of Repair",
