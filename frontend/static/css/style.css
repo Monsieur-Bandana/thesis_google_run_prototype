@@ -566,3 +566,18 @@ li {
 #logo_header img {
     height: 100%
 }
+
+/* Default link color */
+a {
+    color: black;
+}
+
+/* Link color after being clicked (visited state) */
+a:visited {
+    color: rgb(0, 49, 0);
+}
+
+/* Optional: Add hover effect */
+a:hover {
+    color: green;
+}

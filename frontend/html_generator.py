@@ -12,14 +12,40 @@ def create_header(title: str, json_name: str, score: float):
                         {str(score)}
                         </span>
                     </div>
+                  
     """
-    return header_html    
+    return header_html 
+
+def addTableEntry(title: str, json_name: str, score: float):
+    add_html = ""
+    if score == 5.0:
+        add_html = """style= "color: green" """
+    header_html = f"""
+                    <td>
+                        <a href="#{json_name}">{title}</a>
+                    </td>
+                    <td>
+                        <span {add_html}>
+                        {color_leafs(score, "black")}
+                        {str(score)}
+                        </span>
+                    </td>
+                    
+    """
+    return header_html       
 
 def generate_html_output(resp: dict):
     final_response = ""
+    tablecounter = 0
+    table = """<table style="width: 100%">"""
     for key, val in resp.items():
         if key not in ["conclusion", "name"]:
             h_ = create_header(title=val["name"], json_name=key, score=val["score"])
+            if tablecounter%2==0:
+                table = table + f"<tr>{addTableEntry(title=val["name"], json_name=key, score=val["score"])}"
+            else:
+                table = table + f"{addTableEntry(title=val["name"], json_name=key, score=val["score"])}</tr>"
+            tablecounter = tablecounter + 1
             final_response = final_response + h_
             sub_dic_list: dict = val
             final_response = final_response + "<ul>"
@@ -32,12 +58,16 @@ def generate_html_output(resp: dict):
                     final_response = final_response + line
 
             final_response = final_response + "</ul>"
-    final_response = generate_conclusional_header(conclusion=resp["conclusion"]["summary"], total_score=resp["conclusion"]["score"]) + final_response
+    if not table.endswith("</tr>"):
+        table = table + "</tr>"
+
+    table = table + "</table>"
+    final_response = generate_conclusional_header(conclusion=resp["conclusion"]["summary"], table = table, total_score=resp["conclusion"]["score"]) + final_response
         
 
     return final_response
 
-def generate_conclusional_header(conclusion, total_score: float):
+def generate_conclusional_header(conclusion, total_score: float, table):
     header = f"""<div class="t-header">
                     <div class="t-frame">
                         <span>Estimated score</span>
@@ -47,19 +77,26 @@ def generate_conclusional_header(conclusion, total_score: float):
                         </span>
                     </div>
                 </div>"""
-    final_resp = f"""{header}<div style="display: block"><p>{conclusion}</p>Further Details:</div>"""
+    final_resp = f"""{header}{table}<div style="display: block"><p>{conclusion}</p>Further Details:</div>"""
     return final_resp
 
 def color_leafs(score: float, default_color="white"):
+    color = "green"
+    if score < 4.0:
+        color = "rgb(138, 193, 107)"
+    if score < 3.0:
+        color = "rgb(242, 140, 40)"
+    if score < 2.0:
+        color = "rgb(104, 53, 33)"
     returnhtml: str = ""
     scd_digit = score%1
     first_digit = score-scd_digit
     first_digit = int(first_digit)
     for i in range(0, first_digit):
-        returnhtml = returnhtml + """<i class="fa fa-leaf" style="color: green"></i>"""
+        returnhtml = returnhtml + f"""<i class="fa fa-leaf" style="color: {color}"></i>"""
     if first_digit < 5:
         border_percent = int(scd_digit * 100)
-        relative_icon = f"""<i class="fa fa-leaf" style="background: linear-gradient(to right, green 0% {str(border_percent)}%, {default_color} {str(border_percent)}% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>"""
+        relative_icon = f"""<i class="fa fa-leaf" style="background: linear-gradient(to right, {color} 0% {str(border_percent)}%, {default_color} {str(border_percent)}% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>"""
         returnhtml = returnhtml + relative_icon
     for i in range(first_digit + 1 , 5):
         returnhtml = returnhtml + f"""<i class="fa fa-leaf" style="color: {default_color}"></i>"""
