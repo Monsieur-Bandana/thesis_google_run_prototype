@@ -338,25 +338,29 @@ li {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    min-height: 230px;
+    min-height: 50px;
+    margin-top: 50px;
+    background: radial-gradient(circle at 20% 30%, #fdfcfb, #f5ebe0 30%, transparent 60%),
+        radial-gradient(circle at 80% 20%, #e4d3c3, #d5bdaF 50%, transparent 70%),
+        radial-gradient(circle at 50% 80%, #c2a28b, #a78f78 40%, transparent 80%);
 }
 
 .headline span {
     background-color: #0000008a;
-    font-size: 2.3rem;
+
     padding: 0 10px;
     position: absolute;
 }
 
 .title_span {
-    top: 30px;
-    left: 30px;
+    bottom: 15px;
+    left: 15px;
+    font-size: 1.5rem;
 }
 
 .score_span {
-
-    bottom: 30px;
-    right: 30px;
+    top: 10px;
+    right: 10px;
 }
 
 #materials {
@@ -367,10 +371,11 @@ li {
     background-image: url(/static/images/transportation.jpg);
 }
 
+/*
 #production {
     background-image: url(/static/images/production.jpg);
 }
-
+*/
 #use {
     background-image: url(/static/images/use-neg.jpg);
 }
@@ -378,6 +383,13 @@ li {
 #end_of_life {
     background-image: url(/static/images/eol.jpg);
 }
+
+td {
+    vertical-align: top;
+    text-align: left;
+    padding-bottom: 8px;
+}
+
 
 .tooltiptext {
     visibility: hidden;

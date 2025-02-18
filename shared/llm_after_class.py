@@ -11,7 +11,7 @@ from shared.test_center import conclusion_tester
 import random
 from pydantic import BaseModel
 from shared.prefilter_extractor import extract_comp_name
-from shared.structured_output_creator import InterpreterFormatWithAdjectiveucture
+from shared.structured_output_creator import InterpreterFormatWithAdjectiveStructure
 from shared.json_processor import create_json_file
 
 sk = rand_k
@@ -144,7 +144,7 @@ def activate_api(input: str, question: str, rag_inf: str, comp)  -> dict:
             }
         ],
         temperature=0.5,
-        response_format=InterpreterFormatWithAdjectiveucture
+        response_format=InterpreterFormatWithAdjectiveStructure
     )
 
     generated_answer:str = completion.choices[0].message.content

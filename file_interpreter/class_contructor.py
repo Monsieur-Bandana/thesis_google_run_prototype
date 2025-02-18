@@ -1,34 +1,27 @@
 from pydantic import BaseModel
 
-class Materials(BaseModel):
-    metals: str
-    chemicals: str
-    alternatives: str
-    origin: str
-class Transportation(BaseModel):
-    transportation: str
-class Production(BaseModel):
-    production_process: str
-    production_waste: str
-    supplier_energy_use: str
-    location_of_assembly: str
-class Use(BaseModel):
+class BatteryQuality(BaseModel):
+    quality_of_battery: str
+class Longevity(BaseModel):
+    durability: str
+    planned_obsolescence: str
+class RepairabilityAndModifiability(BaseModel):
     ease_of_reparation: str
     ease_of_modification: str
-    top_notch_technology: str
-    quality_of_battery: str
-    durability: str
-    energy_consumption: str
-class EndOfLife(BaseModel):
-    planned_obsolescence: str
-    second_use: str
-    recycling: str
+class Production(BaseModel):
+    origin: str
+    transportation: str
+    manufactoring: str
+class RecycledParts(BaseModel):
+    recycled_parts: str
+class SustainableInnovativity(BaseModel):
+    innovativity: str
 
-class_list: list = [Materials, Transportation, Production, Use, EndOfLife]
 
 class InterpreterStructure(BaseModel):
-    materials: Materials
-    transportation: Transportation
+    quality_of_battery: BatteryQuality
+    longevity: Longevity
+    repairability_and_modifiability: RepairabilityAndModifiability
     production: Production
-    use: Use
-    end_of_life: EndOfLife
+    recycled_parts: RecycledParts
+    innovativity: SustainableInnovativity

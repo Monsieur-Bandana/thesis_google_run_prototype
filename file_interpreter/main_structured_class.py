@@ -7,7 +7,7 @@ from json_processor import merge_json_information, create_json_file, check_file_
 from shared.git_handler import load_class_data_from_git
 from shared.gcs_handler import list_files_in_folder, download_file_from_bucket, upload_file, list_directories_in_bucket, create_temp_folder
 from shared.ind_key import rand_k
-from class_contructor import class_list, InterpreterStructure
+from class_contructor import InterpreterStructure
 
 # Configure your Google Cloud and OpenAI API credentials
 sk = rand_k

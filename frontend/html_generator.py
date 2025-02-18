@@ -21,7 +21,7 @@ def addTableEntry(title: str, json_name: str, score: float):
     if score == 5.0:
         add_html = """style= "color: green" """
     header_html = f"""
-                    <td>
+                    <td style="width: 25%">
                         <a href="#{json_name}">{title}</a>
                     </td>
                     <td>
@@ -77,7 +77,19 @@ def generate_conclusional_header(conclusion, total_score: float, table):
                         </span>
                     </div>
                 </div>"""
-    final_resp = f"""{header}{table}<div style="display: block"><p>{conclusion}</p>Further Details:</div>"""
+    final_resp = f"""{header}{table}
+    <div style="display: flex; justify-content: flex-end;">
+        <div>
+            <i class="fa fa-info-circle"></i> Press the links for getting further insights!
+        </div>
+    </div>
+    <div style="display: block; margin-top: 15px">{conclusion}</div>
+    <div class="t-header">
+        <div class="t-frame">
+            <span>Fulltext reviews:</span>
+        </div>
+    </div>
+    """
     return final_resp
 
 def color_leafs(score: float, default_color="white"):
