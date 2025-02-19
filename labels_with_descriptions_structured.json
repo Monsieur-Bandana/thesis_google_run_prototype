@@ -7,6 +7,7 @@
                 "name": "Battery Quality",
                 "json_name": "quality_of_battery",
                 "description": "How long does the battery of a <replacer>-phone remain reliable? Is the battery easily replaceable?",
+                "interpreter": "The role of the smartphone's battery on the smartphones footprint",
                 "parent": "Use",
                 "tokens": [
                     "Battery life",
@@ -24,7 +25,8 @@
             {
                 "name": "Durability",
                 "json_name": "durability",
-                "description": "How long can the <replacer>-phone remain functional and relevant? How resistant is it to physical damage?",
+                "description": "How long can the <replacer>-phone remain functional and relevant? How resistant is it to physical damage? What is the estimated livespan?",
+                "interpreter": "In which way does the smartphone's durability influence the smartphones environmental impact? Which characteristics make a smartphone durable?",
                 "parent": "Use",
                 "tokens": [
                     "Longevity",
@@ -35,7 +37,7 @@
             {
                 "name": "Planned Obsolescence",
                 "json_name": "planned_obsolescence",
-                "description": "Does the <replacer> Company employ strategies, such as performance-reducing software updates, to encourage users to replace their phones within a few years?",
+                "description": "Does the <replacer>-phone Company employ strategies, such as performance-reducing software updates, to encourage users to replace their phones within a few years?",
                 "parent": "End of Life",
                 "tokens": [
                     "Discontinuity of support",
@@ -80,7 +82,7 @@
             {
                 "name": "Raw Materials Origin",
                 "json_name": "origin",
-                "description": "Where are the natural resources used in the <replacer> smartphone production coming from? Specifically, where are the mines located for rare earth elements used in metal extraction?",
+                "description": "Where are the natural resources used in the <replacer>-phone production coming from? Specifically, where are the mines located for rare earth elements used in metal extraction?",
                 "parent": "Materials",
                 "tokens": [
                     "Mines",
@@ -133,6 +135,19 @@
                 "name": "Sustainable Innovativity",
                 "json_name": "innovativity",
                 "description": "What does the manufacturer of the <replacer>-phone do for the environment? Does the <replacer>-phone has unique innovations in terms of enabling increased sustainability?",
+                "parent": "End of Life",
+                "tokens": []
+            }
+        ]
+    },
+    {
+        "name": "Estimated Carbon Footprint",
+        "json_name": "co_footprint",
+        "list": [
+            {
+                "name": "Estimated Carbon Footprint",
+                "json_name": "co_footprint",
+                "description": "What is the estimated carbon footprint of a <replacer>-phone per year?",
                 "parent": "End of Life",
                 "tokens": []
             }
