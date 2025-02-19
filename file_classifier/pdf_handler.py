@@ -27,13 +27,13 @@ def process_pdfs_from_bucket_using_gpt(bucket_name):
 """
 
 def create_pdf_temp_folder(bucket_name, parent, dir) -> str:
-    temp_folder = f"{parent}/temp"
+    temp_folder = f"{parent}/temp/{dir}"
     os.makedirs(temp_folder, exist_ok=True)  # Ensure temp folder exists
 
     files_list = list_files_in_folder(bucket_name, f"raw_pdf_files/{dir}")
     for file_name in files_list:
         local_pdf_path = os.path.basename(os.path.join(temp_folder, file_name))
-        download_file_from_bucket(bucket_name, file_name, f"{temp_folder}/{local_pdf_path}")
+        download_file_from_bucket(bucket_name, file_name, f"{temp_folder}/{dir}/{local_pdf_path}")
 
     return temp_folder
 

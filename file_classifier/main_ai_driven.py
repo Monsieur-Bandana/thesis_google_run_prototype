@@ -48,29 +48,31 @@ def classify_text_using_retriever(dir: str, classes: list[str])->list[dict]:
         classes = json.load(file)
 
     for pdf_file_path in pdf_list:
-        reader = PdfReader(f"{folder_name}/temp/{pdf_file_path}")
+        reader = PdfReader(f"{folder_name}/temp/{dir}/{pdf_file_path}")
         content = ""
         for page in reader.pages:
-            page_text:str = page.extract_text()
-            page_text_len =  len(page_text)
+            page_text = page.extract_text()
+            lines = page_text.split("\n")
             
-            # Suche nach "References" unabhängig von Groß-/Kleinschreibung
-            match = re.search(r"\breferences\b", page_text, re.IGNORECASE)
-            
-            if match:
-                if match.start()/page_text_len>0.8:
-                    content += page_text[:match.start()]  # Alles vor "References" behalten
-                    break  # Ab hier nicht weiter lesen
-            
-            content += page_text
-        with open(f"{folder_name}/temp/contents--{pdf_file_path[1:6]}.txt", "w", encoding="utf-8") as file:
+            for line in lines:
+                if line.strip().lower() == "references":  # Prüft, ob "References" eine eigene Zeile ist
+                    break  # Stoppe hier die Verarbeitung
+                content += line + "\n"
+            else:
+                continue  # Falls nicht gebrochen wurde, nächste Seite laden
+            break  # Falls "References" gefunden wurde, Abbruch
+
+        with open(f"{folder_name}/temp/contents--{pdf_file_path[0:8]}.txt", "w", encoding="utf-8") as file:
             file.write(content)
 
         content_chunks = [content[i:i + chunk_size] for i in range(0, len(content), chunk_size)]
 
         question = ""
         for cl in classes:
-            question = f"""{question}\nTopic: {cl["name"]} \n Description: {cl["description"]}"""
+            question = f"""{question}\nTopic: {cl["name"]} \n Description: {cl["description"]} What is the status quo? what direct or indirect impact has it on the environment?"""
+        if not dir == "general":
+            question+=f"does the manufacturer of the {dir} mentions any methods to improve the {cl["name"]}?"
+        # if dir how does company tries to improve?
         chunk_nr = 0
         answeres_list = []
         for content in content_chunks:
@@ -140,7 +142,7 @@ def classify_text_using_retriever(dir: str, classes: list[str])->list[dict]:
             answeres_list.append(generated_answer_dict)
 
 
-        final_anser_dict = {"source": pdf_file_path, "answeres": answeres_list}
+        final_anser_dict = {"source": pdf_file_path, "answeres": answeres_list, "brand": dir}
             
         create_json_file(final_anser_dict, "file_classifier", f"{folder_name}/temp/save_file.json")
         i = i+1
@@ -158,18 +160,12 @@ create_temp_folder(folder_name)
 if not classes:
     extract_classes()
 
-for directory in directories:
-    a = 2
+for directory in directories[:4]:
 
-text_classifications: list[dict] = classify_text_using_retriever(directory, classes)
 
-# one output file for each directory
-# all output files, will be saved in temp folder
-output_file = f"{directory}-classification.json"
+    text_classifications: list[dict] = classify_text_using_retriever(directory, classes)
 
-# Write the list of dictionaries to a JSON file
-with open(f"{folder_name}/temp/{output_file}", "w") as file:
-    json.dump(text_classifications, file, indent=4)
+
 
 with open(f"{folder_name}/temp/save_file.json", "r") as file:
     data = json.load(file)
@@ -183,12 +179,12 @@ for el in data:
         for key, el2 in el_dict.items():
             print(el2)
             print(key)
-            if el2["probability"] > 0.4:
+            if el2["probability"] >= 0.5:
                 cl_name = key
                 if key not in class_list:
                     class_list.append(key)
 
-    create_json_file({"source": el["source"],"list": class_list}, "file_classifier", f"{folder_name}/temp/save_file2.json")
+    create_json_file({"source": el["source"],"list": class_list, "brand": el["brand"]}, "file_classifier", f"{folder_name}/temp/save_file2.json")
     # bucket_name, source_file_name, destination_blob_name, folder_name=None
     # upload_file(bucket_name, f"{folder_name}/temp/{output_file}",output_file, "json_files")
 
