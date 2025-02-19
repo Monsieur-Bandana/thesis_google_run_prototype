@@ -17,16 +17,13 @@ tokens = []
 bucket_name = "raw_pdf_files"
 folder_name = "file_classifier"
 
-def extract_classes():
+def extract_classes()->list:
     load_class_data_from_git(folder_name)
     with open(f'{folder_name}/temp/classes.json', 'r') as file:
         data: list = json.load(file)
+    return data
 
-        for el in data:
-            classes.append(el["name"])
-            tokens.append(el["tokens"])
-
-def classify_text_using_retriever(dir: str, classes: list[str])->list[dict]:
+def classify_text_using_retriever(dir: str, classes)->list[dict]:
     """
     * exec retriever for each label
     * outcome for each label stored in list.
@@ -44,8 +41,7 @@ def classify_text_using_retriever(dir: str, classes: list[str])->list[dict]:
     reader = SimpleDirectoryReader(input_dir=pdf_docs, recursive=True,)
     collection:list[dict] = []
     i:int = 0
-    with open(f"{folder_name}/temp/classes.json", "r") as file:
-        classes = json.load(file)
+
 
     for pdf_file_path in pdf_list:
         reader = PdfReader(f"{folder_name}/temp/{dir}/{pdf_file_path}")
@@ -69,14 +65,18 @@ def classify_text_using_retriever(dir: str, classes: list[str])->list[dict]:
 
         question = ""
         for cl in classes:
-            question = f"""{question}\nTopic: {cl["name"]} \n Description: {cl["description"]} What is the status quo? what direct or indirect impact has it on the environment?"""
-        if not dir == "general":
-            question+=f"does the manufacturer of the {dir} mentions any methods to improve the {cl["name"]}?"
+            for subcl in cl["list"]:
+                descr:str = subcl["description"]
+                descr = descr.replace("<replacer>", "smart")
+                question = f"""{question}\nTopic: {subcl["name"]} \n What is the status quo?
+                In which ways does the smartphone's {subcl["name"]} impacts the smartphone's environmental footprint? What characterizes a smartphone's {subcl["name"]}?
+                Further: {subcl["description"]} """
+            if not dir == "general":
+                question+=f"does the manufacturer of the {dir} mentions any methods on {subcl["name"]}?"
         # if dir how does company tries to improve?
         chunk_nr = 0
         answeres_list = []
         for content in content_chunks:
-            chunk_nr = chunk_nr + 1
             
             sk = rand_k
             client = OpenAI(api_key=sk)
@@ -91,9 +91,9 @@ def classify_text_using_retriever(dir: str, classes: list[str])->list[dict]:
                 - **Do not base your score on the average relevance of the document. If a small but highly relevant section exists, score accordingly.**  
 
                 ### **Scoring Criteria:**  
-                - **1.0**: A section fully answers a question on the topic.  
-                - **0.8**: A section provides strong hints or partial answers but is not exhaustive.  
-                - **0.5**: Some relevant mentions exist, but they are vague or incomplete.  
+                - **1.0**: An answer to every question of the topic can be found in the text.  
+                - **0.8**: An answer to one of the questions of the topic can be found in the text.  
+                - **0.5**: Some relevant mentions exist, but they are vague or incomplete.
                 - **0.2**: The document briefly touches on the topic but lacks real value.  
                 - **0.0**: No relevant information is present.  
 
@@ -139,13 +139,13 @@ def classify_text_using_retriever(dir: str, classes: list[str])->list[dict]:
             )
             summary = response.choices[0].message.content
             generated_answer_dict:dict = json.loads(summary)
-            answeres_list.append(generated_answer_dict)
+            answeres_list = [generated_answer_dict]
 
 
-        final_anser_dict = {"source": pdf_file_path, "answeres": answeres_list, "brand": dir}
-            
-        create_json_file(final_anser_dict, "file_classifier", f"{folder_name}/temp/save_file.json")
-        i = i+1
+            final_anser_dict = {"source": f"{pdf_file_path}-chunk-{chunk_nr}", "answeres": answeres_list, "brand": dir}
+                
+            create_json_file(final_anser_dict, "file_classifier", f"{folder_name}/temp/save_file.json")
+            chunk_nr = chunk_nr + 1
     
     # clear_temp_folder()
     return collection
@@ -156,11 +156,10 @@ directories = list_directories_in_bucket(bucket_name, prefix)
 print(directories)
 
 create_temp_folder(folder_name)
-
 if not classes:
-    extract_classes()
+    classes = extract_classes()
 
-for directory in directories[:4]:
+for directory in directories:
 
 
     text_classifications: list[dict] = classify_text_using_retriever(directory, classes)
@@ -183,9 +182,7 @@ for el in data:
                 cl_name = key
                 if key not in class_list:
                     class_list.append(key)
-
-    create_json_file({"source": el["source"],"list": class_list, "brand": el["brand"]}, "file_classifier", f"{folder_name}/temp/save_file2.json")
+    output_file = f"{folder_name}/temp/save_file2.json"
+    create_json_file({"source": el["source"],"list": class_list, "brand": el["brand"]}, "file_classifier", output_file)
     # bucket_name, source_file_name, destination_blob_name, folder_name=None
-    # upload_file(bucket_name, f"{folder_name}/temp/{output_file}",output_file, "json_files")
-
-add_footnotes(folder_name, classes)
+upload_file(bucket_name, output_file, "json_files/docs_with_labels.json")

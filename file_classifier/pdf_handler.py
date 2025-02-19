@@ -31,10 +31,13 @@ def create_pdf_temp_folder(bucket_name, parent, dir) -> str:
     os.makedirs(temp_folder, exist_ok=True)  # Ensure temp folder exists
 
     files_list = list_files_in_folder(bucket_name, f"raw_pdf_files/{dir}")
+    print("----------------------")
+    print(files_list)
     for file_name in files_list:
-        local_pdf_path = os.path.basename(os.path.join(temp_folder, file_name))
-        download_file_from_bucket(bucket_name, file_name, f"{temp_folder}/{dir}/{local_pdf_path}")
-
+        local_pdf_path = os.path.basename(file_name)
+        print(local_pdf_path)
+        download_file_from_bucket(bucket_name, file_name, f"{temp_folder}/{local_pdf_path}") 
+        # pdfs are within the raw_padf_files folder --> 2x raw pdf files!
     return temp_folder
 
 def clear_temp_folder():

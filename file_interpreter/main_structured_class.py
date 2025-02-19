@@ -1,4 +1,5 @@
 import json
+import os
 from PyPDF2 import PdfReader
 from openai import OpenAI
 # from ind_key import rand_k
@@ -14,6 +15,7 @@ sk = rand_k
 main_folder = "file_interpreter"
 prefix = 'raw_pdf_files/'
 bucket_name = "raw_pdf_files"
+labels_data = []
 
 def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp, dir):
     content_chunks = [content[i:i + chunk_size] for i in range(0, len(content), chunk_size)]
@@ -43,7 +45,7 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp,
 
                     **Important Instructions**:\n
                     - Use only the information provided in the following text as your source. Do not incorporate any external knowledge or assumptions.\n
-                    - If no relevant information is found in the provided text, return an empty string (`""`) instead of attempting to answer the question.\n
+                    - If no relevant information is found in the provided text, return following string (`"..."`) instead of attempting to answer the question.\n
                     - Format your response according to the given structure.\n
 
                     \n<text>{chunk}</text>\n
@@ -51,34 +53,57 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp,
                     """
         context = context_1 + context_2
 
-        try:
-            chunk_nr = chunk_nr + 1
-            
-            response = client.beta.chat.completions.parse(
-                model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
-                messages=[
-                    {"role": "system", "content": context},
-                    {"role": "user", "content": prompt},
-                
-                ],
-                response_format=InterpreterStructure
-            )
+        element:dict = None
+        print(f"----------->{pdf_file_path}-chunk-{chunk_nr}")
+        for el in labels_data:
+            if el["source"] == f"{os.path.basename(pdf_file_path)}-chunk-{chunk_nr}":
+                element = el
+                print("similarity found!")
+                break
+        valid_keys = []
+        if element:
 
-            summary = response.choices[0].message.content
-            generated_answer_dict:dict = json.loads(summary)
-            generated_answer_dict["source"]=f"{pdf_file_path}, chunk {chunk_nr}"
+            valid_keys = element["list"]
+        if valid_keys: 
+            try:
+                
+                response = client.beta.chat.completions.parse(
+                    model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
+                    messages=[
+                        {"role": "system", "content": context},
+                        {"role": "user", "content": prompt},
+                    
+                    ],
+                    response_format=InterpreterStructure
+                )
+
+                summary = response.choices[0].message.content
+                generated_answer_dict:dict = json.loads(summary)
+                generated_answer_dict["source"]=f"{pdf_file_path}, chunk {chunk_nr}"
+
             
-            create_json_file(generated_answer_dict, main_folder, save_file)
-        except:
-            """
-            chunk_size = chunk_size - 1000
-            if chunk_size < 90000: 
-                print("smth went wrong")
-                return
-            print(f"{chunk[:1000]} \n \n {chunk[-1000:]}")
-            execute_summary(prompt, content, save_file, index, pdf_file_path, chunk_size)
-            """
-            print(f"Chunk {chunk_nr} of {pdf_file_path} could not be interpreted") 
+
+                # Step 4: Modify generated_answer_dict by removing entries whose keys are not in the valid list
+                keys_to_remove = [key for key in generated_answer_dict if key not in valid_keys]
+                
+                # Remove the elements from generated_answer_dict
+                for key in keys_to_remove:
+                    del generated_answer_dict[key]         
+                
+                create_json_file(generated_answer_dict, main_folder, save_file)
+
+            except:
+                """
+                chunk_size = chunk_size - 1000
+                if chunk_size < 90000: 
+                    print("smth went wrong")
+                    return
+                print(f"{chunk[:1000]} \n \n {chunk[-1000:]}")
+                execute_summary(prompt, content, save_file, index, pdf_file_path, chunk_size)
+                """
+                print(f"Chunk {chunk_nr} of {pdf_file_path} could not be interpreted")
+            
+        chunk_nr = chunk_nr + 1
 
 def summarize_all_fitting_pdfs(prompt, pdf_list, save_file, comp, dir):
     """Summarizes all fitting pdfs and creates a json file"""
@@ -95,11 +120,17 @@ def summarize_all_fitting_pdfs(prompt, pdf_list, save_file, comp, dir):
         execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp, dir)
         
 def main():
+    create_temp_folder(main_folder)
+    pdf_class_file = f"{main_folder}/temp/docs_with_labels.json"
+    download_file_from_bucket("raw_pdf_files", "json_files/docs_with_labels.json", pdf_class_file)
+    global labels_data
+    with open(pdf_class_file, 'r') as file:
+        labels_data = json.load(file)
+
     # TODO adapt to folder structure
     brandlist = list_directories_in_bucket(bucket_name, prefix)
     entities = []
         
-    create_temp_folder(main_folder)
 
     comps = []
     with open(f"{main_folder}/prefilter.json", "r") as file:
@@ -124,7 +155,7 @@ def main():
         load_class_data_from_git(main_folder)
         with open(f"{main_folder}/temp/classes.json", "r") as file:
             entities = json.load(file)
-        prompt = "Provide a concise list of bullet points for each of the following topics related to smartphones and their environmental impact.\n"
+        question = "Provide a concise list of bullet points for each of the following topics related to smartphones and their environmental impact.\n"
         save_file = f"{main_folder}/temp/{dir}.json"
         for entity in entities:
             parent_children = entity["list"]
@@ -135,14 +166,14 @@ def main():
                 class_name = child["name"]
                 class_description: str = child["description"]
                 related_terms = child["tokens"]
-                if not comp == "general":
-                    class_description = class_description.replace("<replacer>", comp)
-                else:
-                    class_description = class_description.replace("<replacer>", "typical")
-                prompt = prompt + f"""* {class_name}: {class_description} Explain why this is the case and discuss its impact on the environmental footprint of smartphones.\n"""
-        print(prompt)
+                question = f"""{question}\nTopic: {class_name} \n What is the status quo?
+                In which ways does the smartphone's {class_name} impacts the smartphone's environmental footprint? What characterizes a smartphone's {class_name}?
+                Further: {class_description} """
+                if not dir == "general":
+                    question+=f"does the {comp} mentions any methods on {class_name}?"
+        print(question)
 
-        summarize_all_fitting_pdfs(prompt, fitting_pdfs, save_file, comp, dir)
+        summarize_all_fitting_pdfs(question, fitting_pdfs, save_file, comp, dir)
 
 
 
@@ -158,22 +189,22 @@ if __name__ == "__main__":
         entities = json.load(file)
     for brand in brandlist:
         dir = brand
-        save_file = f"{main_folder}/temp/{dir}.json"
-        with open(save_file, "r") as file:
-            data = json.load(file)
-        for entity in entities:
-            json_file_n = f"{main_folder}/temp/{dir}-{entity["json_name"]}.json"
-            parent_children = entity["list"]
-            new_l = []
-            print(f"ent____________ {entity}")
-            for el_ in data:
-                new_l.append(el_[entity["json_name"]])
-            with open(json_file_n, "w") as file:
-                json.dump(new_l, file, indent=4)
-
-            
-            json_exists: bool = process_json_to_text(json_file_n, parent_children, dir, "struct_class")
-            if json_exists:
-                for ch in parent_children:
-                    output_file_path = f"""{main_folder}/temp/{dir}-{ch["name"]}-struct_class.txt"""
-                    upload_file(bucket_name,output_file_path,f"summaries_struct_c/{dir}-{ch["name"]}.txt")
+        try:
+            save_file = f"{main_folder}/temp/{dir}.json"
+            with open(save_file, "r") as file:
+                data:list[dict] = json.load(file)
+            merged_dict:dict = {}
+            for d in data:
+                for key, value in d.items():
+                    if key in merged_dict:
+                        merged_dict[key] += value
+                    else:
+                        merged_dict[key] = value
+            print(merged_dict)
+            for key, value in merged_dict.items():
+                s_file_n = f"file_interpreter/temp/{brand}-{key}.txt"
+                with open(s_file_n, "w", encoding="utf-8") as file:
+                    file.write(value)
+                upload_file("raw_pdf_files", s_file_n, f"summaries_struct_c/{brand}-{key}.txt")
+        except:
+            print(f"file '{save_file}' does not exist")
