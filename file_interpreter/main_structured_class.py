@@ -16,6 +16,7 @@ main_folder = "file_interpreter"
 prefix = 'raw_pdf_files/'
 bucket_name = "raw_pdf_files"
 labels_data = []
+interpreted_files = []
 
 def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp, dir):
     content_chunks = [content[i:i + chunk_size] for i in range(0, len(content), chunk_size)]
@@ -118,9 +119,22 @@ def summarize_all_fitting_pdfs(prompt, pdf_list, save_file, comp, dir):
 
         
         execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp, dir)
+        global interpreted_files
+        interpreted_files.append(pdf_file_path)
+
+def checkForInterpreteFiles():
+    file_n = "already_interpreted_files.json"
+    download_file_from_bucket("raw_pdf_files", f"json_files/{file_n}", f"{main_folder}/temp/{file_n}")
+    try:
+        with open(f"{main_folder}/temp/{file_n}", "r") as file:
+            global interpreted_files
+            interpreted_files = json.load(file)
+    except:
+        print("no interpreted entries yet!")
         
+
 def main():
-    create_temp_folder(main_folder)
+
     pdf_class_file = f"{main_folder}/temp/docs_with_labels.json"
     download_file_from_bucket("raw_pdf_files", "json_files/docs_with_labels.json", pdf_class_file)
     global labels_data
@@ -173,6 +187,7 @@ def main():
                     question+=f"does the {comp} mentions any methods on {class_name}?"
         print(question)
 
+        fitting_pdfs = [item for item in fitting_pdfs if item not in interpreted_files]
         summarize_all_fitting_pdfs(question, fitting_pdfs, save_file, comp, dir)
 
 
@@ -182,6 +197,8 @@ def main():
                 
 
 if __name__ == "__main__":
+    create_temp_folder(main_folder)
+    checkForInterpreteFiles()
     main()
     brandlist = list_directories_in_bucket(bucket_name, prefix)
 
@@ -208,3 +225,8 @@ if __name__ == "__main__":
                 upload_file("raw_pdf_files", s_file_n, f"summaries_struct_c/{brand}-{key}.txt")
         except:
             print(f"file '{save_file}' does not exist")
+
+    file_n = "already_interpreted_files.json"
+    with open(f"{main_folder}/temp/{file_n}", "w") as file:
+        json.dump(interpreted_files, file, indent=4)
+    upload_file("raw_pdf_files", f"{main_folder}/temp/{file_n}", f"json_files/{file_n}")
