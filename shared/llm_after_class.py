@@ -16,6 +16,7 @@ from shared.json_processor import create_json_file
 
 sk = rand_k
 client = OpenAI(api_key=sk)
+data = []
 
 def replace_sentence_start(sentence:str, input):
     # List of typical sentence starting phrases
@@ -216,10 +217,12 @@ def get_parent_name(data: list, json_code: str)->dict:
             return {"name": el["name"], "list": inner_items}
     return "Couldn't find name"
 
-def get_entity_name(data: list[dict], json_code: str)->str:
+def get_entity_name(parent: str, json_code: str)->str:
     for el in data:
-        if el["json_name"] == json_code:
-            return el["name"]
+        if el["json_name"] == parent:
+            for el2 in el["list"]:
+                if el2["json_name"] == json_code:
+                    return el2["name"]
     return "Couldn't find name"
 
 
@@ -247,7 +250,7 @@ def generateAnswer(input: str, sourcefolder, string_mode=True)->dict:
     final_responses = []
     # Step 1: Download and read JSON files
     load_class_data_from_git(sourcefolder)
-    data = []
+    global data
     with open(f"{sourcefolder}/temp/classes.json", "r") as file:
         data = json.load(file)
     context = ""
@@ -267,19 +270,18 @@ def generateAnswer(input: str, sourcefolder, string_mode=True)->dict:
         # Step 2: Process each class
         for entity in entities:
             class_name = entity["name"]
-            footnotes = extract_footnotes(class_name, dir, foot_note_list)
             descr = entity["description"]
             css_name = entity["json_name"]
             context = context + f"\n \n##{class_name}##\n \n"
             try:
-                download_file_from_bucket(bucket_name, f"summaries_struct_c/{dir}-{class_name}.txt", f"{sourcefolder}/temp/{dir}-{class_name}.txt")
-                context =  context + getContext(dir, class_name, sourcefolder) +"\n"
+                download_file_from_bucket(bucket_name, f"summaries_struct_c/{dir}-{css_name}.txt", f"{sourcefolder}/temp/{dir}-{css_name}.txt")
+                context =  context + getContext(dir, css_name, sourcefolder) +"\n"
             except NotFound:
-                print(f"file summaries_struct_c/{dir}-{class_name}.txt not found")
+                print(f"file summaries_struct_c/{dir}-{css_name}.txt not found")
 
 
 
-                footnotes = footnotes + extract_footnotes(class_name, "general", foot_note_list)
+              #  footnotes = footnotes + extract_footnotes(class_name, "general", foot_note_list)
             #   with open(f"{sourcefolder}/temp/{class_name}.txt", "w", encoding="utf-8") as file:
             #     file.write(context)
             class_description: str = descr
@@ -292,26 +294,26 @@ def generateAnswer(input: str, sourcefolder, string_mode=True)->dict:
     prompt = prompt + f"Your answer should in total consist at least of {str(count * 50  + 100)} tokens."
     if not dir == "general":
         try:
-            download_file_from_bucket(bucket_name, f"summaries_struct_c/general-{class_name}.txt", f"{sourcefolder}/temp/general-{class_name}.txt")
-            context = get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input) + context + getContext("general", class_name, sourcefolder) 
+            download_file_from_bucket(bucket_name, f"summaries_struct_c/general-{css_name}.txt", f"{sourcefolder}/temp/general-{css_name}.txt")
+            context = get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input) + context + getContext("general", css_name, sourcefolder) 
         except NotFound:
-            print(f"file summaries_struct_c/general-{class_name}.txt not found")
+            print(f"file summaries_struct_c/general-{css_name}.txt not found")
     if context.strip():
 
         response_dic: dict = activate_api(input=input, question=prompt, rag_inf=context, comp=comp)
         
 
-
+    # print(response_dic)
 
     final_resp = ""
     for sc_ in score_name_list:
         enity_dic: dict = response_dic[sc_]
         summary_col: str = ""
         sc_dict = get_parent_name(data=data, json_code=sc_)
-        for value in enity_dic.values(): 
+        for key, value in enity_dic.items(): 
             summary: str = value["summary"]
             summary_col = f"{summary_col} {summary}"
-            value["class_name"] = get_entity_name(data=sc_dict["list"], json_code=value)
+            value["class_name"] = get_entity_name(sc_, key)
         response_dic[sc_]["name"] = sc_dict["name"]
            
         final_resp = final_resp + f" {summary_col}"

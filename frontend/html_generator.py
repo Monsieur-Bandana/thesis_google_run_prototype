@@ -53,7 +53,7 @@ def generate_html_output(resp: dict):
                 # el_dict: dict = next(iter(el.values()))
                 if type(v) == dict:
                     line = f"""
-                        <li><span style="font-weight: bold">{v["adjective"]} {k}:</span> {v["summary"]}</li>
+                        <li><span style="font-weight: bold">{v["adjective"]} {v["class_name"]}:</span> {v["summary"]}</li>
                     """
                     final_response = final_response + line
 

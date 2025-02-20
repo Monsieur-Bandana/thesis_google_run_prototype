@@ -26,6 +26,9 @@ class RecycledParts(BaseModel):
 class SustainableInnovativity(BaseModel):
     innovativity: FormatWithAdjective
 
+class Co_Footprint(BaseModel):
+    co_footprint: FormatWithAdjective
+
 class InterpreterFormatWithAdjectiveStructure(BaseModel):
     quality_of_battery: BatteryQuality
     longevity: Longevity
@@ -33,3 +36,4 @@ class InterpreterFormatWithAdjectiveStructure(BaseModel):
     production: Production
     recycled_parts: RecycledParts
     innovativity: SustainableInnovativity
+    co_footprint: Co_Footprint
