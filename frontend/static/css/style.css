@@ -347,7 +347,7 @@ li {
 
 .headline span {
     background-color: #0000008a;
-
+    border-radius: 5px;
     padding: 0 10px;
     position: absolute;
 }
@@ -369,6 +369,11 @@ li {
 
 #transportation {
     background-image: url(/static/images/transportation.jpg);
+}
+
+#quality_of_battery {
+    background-image: url(/static/images/use-neg.jpg);
+
 }
 
 /*

@@ -99,7 +99,7 @@ def color_leafs(score: float, default_color="white"):
     if score < 3.0:
         color = "rgb(242, 140, 40)"
     if score < 2.0:
-        color = "rgb(104, 53, 33)"
+        color = "rgb(159 101 78)"
     returnhtml: str = ""
     scd_digit = score%1
     first_digit = score-scd_digit

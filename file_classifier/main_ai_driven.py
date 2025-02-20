@@ -16,6 +16,7 @@ classes = []
 tokens = []
 bucket_name = "raw_pdf_files"
 folder_name = "file_classifier"
+already_classified = []
 
 def extract_classes()->list:
     load_class_data_from_git(folder_name)
@@ -40,8 +41,9 @@ def classify_text_using_retriever(dir: str, classes)->list[dict]:
 
     reader = SimpleDirectoryReader(input_dir=pdf_docs, recursive=True,)
     collection:list[dict] = []
-    i:int = 0
-
+    print("_________________")
+    print(already_classified)
+    pdf_list = [item for item in pdf_list if item not in already_classified]
 
     for pdf_file_path in pdf_list:
         reader = PdfReader(f"{folder_name}/temp/{dir}/{pdf_file_path}")
@@ -150,39 +152,53 @@ def classify_text_using_retriever(dir: str, classes)->list[dict]:
     # clear_temp_folder()
     return collection
 
-# for each directory in google cloud storage:
-prefix = 'raw_pdf_files/'
-directories = list_directories_in_bucket(bucket_name, prefix)
-print(directories)
+if __name__ == "__main__":
+    # for each directory in google cloud storage:
+    prefix = 'raw_pdf_files/'
+    directories = list_directories_in_bucket(bucket_name, prefix)
+    print(directories)
 
-create_temp_folder(folder_name)
-if not classes:
-    classes = extract_classes()
+    create_temp_folder(folder_name)
+    if not classes:
+        classes = extract_classes()
 
-for directory in directories:
+        
+    try:
+        with open(f"{folder_name}/temp/save_file2.json", "r") as file:
+            data2 = json.load(file)
+        for el in data2:
+            el_name: str = el["source"]
+            el_name = el_name.split("-chunk-")[0]
+            already_classified.append(el_name)
+    except:
+        print("file 'save_file2.json' does not exist")
+
+    for directory in directories:
 
 
-    text_classifications: list[dict] = classify_text_using_retriever(directory, classes)
+        text_classifications: list[dict] = classify_text_using_retriever(directory, classes)
 
 
 
-with open(f"{folder_name}/temp/save_file.json", "r") as file:
-    data = json.load(file)
-outc_l:list[dict] = []
-for el in data:
-    class_list = []
+    with open(f"{folder_name}/temp/save_file.json", "r") as file:
+        data = json.load(file)
+    outc_l:list[dict] = []
+    for el in data:
+        class_list = []
 
-    som_l:dict = el["answeres"]
+        som_l:dict = el["answeres"]
 
-    for el_dict in som_l:
-        for key, el2 in el_dict.items():
-            print(el2)
-            print(key)
-            if el2["probability"] >= 0.5:
-                cl_name = key
-                if key not in class_list:
-                    class_list.append(key)
-    output_file = f"{folder_name}/temp/save_file2.json"
-    create_json_file({"source": el["source"],"list": class_list, "brand": el["brand"]}, "file_classifier", output_file)
-    # bucket_name, source_file_name, destination_blob_name, folder_name=None
-upload_file(bucket_name, output_file, "json_files/docs_with_labels.json")
+        for el_dict in som_l:
+            for key, el2 in el_dict.items():
+                print(el2)
+                print(key)
+                if el2["probability"] >= 0.5:
+                    cl_name = key
+                    if key not in class_list:
+                        class_list.append(key)
+        output_file = f"{folder_name}/temp/save_file2.json"
+        outc_l.append({"source": el["source"],"list": class_list, "brand": el["brand"]})
+    with open(output_file, "w") as file:
+        json.dump(outc_l, file, indent=4)
+        # bucket_name, source_file_name, destination_blob_name, folder_name=None
+    upload_file(bucket_name, output_file, "json_files/docs_with_labels.json")
