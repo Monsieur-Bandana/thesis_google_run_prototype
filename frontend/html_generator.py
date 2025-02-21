@@ -1,7 +1,19 @@
 # response = f"""<li class="{css_name}-css-class"><span style="font-weight: bold">{response_dic["generated_adj"]} {class_name}:</span> {response_dic["html_output"]}<span class="sources">{response_dic["footnotes_span"]}</span></li>"""
 
+all_phones_scores = {}
+
+def calc_ratio(json_name, score)->str:
+    list_of_other_scores = all_phones_scores[json_name]
+    num_of_other_scores = 0
+    for el in list_of_other_scores:
+        if el < score:
+            num_of_other_scores+=1
+    ouptut_t = f"Performs better than {num_of_other_scores/(len(list_of_other_scores)-1)*100}% of the other phones"
+    return ouptut_t
+
 def create_header(title: str, json_name: str, score: float):
     add_html = ""
+    ouptut_t = calc_ratio(json_name, score)
     if score == 5.0:
         add_html = """style= "color: green" """
     header_html = f"""
@@ -11,6 +23,7 @@ def create_header(title: str, json_name: str, score: float):
                         {color_leafs(score)}
                         {str(score)}
                         </span>
+                        {ouptut_t}
                     </div>
                   
     """
@@ -34,7 +47,9 @@ def addTableEntry(title: str, json_name: str, score: float):
     """
     return header_html       
 
-def generate_html_output(resp: dict):
+def generate_html_output(resp: dict, all_phones_scores2: dict):
+    global all_phones_scores
+    all_phones_scores = all_phones_scores2
     final_response = ""
     tablecounter = 0
     table = """<table style="width: 100%">"""
@@ -68,6 +83,7 @@ def generate_html_output(resp: dict):
     return final_response
 
 def generate_conclusional_header(conclusion, total_score: float, table):
+    output_t = calc_ratio("total_score", total_score)
     header = f"""<div class="t-header">
                     <div class="t-frame">
                         <span>Estimated score</span>
@@ -75,6 +91,7 @@ def generate_conclusional_header(conclusion, total_score: float, table):
                             {color_leafs(total_score, "black")}
                             {str(total_score)}
                         </span>
+                        {output_t}
                     </div>
                 </div>"""
     final_resp = f"""{header}{table}

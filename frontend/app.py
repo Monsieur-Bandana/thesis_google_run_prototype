@@ -11,6 +11,7 @@ app = Flask(__name__)
 folder = "frontend"
 bucket = "raw_pdf_files"
 phone_data:list[dict] = []
+all_phones_scores = {}
 
 def generate_buttons_dict(data:list[dict]):
     phones:list[dict] = []
@@ -61,7 +62,7 @@ def loadAnswer(name)->str:
         print("----------------->>")
         print(type(p))
         if p["name"] == name:
-            file_content = generate_html_output(p)
+            file_content = generate_html_output(p, all_phones_scores)
 
     return file_content
 
@@ -93,6 +94,11 @@ def before_request():
     global phone_data
     with open(dest, "r") as file:
         phone_data = json.load(file)
+    dest2 = f"{folder}/temp/all_scores.json"
+    download_file_from_bucket(bucket_name=bucket, source_blob_name="json_files/all_scores.json", destination_file_name=dest2)
+    global all_phones_scores
+    with open(dest2, "r") as file:
+        all_phones_scores = json.load(file)
     # Add any other logic you need here
 
 @app.route('/')

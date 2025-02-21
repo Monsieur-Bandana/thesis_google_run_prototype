@@ -80,6 +80,7 @@ def generate_texts():
     upload_file(bucket_name=bucket_name, source_file_name=f"{source_folder}/temp/generated_reviews_no_score.json", destination_blob_name=f"json_files/generated_reviews_no_score.json")
     
 def generate_scores():
+    download_file_from_bucket("raw_pdf_files", f"json_files/all_scores.json", f"{source_folder}/temp/all_scores.json")
     with open(f"{source_folder}/temp/generated_reviews_no_score.json", "r") as file:
         all_rendered_phones:list[dict] = json.load(file)
     print(all_rendered_phones)
@@ -93,7 +94,7 @@ def generate_scores():
 
     for p in all_rendered_phones:
         main._ex(p, "text_generator")
-
+    upload_file(bucket_name=bucket_name, source_file_name=f"{source_folder}/temp/all_scores.json", destination_blob_name=f"json_files/all_scores.json")
     upload_file(bucket_name=bucket_name, source_file_name=f"{source_folder}/temp/generated_reviews_with_score.json", destination_blob_name=f"json_files/generated_reviews_with_score.json")
 
 
