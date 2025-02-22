@@ -2,14 +2,39 @@
 
 all_phones_scores = {}
 
-def calc_ratio(json_name, score)->str:
+def calc_ratio(json_name, score)->float:
     list_of_other_scores = all_phones_scores[json_name]
     num_of_other_scores = 0
     for el in list_of_other_scores:
-        if el < score:
+        if el <= score:
             num_of_other_scores+=1
-    ouptut_t = f"Performs better than {num_of_other_scores/(len(list_of_other_scores)-1)*100}% of the other phones"
+    ouptut_t = (num_of_other_scores-1)/(len(list_of_other_scores)-1)
     return ouptut_t
+
+def render_calc_text(ratio: float)->str:
+    t:str = str(ratio * 100).split(".")[0]
+    spaces_needed = 3-len(t)
+    spaces = ""
+    for i in range(0, spaces_needed):
+        spaces+="&nbsp;&nbsp;"
+    t=f"{spaces}{t}"
+    print(t)
+    return t
+
+def render_calc_display(ratio:float, width=75):
+    total_width = width
+    return f"""
+        <div class="ratio_container">
+            <div class="outer_ratio" style="width: {total_width}px">
+                <div class="inner_ratio" style="width: {total_width*ratio}px">
+
+                </div>
+            </div>
+            <div class="arrow_placer" style="width: {total_width*ratio+9}px">
+                &#9650;
+            </div>
+        </div>
+    """
 
 def create_header(title: str, json_name: str, score: float):
     add_html = ""
@@ -18,12 +43,16 @@ def create_header(title: str, json_name: str, score: float):
         add_html = """style= "color: green" """
     header_html = f"""
                     <div class="headline" id="{json_name}">
-                        <span class="title_span">{title}</span>
-                        <span class="score_span" {add_html}>
-                        {color_leafs(score)}
-                        {str(score)}
-                        </span>
-                        {ouptut_t}
+                        <div class="span_alike"><span class="title_span">{title}</span></div>
+                        <div class="span_alike">
+                            <span {add_html}>
+                            {color_leafs(score)}
+                            {str(score)}
+                            </span>
+                            <div class="ratio-with-perc">
+                                {render_calc_display(ouptut_t)}<span>{render_calc_text(ouptut_t)}%</span>
+                            </div>
+                        </div>
                     </div>
                   
     """
@@ -91,7 +120,14 @@ def generate_conclusional_header(conclusion, total_score: float, table):
                             {color_leafs(total_score, "black")}
                             {str(total_score)}
                         </span>
-                        {output_t}
+                    </div>
+                    <div class="t-ratio">
+                        <div style="width: 180px">
+                            {render_calc_display(output_t, 200)}
+                            <div class="t-ratio-corrector">
+                                equal or better score than of {str(output_t * 100).split(".")[0]}% of phones on this plattform
+                            </div>
+                        </div>
                     </div>
                 </div>"""
     final_resp = f"""{header}{table}
@@ -101,7 +137,7 @@ def generate_conclusional_header(conclusion, total_score: float, table):
         </div>
     </div>
     <div style="display: block; margin-top: 15px">{conclusion}</div>
-    <div class="t-header">
+    <div class="t-header" style="height: 50px; justify-content: center;">
         <div class="t-frame">
             <span>Fulltext reviews:</span>
         </div>
