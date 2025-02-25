@@ -226,12 +226,11 @@ def get_entity_name(parent: str, json_code: str)->str:
     return "Couldn't find name"
 
 
-def generateAnswer(input: str, sourcefolder, string_mode=True)->dict:
+def generateAnswer(input: str, sourcefolder)->dict:
     bucket_name = "raw_pdf_files"
     
     create_temp_folder(sourcefolder)
     brandlist: list[str] = download_and_extract_json("all_companies", sourcefolder)
-    foot_note_list: list[dict] = download_and_extract_json("footnotes", sourcefolder)
 
     # print(foot_note_list)
     brandlist.append("general")

@@ -6,6 +6,8 @@ body {
     width: 100%;
     font-size: 16px;
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
 }
 
 body {
@@ -57,9 +59,12 @@ li {
     align-items: center;
 }
 
+.mobile {
+    width: 800px;
+}
 
 .phone {
-    width: 700px;
+    width: 100%;
     height: 1200px;
     background: linear-gradient(170deg, black 26%, white 45%, black 65%);
     border-radius: 60px;
@@ -545,6 +550,32 @@ td {
     /* Disabled cursor */
     box-shadow: none;
     /* No shadow */
+}
+
+.compare_menu_wrapper {
+    display: none;
+    width: 100%;
+    position: absolute;
+    justify-content: center;
+    top: 50px;
+    margin: -50px;
+
+}
+
+.compare_menu {
+    background: rgba(0, 0, 0, 0.87);
+    padding: 15px;
+    color: white;
+    border-radius: 0px 0px 15px 15px;
+    width: 500px;
+}
+
+#dynamic-content2 {
+    padding: 10px 0px;
+}
+
+.compare_menu .eco-button {
+    background: linear-gradient(to top, rgb(238, 238, 238), rgb(172, 172, 172))
 }
 
 /* Optional: Add an icon to the button */

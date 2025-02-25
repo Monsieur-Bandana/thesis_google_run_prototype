@@ -12,7 +12,7 @@
 
 <body>
     <div class="bg-img"></div>
-    <div class="mobile">
+    <div class="mobile" id="mobile">
         <div class="phone">
             <div class="phone-mirror">
                 <div class="topWrapper">
@@ -41,6 +41,10 @@
                     <div id="head_menu">
                         <button onclick="goBack()" style="display: block" class="return-button" id="backButton">Back to
                             Main Screen</button>
+                        <button onclick="compare_action()" style="display: none" class="return-button"
+                            id="compareButton">
+                            Compare
+                        </button>
                         <button onclick="load_all_buttons()" style="display: block" class="return-button" id="topSeAll">
                             See all phones
                         </button>
@@ -88,14 +92,64 @@
                     <button onclick="load_all_buttons()" style="display: block" class="return-button" id="bottomSeeAll">
                         See all phones
                     </button>
+                    <div class="compare_menu_wrapper" id="compare_menu">
+                        <div class="compare_menu">
+                            <div class="provided_brands_frame" id="brands_frame2">
+                                <p>Select phone to compare</p>
+                                <div class="provided_brands_frame_inner">
 
+                                    <button onclick="load_all_buttons('iphone', '2')" class="return-button"><img
+                                            src="static/images/iphone.svg"></button>
+                                    <button onclick="load_all_buttons('galaxy', '2')" class="return-button"><img
+                                            src="static/images/samsung.svg"></button>
+                                    <button onclick="load_all_buttons('huawei', '2')" class="return-button"><img
+                                            src="static/images/huawei.svg"></button>
+                                    <button onclick="load_all_buttons('mi ', '2')" class="return-button"><img
+                                            src="static/images/mi.svg"></button>
+                                    <button onclick="load_all_buttons('fairphone', '2')" class="return-button"><img
+                                            src="static/images/fairphone.svg" id="fpl"></button>
+                                </div>
+                            </div>
+                            <div id="top-frame2">
+
+                                <div id="best_phones2" class="top_buttons"></div>
+                                <div id="worst_phones2" class="top_buttons"></div>
+                            </div>
+                            <div class="search-container" id="sc2">
+                                <input type="text" class="search-input" id="text-field2" name="name"
+                                    placeholder="Enter name of your phone model here ... ">
+                                <button class="search-button" type="submit" id="load-content-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960"
+                                        width="24" fill="#555">
+                                        <path
+                                            d="M796.9 856.8 601.5 661.3q-27.4 19.9-59.1 29.9-31.7 10-64.9 10-88.8 0-151.3-62.4T263.8 458.8q0-88.8 62.4-151.3T478.8 245q88.8 0 151.3 62.4t62.4 151.3q0 33.2-10 64.9t-29.9 59.1l195.4 195.4q12.2 12.1 12.1 29.7-.2 17.6-13.1 30.5-13 13-30.5 13.1-17.6.2-29.7-12.1ZM478.8 615q61.5 0 105.7-44.2t44.2-105.7q0-61.5-44.2-105.7T478.8 315q-61.5 0-105.7 44.2t-44.2 105.7q0 61.5 44.2 105.7T478.8 615Z" />
+                                    </svg>
+                                </button>
+                                <div id="drop_content_fr2" style="display: none">
+                                    <ul id="drop_content"></ul>
+                                </div>
+                            </div>
+
+                            <button onclick="load_all_buttons('','2')" style="display: block" class="return-button"
+                                id="bottomSeeAll2">
+                                See all phones
+                            </button>
+                            <div id="dynamic-content2">
+
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
 
                 </div>
             </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
 
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 
 </body>
 

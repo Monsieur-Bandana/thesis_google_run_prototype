@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify, request
 from shared.gcs_handler import list_files_in_folder, download_file_from_bucket, create_temp_folder
-from html_generator import generate_html_output
+from html_generator import generate_html_output, generate_table_output
 import json
 from shared.llm_after_class import generateAnswer
 import random
@@ -12,6 +12,7 @@ folder = "frontend"
 bucket = "raw_pdf_files"
 phone_data:list[dict] = []
 all_phones_scores = {}
+phone_one = {}
 
 def generate_buttons_dict(data:list[dict]):
     phones:list[dict] = []
@@ -52,17 +53,30 @@ def generate_button_texts():
 
     return generate_buttons_dict(phone_data)
 
-def loadAnswer(name)->str:
+def loadAnswer(name, mode)->str:
     print("----------------->>")
     print(type(phone_data))
 
     file_content = ""
 
-    for p in phone_data:
-        print("----------------->>")
-        print(type(p))
-        if p["name"] == name:
+    def quickLoop():
+        for p in phone_data:
+            print("----------------->>")
+            print(type(p))
+            if p["name"] == name:
+                return p
+        return {}  
+
+    if mode=="":
+        p = quickLoop()
+        global phone_one
+        phone_one = p
+        if p:
             file_content = generate_html_output(p, all_phones_scores)
+    elif mode=="2":
+        p = quickLoop()
+        if p:
+            file_content = generate_table_output(phone_one, p, all_phones_scores)
 
     return file_content
 
@@ -107,9 +121,13 @@ def index():
 
 @app.route('/get-data', methods=['POST'])
 def response():
-    name = request.form.get('input_text', '') # Retrieve the 'name' input value
+    requ_l = request.form.get('input_text', '').split(",") # Retrieve the 'name' input value
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print(requ_l)
+    name = requ_l[0]
+    mode = requ_l[1]
     print("-------------------------->"+name)  
-    message = loadAnswer(name)
+    message = loadAnswer(name, mode)
     if message=="":
         print("call api")
         message = generateAnswer(name, folder)
