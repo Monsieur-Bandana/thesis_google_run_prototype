@@ -568,6 +568,11 @@ td {
     color: white;
     border-radius: 0px 0px 15px 15px;
     width: 500px;
+    box-shadow: 0 -10px 50px #353535;
+}
+
+.compare_menu .apps-area {
+    height: unset;
 }
 
 #dynamic-content2 {

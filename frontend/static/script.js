@@ -1,4 +1,4 @@
-const inputField = document.getElementById('text-field');
+
 const introText = document.getElementById('introductionText');
 let isOnButtonScreen = true;
 
@@ -9,13 +9,13 @@ const introductionContainer = `
 `;
 const bestButtons = document.getElementById('best_phones');
 const worstButtons = document.getElementById('worst_phones');
-const dropF = document.getElementById('drop_content_fr');
-const dropL = document.getElementById('drop_content');
+
 let allButtons = [];
 
 function flask_call(input, mode = "") {
     const locDynamicContent = document.getElementById(`dynamic-content`);
     deactivate_other_els();
+    document.getElementById(`compare_menu`).style = "display: none";
     locDynamicContent.innerHTML = "<div style='width: 100%'>Text will be generated. This can take up to 1 minute.<p></p></div>" + spinner;
     locDynamicContent.style = 'display: block';
     introText.style.display = "none";
@@ -37,10 +37,7 @@ function flask_call(input, mode = "") {
         });
     document.getElementById('compareButton').style = "display: block";
 
-    if (mode == "2") {
 
-        document.getElementById(`compare_menu`).style = "display: none";
-    }
 }
 
 function createButton(tuple, mode = "") {
@@ -143,21 +140,21 @@ function goBack(mode = "") {
 
 
 function deactivate_other_els(mode = "") {
-    const locBrandsFrame = document.getElementById(`brands_frame${mode}`);
     const locDynamicContent = document.getElementById(`dynamic-content${mode}`);
     if (mode != "2") {
+        const locBrandsFrame = document.getElementById(`brands_frame${mode}`);
+        locBrandsFrame.style = "display: none";
 
         const locHeadm = document.getElementById(`head_menu${mode}`);
         locHeadm.style = "display: flex; margin-top: 20px";
+        const locSeeAllBottom = document.getElementById(`bottomSeeAll${mode}`);
+        locSeeAllBottom.style = "display: none";
     }
     const locList_of_tops_and_worst = document.getElementById(`top-frame${mode}`);
-    const locSeeAllBottom = document.getElementById(`bottomSeeAll${mode}`);
     locList_of_tops_and_worst.style = "display: none";
     introText.style = "display: none";
-    locSeeAllBottom.style = "display: none";
     locDynamicContent.style = "display: flex";
     drop_content_fr.style = "display: none";
-    locBrandsFrame.style = "display: none";
     logoHeader.style = "display: none";
 }
 
@@ -213,7 +210,8 @@ function end_compare_action() {
     document.getElementById('mobile2').style = "display: none";
 }
 
-inputField.addEventListener('input', function () {
+const inputFieldo = document.getElementById('text-field');
+inputFieldo.addEventListener('input', function () {
     if (!isOnButtonScreen) {
         getButtons();
         isOnButtonScreen = true;
@@ -226,7 +224,7 @@ inputField.addEventListener('input', function () {
 const observer = new MutationObserver(() => {
     // Buttons erneut abrufen
     let buttons = document.querySelectorAll('#dynamic-content .buttonContent');
-
+    const inputField = document.getElementById('text-field');
 
     // Optional: UI aktualisieren
     if (buttons.length > 0) {
@@ -246,67 +244,78 @@ const observer = new MutationObserver(() => {
 });
 
 // Observer konfigurieren und starten
-modedef = ""
-const dynamicContent = document.getElementById(`dynamic-content${modedef}`);
-observer.observe(dynamicContent, { childList: true, subtree: true });
 
-function generateDropList(filteredButtons) {
-    li_els = ""
-    filteredButtons.forEach(b => {
-        li_els = li_els + `<li onclick="insertText('${b['text']}')">${b["text"]}</li>`;
-    })
-    dropL.innerHTML = li_els;
-}
 
-function filterDropList(inputValue) {
-    const filteredButtons = allButtons.filter(b =>
-        b.text.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    generateDropList(filteredButtons); // Generiere Dropdown mit gefilterten Elementen
-}
+modeList = ["", "2"]
+modeList.forEach(
+    (el) => {
+        const loadButton = document.getElementById(`load-content-button${el}`);
+        const userInputField = document.getElementById(`text-field${el}`);
+        loadButton.addEventListener('click', () => {
+            // Fetch HTML content from the Flask API
+            const inputval = userInputField.value;
+            flask_call(`${inputval},${el}`)
+        });
+        const drop_content_fr = document.getElementById(`drop_content_fr${el}`);
 
-document.addEventListener('DOMContentLoaded', () => {
-    generateDropList(allButtons);
+        const dropL = document.getElementById(`drop_content${el}`);
+        modedef = el
+        const dynamicContent = document.getElementById(`dynamic-content${modedef}`);
+        observer.observe(dynamicContent, { childList: true, subtree: true });
 
-    // Eventlistener für Benutzereingabe
-    inputField.addEventListener('input', (event) => {
-        const inputValue = event.target.value;
-        drop_content_fr.style = "display: flex"
-        filterDropList(inputValue); // Filtere die Liste basierend auf Eingabe
-    });
-});
-
-const dropwdown_observer = new MutationObserver(mutations => {
-    mutations.forEach(mutation => {
-        if (mutation.type === 'childList') {
-            console.log('Dropdown updated:', mutation);
+        function generateDropList(filteredButtons) {
+            li_els = ""
+            filteredButtons.forEach(b => {
+                li_els = li_els + `<li onclick="insertText('${b['text']},${el}')">${b["text"]}</li>`;
+            })
+            dropL.innerHTML = li_els;
         }
-    });
-});
 
-document.addEventListener('click', (event) => {
-    const isClickInsideInput = inputField.contains(event.target);
-    const isClickInsideDropdown = dropL.contains(event.target);
+        function filterDropList(inputValue) {
+            const filteredButtons = allButtons.filter(b =>
+                b.text.toLowerCase().includes(inputValue.toLowerCase())
+            );
+            if (filteredButtons != []) { generateDropList(filteredButtons); return true; } // Generiere Dropdown mit gefilterten Elementen
+            else return false;
+        }
 
-    if (!isClickInsideInput && !isClickInsideDropdown) {
-        dropL.style.display = 'none'; // Hide the dropdown
+        document.addEventListener('DOMContentLoaded', () => {
+            generateDropList(allButtons);
+
+            // Eventlistener für Benutzereingabe
+            userInputField.addEventListener('input', (event) => {
+                const inputValue = event.target.value;
+                if (filterDropList(inputValue)) { drop_content_fr.style = "display: flex"; }
+
+            });
+        });
+
+        const dropwdown_observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.type === 'childList') {
+                    console.log('Dropdown updated:', mutation);
+                }
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            const isClickInsideInput = userInputField.contains(event.target);
+            const isClickInsideDropdown = dropL.contains(event.target);
+
+            if (!isClickInsideInput && !isClickInsideDropdown) {
+                dropL.style.display = 'none'; // Hide the dropdown
+            }
+        });
+
+        // Show dropdown when the input field is focused
+        userInputField.addEventListener('focus', () => {
+            dropL.style.display = 'block'; // Show the dropdown
+        });
+
+        dropwdown_observer.observe(dropL, { childList: true });
     }
-});
+)
 
-// Show dropdown when the input field is focused
-inputField.addEventListener('focus', () => {
-    dropL.style.display = 'block'; // Show the dropdown
-});
-
-dropwdown_observer.observe(dropL, { childList: true });
-
-const loadButton = document.getElementById('load-content-button');
-const userInputField = document.getElementById('text-field');
-loadButton.addEventListener('click', () => {
-    // Fetch HTML content from the Flask API
-    const inputval = userInputField.value;
-    flask_call(`${inputval},${mode}`)
-});
 
 const headm = document.getElementById('head_menu');
 document.addEventListener("DOMContentLoaded", async () => {

@@ -2,18 +2,19 @@ import json
 from shared.score_calculator.score_analyzer import generate_score, get_total_score
 from shared.json_processor import create_json_file
 
-def add_entry_to_all_scores_list(all_scores, key, score, save_file1):
-    try:
-        all_scores[key].append(score)
-    except:
-        all_scores[key] = [score]
-        print("")
-    with open(save_file1, "w") as file:
-        json.dump(all_scores, file, indent=4)
+def add_entry_to_all_scores_list(all_scores, key, score, save_file1, isLocPhone: bool):
+    if not isLocPhone:
+        try:
+            all_scores[key].append(score)
+        except:
+            all_scores[key] = [score]
+            print("")
+        with open(save_file1, "w") as file:
+            json.dump(all_scores, file, indent=4)
       
 
 
-def _ex(response_dic:dict, sourcefolder:str):
+def _ex(response_dic:dict, sourcefolder:str, isLocPhone=False):
     save_file1 = f"{sourcefolder}/temp/all_scores.json"
     scores_list: list[float] = []
     all_scores = {}
@@ -36,15 +37,18 @@ def _ex(response_dic:dict, sourcefolder:str):
                         print(f"--------------->problem with {val2}")
             score: float = generate_score(text, key)
 
-            add_entry_to_all_scores_list(all_scores, key, score, save_file1)
+            add_entry_to_all_scores_list(all_scores, key, score, save_file1, isLocPhone)
             
             response_dic[key]["score"] = score
             scores_list.append(score)
     total_score = get_total_score(scores_list)
     response_dic["conclusion"]["score"] = total_score
-    add_entry_to_all_scores_list(all_scores, "total_score", total_score, save_file1)
-    save_file = f"{sourcefolder}/temp/generated_reviews_with_score.json"
-    create_json_file(response_dic, "", save_file)
+    add_entry_to_all_scores_list(all_scores, "total_score", total_score, save_file1, isLocPhone)
+    if not isLocPhone:
+        save_file = f"{sourcefolder}/temp/generated_reviews_with_score.json"
+        create_json_file(response_dic, "", save_file)
+    if isLocPhone:
+        return response_dic
 
 
 

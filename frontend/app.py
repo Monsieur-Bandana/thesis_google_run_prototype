@@ -6,6 +6,7 @@ from shared.llm_after_class import generateAnswer
 import random
 import os
 import sys
+from shared.score_calculator import main
 
 app = Flask(__name__)
 folder = "frontend"
@@ -59,13 +60,21 @@ def loadAnswer(name, mode)->str:
 
     file_content = ""
 
+    def create_new_phone():
+        new_p = generateAnswer(name, folder)
+
+        new_P_w_sc = main._ex(new_p, folder, True)
+
+        phone_one = new_P_w_sc
+        return phone_one
+
     def quickLoop():
         for p in phone_data:
             print("----------------->>")
             print(type(p))
             if p["name"] == name:
                 return p
-        return {}  
+        return create_new_phone()  
 
     if mode=="":
         p = quickLoop()
@@ -126,11 +135,9 @@ def response():
     print(requ_l)
     name = requ_l[0]
     mode = requ_l[1]
-    print("-------------------------->"+name)  
     message = loadAnswer(name, mode)
-    if message=="":
-        print("call api")
-        message = generateAnswer(name, folder)
+
+
     return message
 
 if __name__ == "__main__":
