@@ -243,8 +243,16 @@ const observer = new MutationObserver(() => {
     });
 });
 
-// Observer konfigurieren und starten
+document.addEventListener("click", function (event) {
+    let div = document.getElementById("compare_menu");
+    let isVisible = window.getComputedStyle(div).display !== "none";
+    let button = document.getElementById("compareButton");
 
+    // Check if the clicked element is NOT inside the div
+    if (!div.contains(event.target) && isVisible && event.target !== button) {
+        div.style.display = "none"; // Hide the div
+    }
+});
 
 modeList = ["", "2"]
 modeList.forEach(

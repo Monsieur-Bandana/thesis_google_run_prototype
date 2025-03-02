@@ -70,11 +70,13 @@ def loadAnswer(name, mode)->str:
 
     def quickLoop():
         for p in phone_data:
-            print("----------------->>")
             print(type(p))
             if p["name"] == name:
+                p["in_list"] = "true" # checks if in scores list
                 return p
-        return create_new_phone()  
+        p = create_new_phone()
+        p["in_list"] = "false"
+        return p
 
     if mode=="":
         p = quickLoop()

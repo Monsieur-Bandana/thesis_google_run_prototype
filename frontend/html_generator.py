@@ -1,18 +1,17 @@
 # response = f"""<li class="{css_name}-css-class"><span style="font-weight: bold">{response_dic["generated_adj"]} {class_name}:</span> {response_dic["html_output"]}<span class="sources">{response_dic["footnotes_span"]}</span></li>"""
 
 all_phones_scores = {}
-is_in_score_list = True
 
-def calc_ratio(json_name, score)->float:
-    list_of_other_scores = all_phones_scores[json_name]
+def calc_ratio(json_name, score, is_in_score_list)->float:
+    list_of_other_scores: list[float] = all_phones_scores[json_name]
+    if is_in_score_list == "false":
+        print("//////////////////////////////////////////////////////////////////////////////////////")
+        list_of_other_scores.append(score)
     num_of_other_scores = 0
     for el in list_of_other_scores:
         if el <= score:
             num_of_other_scores+=1
-    if is_in_score_list:
-        ouptut_t = (num_of_other_scores-1)/(len(list_of_other_scores)-1)
-    else:
-        ouptut_t = num_of_other_scores/len(list_of_other_scores)
+    ouptut_t = (num_of_other_scores-1)/(len(list_of_other_scores)-1)
     return ouptut_t
 
 def render_calc_text(ratio: float)->str:
@@ -40,9 +39,9 @@ def render_calc_display(ratio:float, width=75):
         </div>
     """
 
-def create_header(title: str, score: float, json_name, add_key = True):
+def create_header(title: str, score: float, json_name, is_in_score_list, add_key = True):
 
-    ouptut_t = calc_ratio(json_name, score)
+    ouptut_t = calc_ratio(json_name, score, is_in_score_list)
 
     addId = ""
     if add_key:
@@ -79,13 +78,15 @@ def addTableEntry(title: str, json_name: str, score: float):
     return header_html   
 
 def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
+    is_in_score_list1 = resp1["in_list"]
+    is_in_score_list2 = resp2["in_list"]     
     def create_td(diczt:dict, direction: str):
         print(diczt)
         td= f"""<td style="width: 50%; padding-{direction}: 3px;"><ul>"""
         cont=""
         
         for k, v in diczt.items():
-            if k not in ["score", "name"]:
+            if k not in ["score", "name", "in_list"]:
                 cont+=f"""
                         <li><span style="font-weight: bold">{v["adjective"]} {v["class_name"]}:</span> {v["summary"]}</li>
                     """
@@ -104,8 +105,8 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
         r1 = f"""<tr><td>Category</td><td>{dicti["name"]["0"]}</td><td>{dicti["name"]["1"]}</td></tr>"""
         t1 = dicti["conclusion"]["0"]["score"]
         t2 = dicti["conclusion"]["1"]["score"]
-        ouptut_t1 = calc_ratio("total_score", t1)
-        ouptut_t2 = calc_ratio("total_score", t2)
+        ouptut_t1 = calc_ratio("total_score", t1, is_in_score_list1)
+        ouptut_t2 = calc_ratio("total_score", t2, is_in_score_list2)
 
         r1 += f"""<tr style="font-size: 1.6rem"><td>Estimated total score</td><td>{color_leafs(t1, "black")}
                     <div class="ratio-with-perc">
@@ -119,7 +120,7 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
                 </td></tr>
                 """
         for key, val in dicti.items():
-            if key not in ["conclusion", "name"]:
+            if key not in ["conclusion", "name", "in_list"]:
                 na = f"""<a href="#{key}">{val["0"]["name"]}</a>"""
                 sc1 = val["0"]["score"]
                 sc2 = val["1"]["score"]
@@ -127,8 +128,8 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
                                 <td style="width: 35%">{color_leafs(sc2, "black", check_for_bigger(sc2, sc1))}</td></tr>"""
         return f"""<table style="width: 100%">{r1}</table>"""
     
-    def render_header_row(key, dicti:dict):
-        ouptut = calc_ratio(key, dicti["score"])
+    def render_header_row(key, dicti:dict, is_in_score_list2):
+        ouptut = calc_ratio(key, dicti["score"], is_in_score_list2)
         sc = dicti["score"]
 
         r1 = f"""
@@ -158,12 +159,12 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
     <td>{new_resp["conclusion"]["1"]["summary"]}</td></tr>"""
 
     for key, val in new_resp.items():
-        if key not in ["conclusion", "name"]:
+        if key not in ["conclusion", "name", "in_list"]:
             
             header = f"""<tr id={key}><td colspan="2">
                             <div style="display: flex; justify-content: space-between; color: white">
                                 <div class="span_alike"><span class="title_span">{val["0"]["name"]}</span></div>
-                                {render_header_row(key, val["0"])}{render_header_row(key, val["1"])}</div>
+                                {render_header_row(key, val["0"], is_in_score_list1)}{render_header_row(key, val["1"], is_in_score_list2)}</div>
                         </td></tr>
                     """
 
@@ -181,16 +182,16 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
 def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit = True):
     global all_phones_scores
     all_phones_scores = all_phones_scores2
-    global is_in_score_list
-    is_in_score_list = is_in_scorelsit
+
+    is_in_score_list = resp["in_list"]
     final_response = ""
     tablecounter = 0
     table = """<table style="width: 100%">"""
     print("*******************************************************")
     print(resp)
     for key, val in resp.items():
-        if key not in ["conclusion", "name"]:
-            h_ = create_header(title=val["name"], json_name=key, score=val["score"])
+        if key not in ["conclusion", "name", "in_list"]:
+            h_ = create_header(title=val["name"], json_name=key, score=val["score"], is_in_score_list=is_in_score_list)
             if tablecounter%2==0:
                 table = table + f"<tr>{addTableEntry(title=val["name"], json_name=key, score=val["score"])}"
             else:
@@ -212,13 +213,13 @@ def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit =
         table = table + "</tr>"
 
     table = table + "</table>"
-    final_response = generate_conclusional_header(conclusion=resp["conclusion"]["summary"], table = table, total_score=resp["conclusion"]["score"]) + final_response
+    final_response = generate_conclusional_header(conclusion=resp["conclusion"]["summary"], table = table, total_score=resp["conclusion"]["score"], is_in_score_list=is_in_score_list) + final_response
         
 
     return final_response
 
-def generate_conclusional_header(conclusion, total_score: float, table):
-    output_t = calc_ratio("total_score", total_score)
+def generate_conclusional_header(conclusion, total_score: float, table,is_in_score_list):
+    output_t = calc_ratio("total_score", total_score, is_in_score_list)
     header = f"""<div class="t-header">
                     <div class="t-frame">
                         <span>Estimated score</span>
