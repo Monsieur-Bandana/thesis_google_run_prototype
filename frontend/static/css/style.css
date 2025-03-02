@@ -569,6 +569,8 @@ td {
     border-radius: 0px 0px 15px 15px;
     width: 500px;
     box-shadow: 0 -10px 50px #353535;
+    max-height: 800px;
+    overflow: scroll;
 }
 
 .compare_menu .apps-area {
@@ -624,7 +626,7 @@ td {
     justify-content: space-between;
 }
 
-#drop_content_fr {
+.drop_content {
     max-height: 150px;
     position: absolute;
     overflow-y: scroll;
@@ -636,16 +638,20 @@ td {
     z-index: 100;
 }
 
-#drop_content_fr ul {
+.drop_content ul {
     width: 100%;
 }
 
-#drop_content_fr li {
+.drop_content li {
     padding-left: 20px;
 }
 
-#drop_content_fr li:hover {
+.drop_content li:hover {
     background-color: #0a9183
+}
+
+.compare_menu .drop_content {
+    position: unset;
 }
 
 .provided_brands_frame {
