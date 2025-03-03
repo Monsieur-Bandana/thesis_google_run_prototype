@@ -6,7 +6,7 @@
             {
                 "name": "Battery Quality",
                 "json_name": "quality_of_battery",
-                "description": "How long does the battery of a <replacer>-phone remain reliable? Is the battery easily replaceable?",
+                "description": "How long does the battery of a <replacer>-phone remain reliable? Is the battery easily replaceable? How does battery quality influence the overall lifespan and durability of a smartphone? What environmental and safety concerns arise from poor battery quality? How do manufacturers ensure battery quality while balancing cost and sustainability?",
                 "interpreter": "The role of the smartphone's battery on the smartphones footprint",
                 "parent": "Use",
                 "tokens": [
@@ -26,7 +26,7 @@
                 "name": "Durability",
                 "json_name": "durability",
                 "description": "How long can the <replacer>-phone remain functional and relevant? How resistant is it to physical damage? What is the estimated livespan?",
-                "interpreter": "In which way does the smartphone's durability influence the smartphones environmental impact? Which characteristics make a smartphone durable?",
+                "interpreter": "What factors contribute to the durability of a smartphone, and how is it measured? What role do material choices and design play in enhancing smartphone durability?",
                 "parent": "Use",
                 "tokens": [
                     "Longevity",
@@ -38,6 +38,7 @@
                 "name": "Planned Obsolescence",
                 "json_name": "planned_obsolescence",
                 "description": "Does the <replacer>-phone Company employ strategies, such as performance-reducing software updates, to encourage users to replace their phones within a few years?",
+                "interpreter": "What are the different forms of planned obsolescence in the smartphone industry? What alternatives exist to planned obsolescence that still support technological progress?",
                 "parent": "End of Life",
                 "tokens": [
                     "Discontinuity of support",
@@ -54,7 +55,8 @@
             {
                 "name": "Ease of Repair",
                 "json_name": "ease_of_reparation",
-                "description": "How easy is it for the end user to repair the <replacer>-phone?",
+                "description": "How easy is it for the end user to repair the <replacer>-phone? Are there barriers implemented by the manufacturer?",
+                "interpreter": "",
                 "parent": "Use",
                 "tokens": [
                     "Repairability",
@@ -67,6 +69,7 @@
                 "name": "Ease of Modification",
                 "json_name": "ease_of_modification",
                 "description": "Can the <replacer>-phone's performance be upgraded by the user?",
+                "interpreter": "What impact do modular designs and replaceable components have on repairability? What are the barriers preventing greater modifiability and user-repairable smartphones?",
                 "parent": "Use",
                 "tokens": [
                     "SD card slot",
@@ -82,7 +85,8 @@
             {
                 "name": "Raw Materials Origin",
                 "json_name": "origin",
-                "description": "Where are the natural resources used in the <replacer>-phone production coming from? Specifically, where are the mines located for rare earth elements used in metal extraction?",
+                "description": "Where are the natural resources used in the <replacer>-phone production coming from? Specifically, where are the mines located for rare earth elements used in metal extraction? What are the key metals used in smartphones, and why are they essential for ICT industries? How does the sourcing of raw materials impact local communities and ecosystems?",
+                "interpreter": "How can transparency in raw material sourcing contribute to a more sustainable industry?",
                 "parent": "Materials",
                 "tokens": [
                     "Mines",
@@ -93,6 +97,7 @@
                 "name": "Transportation",
                 "json_name": "transportation",
                 "description": "What are the distances involved, not only between production sites, but also to the final point of distribution of <replacer>-Smartphones?",
+                "interpreter": "What are the main logistical challenges in making smartphone supply chains more sustainable? How can manufacturers reduce the carbon footprint of transporting raw materials and finished products? What role do alternative transportation methods, such as low-emission shipping, play in reducing environmental impact?",
                 "parent": "Transportation",
                 "tokens": [
                     "Km",
@@ -105,6 +110,7 @@
                 "name": "Manufactoring",
                 "json_name": "manufactoring",
                 "description": "What processes are used to transform raw resources into consumer electronics? This includes intermediate products, such as printed circuit boards, and the assembly of the final smartphone. How does the <replacer>-Company act to improve those, from a sustainable point of view?",
+                "interpreter": "What are the most resource-intensive stages of smartphone manufacturing? How do energy consumption, waste production and emissions from manufacturing affect the industry's sustainability?",
                 "parent": "Production",
                 "tokens": [
                     "Device assembly",
@@ -148,6 +154,7 @@
                 "name": "Estimated Carbon Footprint",
                 "json_name": "co_footprint",
                 "description": "What is the estimated carbon footprint of a <replacer>-phone per year?",
+                "interpreter": "Are figures mentioned regarding the carbon footprint?",
                 "parent": "End of Life",
                 "tokens": []
             }
