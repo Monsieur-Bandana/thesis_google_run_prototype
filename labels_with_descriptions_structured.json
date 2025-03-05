@@ -85,7 +85,7 @@
             {
                 "name": "Raw Materials Origin",
                 "json_name": "origin",
-                "description": "Where are the natural resources used in the <replacer>-phone production coming from? Specifically, where are the mines located for rare earth elements used in metal extraction? What are the key metals used in smartphones, and why are they essential for ICT industries? How does the sourcing of raw materials impact local communities and ecosystems?",
+                "description": "Where are the natural resources used in the <replacer>-phone production coming from? Specifically, where are the mines located for rare earth elements used in metal extraction? What are the key metals used in smartphones, and why are they essential for ICT industries? How does the sourcing of raw materials, raw earths and minerals impact local communities and ecosystems?",
                 "interpreter": "How can transparency in raw material sourcing contribute to a more sustainable industry?",
                 "parent": "Materials",
                 "tokens": [
@@ -110,7 +110,7 @@
                 "name": "Manufactoring",
                 "json_name": "manufactoring",
                 "description": "What processes are used to transform raw resources into consumer electronics? This includes intermediate products, such as printed circuit boards, and the assembly of the final smartphone. How does the <replacer>-Company act to improve those, from a sustainable point of view?",
-                "interpreter": "What are the most resource-intensive stages of smartphone manufacturing? How do energy consumption, waste production and emissions from manufacturing affect the industry's sustainability?",
+                "interpreter": "What are the most resource-intensive stages of smartphone manufacturing? How do energy consumption, waste production and emissions from manufacturing affect the industry's sustainability? What parts impact the footprint the most?",
                 "parent": "Production",
                 "tokens": [
                     "Device assembly",

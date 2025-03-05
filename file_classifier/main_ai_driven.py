@@ -2,7 +2,7 @@ from PyPDF2 import PdfReader
 from llama_index.core import SimpleDirectoryReader
 import json
 import os
-from classif_str import InterpreterFormatOnDominance
+from classif_str import InterpreterFormatOnDominance, RelatabilityByFloat
 from shared.json_processor import create_json_file
 from shared.git_handler import load_class_data_from_git
 from pdf_handler import create_pdf_temp_folder
@@ -11,6 +11,7 @@ from sources_handler import add_footnotes
 from openai import OpenAI
 from shared.ind_key import rand_k
 import re
+from shared.question_builder import generate_comp_related_question, create_general_question, generate_context_for_classifier
 
 classes = []
 tokens = []
@@ -65,83 +66,51 @@ def classify_text_using_retriever(dir: str, classes)->list[dict]:
 
         content_chunks = [content[i:i + chunk_size] for i in range(0, len(content), chunk_size)]
 
-        question = ""
-        for cl in classes:
-            for subcl in cl["list"]:
-                descr:str = subcl["description"]
-                descr = descr.replace("<replacer>", "smart")
-                question = f"""{question}\nTopic: {subcl["name"]} \n What is the status quo?
-                In which ways does the smartphone's {subcl["name"]} impacts the smartphone's environmental footprint? What characterizes a smartphone's {subcl["name"]}?
-                Further: {subcl["description"]} """
-            if not dir == "general":
-                question+=f"does the manufacturer of the {dir} mentions any methods on {subcl["name"]}?"
         # if dir how does company tries to improve?
         chunk_nr = 0
         answeres_list = []
         for content in content_chunks:
+            for cl in classes:
+                for subcl in cl["list"]:
+                    question = ""
+                    descr:str = subcl["description"]
+                    name = subcl["name"]
+                    question = create_general_question(name)
+                    question += descr
+                    try:
+                        question += f"""{subcl["interpreter"]}"""
+                    except:
+                        print("no additial quesion")
+                    if not dir == "general":
+                        question+=generate_comp_related_question(name, dir)
+                        question = question.replace("<replacer>", dir)
+                    else:
+                        question = question.replace("<replacer>", "smart")
             
-            sk = rand_k
-            client = OpenAI(api_key=sk)
+                    sk = rand_k
+                    client = OpenAI(api_key=sk)
 
-            context = f"""
+                    context = generate_context_for_classifier(content=content)
 
-                You are a helpful assistant. You will receive a long document and evaluate its relevance to specific topics.  
 
-                ### **Evaluation Guidelines:**  
-                - Carefully scan the entire document to check if **any section** contains information relevant to the topic.  
-                - Assign a probability float value between **0 and 1** based on the most relevant section.  
-                - **Do not base your score on the average relevance of the document. If a small but highly relevant section exists, score accordingly.**  
 
-                ### **Scoring Criteria:**  
-                - **1.0**: An answer to every question of the topic can be found in the text.  
-                - **0.8**: An answer to one of the questions of the topic can be found in the text.  
-                - **0.5**: Some relevant mentions exist, but they are vague or incomplete.
-                - **0.2**: The document briefly touches on the topic but lacks real value.  
-                - **0.0**: No relevant information is present.  
 
-                ### **Important Instructions:**  
-                - **If even a small part of the document contains valuable information, base the score on that section, not the overall text.**  
-                - **If a score below 0.5 is given, provide a short explanation of why the document is insufficient.**  
-
-                ### **Example Evaluations:**  
-                #### Example 1:  
-                Document: 40 pages, one page discusses “Mitochondria” in detail.  
-                Topic: Biology  
-                Rating: **0.9**  
-
-                #### Example 2:  
-                Document: 40 pages, mitochondria are mentioned briefly in one sentence.  
-                Topic: Biology  
-                Rating: **0.3**  
-
-                #### Example 3:  
-                Document: 40 pages, no mention of mitochondria.  
-                Topic: Biology  
-                Rating: **0.0**  
-
-                ### Reasoning
-                please also add a view sentences why you dicided for that score
-
-                Now, evaluate the following document:  
-                {content}
-
-            """
-
-            response = client.beta.chat.completions.parse(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": context},
-                    {
-                        "role": "user",
-                        "content": question
-                    }
-                ],
-                temperature=0.2,
-                response_format=InterpreterFormatOnDominance
-            )
-            summary = response.choices[0].message.content
-            generated_answer_dict:dict = json.loads(summary)
-            answeres_list = [generated_answer_dict]
+                    response = client.beta.chat.completions.parse(
+                        model="gpt-4o-mini",
+                        messages=[
+                            {"role": "system", "content": context},
+                            {
+                                "role": "user",
+                                "content": question
+                            }
+                        ],
+                        temperature=0.2,
+                        response_format=RelatabilityByFloat
+                    )
+                    summary = response.choices[0].message.content
+                    generated_answer_dict:dict = json.loads(summary)
+                    json_name = subcl["json_name"]
+                    answeres_list.append({json_name: generated_answer_dict})
 
 
             final_anser_dict = {"source": f"{pdf_file_path}-chunk-{chunk_nr}", "answeres": answeres_list, "brand": dir}
@@ -183,6 +152,7 @@ if __name__ == "__main__":
     with open(f"{folder_name}/temp/save_file.json", "r") as file:
         data = json.load(file)
     outc_l:list[dict] = []
+
     for el in data:
         class_list = []
 
