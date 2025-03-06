@@ -9,6 +9,7 @@ from shared.git_handler import load_class_data_from_git
 from shared.gcs_handler import list_files_in_folder, download_file_from_bucket, upload_file, list_directories_in_bucket, create_temp_folder
 from shared.ind_key import rand_k
 from class_contructor import InterpreterStructure
+from shared.question_builder import create_general_question, generate_comp_related_question
 
 # Configure your Google Cloud and OpenAI API credentials
 sk = rand_k
@@ -27,6 +28,7 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp,
                 You are a helpful assistant tasked with extracting information about Smartphones and their environmental impact. \n
 
                 """
+    context_1_1 = ""
     if not comp == "general":
         context_1 = f"""
                     You are a helpful assistant tasked with extracting information about {comp}-Smartphones, also referred to as {dir}-Smartphones and their environmental impact. \n
@@ -35,6 +37,7 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp,
                     - Ignore general information about the smartphone industry unless it explicitly relates to {comp}. \n
 
                     """
+        context_1_1 = generate_comp_related_question("topic", comp)
 
     chunk_nr = 0
     for chunk in content_chunks:
@@ -49,6 +52,9 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp,
                     - If no relevant information is found in the provided text, return following string (`"..."`) instead of attempting to answer the question.\n
                     - Format your response according to the given structure.\n
 
+                    - for each topic we have the following questions:\n
+                    {create_general_question("topic")}
+                    {context_1_1}
                     \n<text>{chunk}</text>\n
 
                     """
@@ -80,7 +86,6 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp,
 
                 summary = response.choices[0].message.content
                 generated_answer_dict:dict = json.loads(summary)
-                generated_answer_dict["source"]=f"{pdf_file_path}, chunk {chunk_nr}"
 
             
 
@@ -90,6 +95,7 @@ def execute_summary(prompt, content, save_file, pdf_file_path, chunk_size, comp,
                 # Remove the elements from generated_answer_dict
                 for key in keys_to_remove:
                     del generated_answer_dict[key]         
+                generated_answer_dict["source"]=f"{pdf_file_path}, chunk {chunk_nr}"
                 
                 create_json_file(generated_answer_dict, main_folder, save_file)
 
@@ -170,7 +176,7 @@ def main():
         with open(f"{main_folder}/temp/classes.json", "r") as file:
             entities = json.load(file)
         question = "Provide a concise list of bullet points for each of the following topics related to smartphones and their environmental impact.\n"
-        save_file = f"{main_folder}/temp/{dir}.json"
+        save_file = f"{main_folder}/temp/{dir}2.json"
         for entity in entities:
             parent_children = entity["list"]
             fitting_pdfs: list[str] = files_to_intperprete
@@ -183,6 +189,10 @@ def main():
                 question = f"""{question}\nTopic: {class_name} \n What is the status quo?
                 In which ways does the smartphone's {class_name} impacts the smartphone's environmental footprint? What characterizes a smartphone's {class_name}?
                 Further: {class_description} """
+                try:
+                    question += f""" {child["interpreter"]}"""
+                except:
+                    print("no interpreter questions")
                 if not dir == "general":
                     question+=f"does the {comp} mentions any methods on {class_name}?"
         print(question)
@@ -207,7 +217,7 @@ if __name__ == "__main__":
     for brand in brandlist:
         dir = brand
         try:
-            save_file = f"{main_folder}/temp/{dir}.json"
+            save_file = f"{main_folder}/temp/{dir}2.json"
             with open(save_file, "r") as file:
                 data:list[dict] = json.load(file)
             merged_dict:dict = {}
@@ -219,7 +229,7 @@ if __name__ == "__main__":
                         merged_dict[key] = value
             print(merged_dict)
             for key, value in merged_dict.items():
-                s_file_n = f"file_interpreter/temp/{brand}-{key}.txt"
+                s_file_n = f"file_interpreter/temp/{brand}-{key}2.txt"
                 with open(s_file_n, "w", encoding="utf-8") as file:
                     file.write(value)
                 upload_file("raw_pdf_files", s_file_n, f"summaries_struct_c/{brand}-{key}.txt")
