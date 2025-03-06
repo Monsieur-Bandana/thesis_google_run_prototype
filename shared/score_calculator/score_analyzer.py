@@ -30,12 +30,12 @@ def generate_score(respone: str, json_name)->float:
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": f"""You are a helpful assistant, rating the environmental footprint of smartphones based on input texts. You give ratings in float format
-             with one decimal place. 5.0 represents a low footprint while 1.0 represents a high footprint.
+             with one decimal place. 5.0 represents a low footprint while 0.0 represents a high footprint.
              
              ### EXAMPLES ###
 
              [{example_dict[json_name]["perfect_phone"]}] // 5.0
-             [{example_dict[json_name]["low_end_phone"]}] // 1.0
+             [{example_dict[json_name]["low_end_phone"]}] // 0.0
              [{example_dict[json_name]["mid"]}] // 2.0
              
              """},
@@ -56,7 +56,17 @@ def generate_score(respone: str, json_name)->float:
     return float_value
 
 def get_total_score(scores:list[float]):
-    t_score=5-0.83*(5-scores[0])-0.2*(5-scores[1])-0.15*(5-scores[2])+0.06*scores[4]
+    bat = scores[0]
+    long = scores[1]
+    rep = scores[2]
+    prod = scores[3]
+    rec = scores[4]
+    co2 = scores[6]
+    long = (long + bat + rep)/3
+    neg1 = (5-prod) - 0.1 * rec - 0.5 * long
+    neg2 = 5- co2
+    t_score = 5- (neg1 + neg2)/2
+    t_score = min(5.0, t_score)
     t_score = round(t_score, 1)
     return t_score
 

@@ -15,8 +15,8 @@
         "mid": ""
     },
     "longevity": {
-        "perfect_phone": "",
-        "low_end_phone": "",
+        "perfect_phone": "The sustainable phone is built to remain functional for an estimated lifespan of at least 6.8 years, with modular components enhancing durability and repairability. No strategies to reduce performance through software updates are employed, allowing users to retain their phones longer without forced obsolescence.",
+        "low_end_phone": "The unsustainable phones is engineered for durability, featuring robust materials and design elements that enhance its resistance to physical damage, contributing to an estimated lifespan of several years. The manufacturer  does not publicly admit to employing strategies like performance-reducing software updates to encourage early replacements; however, there are concerns among consumers regarding perceived obsolescence. The company maintains that updates are designed to enhance security and performance, not to hinder functionality. This approach reflects a commitment to user experience while navigating the complexities of consumer expectations around product longevity. ",
         "mid": ""
     },
     "repairability_and_modifiability": {

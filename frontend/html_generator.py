@@ -33,7 +33,7 @@ def render_calc_display(ratio:float, width=75):
 
                 </div>
             </div>
-            <div class="arrow_placer" style="width: {total_width*ratio+9}px">
+            <div class="arrow_placer" style="width: {total_width*ratio+6}px">
                 &#9650;
             </div>
         </div>
@@ -87,8 +87,10 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
         
         for k, v in diczt.items():
             if k not in ["score", "name", "in_list"]:
+                n:str = v["class_name"]
+                n = n.lower()
                 cont+=f"""
-                        <li><span style="font-weight: bold">{v["adjective"]} {v["class_name"]}:</span> {v["summary"]}</li>
+                        <li><span style="font-weight: bold">{v["adjective"]} {n}:</span> {v["summary"]}</li>
                     """
         cont+="</ul></td>"
         td+=cont
@@ -203,8 +205,10 @@ def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit =
             for k, v in sub_dic_list.items():
                 # el_dict: dict = next(iter(el.values()))
                 if type(v) == dict:
+                    n:str = v["class_name"]
+                    n = n.lower()
                     line = f"""
-                        <li><span style="font-weight: bold">{v["adjective"]} {v["class_name"]}:</span> {v["summary"]}</li>
+                        <li><span style="font-weight: bold">{v["adjective"]} {n}:</span> {v["summary"]}</li>
                     """
                     final_response += line
 

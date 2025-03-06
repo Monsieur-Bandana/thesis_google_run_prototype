@@ -13,6 +13,7 @@ from pydantic import BaseModel
 from shared.prefilter_extractor import extract_comp_name
 from shared.structured_output_creator import InterpreterFormatWithAdjectiveStructure
 from shared.json_processor import create_json_file
+from shared.question_builder import generate_context_for_llm
 
 sk = rand_k
 client = OpenAI(api_key=sk)
@@ -69,8 +70,8 @@ def give_conlusion(previous_text:str, phone_name, count)->str:
 
 
     question = f"""
-    Provide a brief summary of the carbon footprint of the {phone_name}. 
-    In your summary, indicate whether the phone likely has a positive (good) or negative (bad) impact on the environmental footprint.
+    Provide a brief summary of the environmental footprint of the {phone_name}. 
+    In your summary, indicate whether the phone likely has a high (which is bad) or low (which is better) impact on the environmental footprint.
     """
 
     
@@ -111,26 +112,11 @@ def activate_api(input: str, question: str, rag_inf: str, comp)  -> dict:
 
         comp_add = f", and summarize {comp}'s improvement efforts"
 
-
+    
 
 
     # comment = f""" Give the responses in the style of the following examples: Question: {fewshot_question} Answer: {fewshots[0]} Question: {fewshot_question} Answer: {fewshots[1]}"""
-    context = f"""
-    You are a knowledgeable and concise assistant providing reviews about the environmental footprint of the {input} by {comp}.\n
-    Your task is to analyze the provided information regarding the as-is situation, evaluate its environmental impact{comp_add}.\n
-    For that you will receive textual documents about various environmet-related aspects. \n
-    - Base your response strictly on the content provided between the <input> brackets: <input> {rag_inf} </input>.\n
-    - Avoid suggesting improvements or discussing potential changes to the environmental footprint.\n
-    - Each category should receive one or two adjectives summarizing the environmental impact. If two adjectives are used, connect them with an appropriate conjunction like "and" or "but."\n
-
-
-    **Structure:**\n
-    Give a structured response, by provoding text for the presented categories and sub-categories. Further each subcategory consists of...
-    1. A concise description of the as-is situation and its environmental impact {comp_add}.\n
-    2. One or two adjectives summarizing the environmental impact.\n
-
-    Stay focused, objective, and concise in your analysis.\n
-    """
+    context = generate_context_for_llm(phone_n=input, comp_add=comp_add, comp=comp, rag_inf=rag_inf)
 
     sk = rand_k
     client = OpenAI(api_key=sk)
@@ -149,19 +135,6 @@ def activate_api(input: str, question: str, rag_inf: str, comp)  -> dict:
     )
 
     generated_answer:str = completion.choices[0].message.content
-    """
-    generated_answer_dict:dict = json.loads(generated_answer)
-    
-    generated_text:str = generated_answer_dict["summary"]
-    generated_adj:str = generated_answer_dict["adjective"]
-    generated_adj = generated_adj.capitalize()
-    if not isParent:
-        generated_text = replace_sentence_start(generated_text, input)
-
-    html_output = ''.join(f'{line} ' for line in generated_text.split('\n') if line.strip())
-
-    resp_dict: dict = {"class_name": class_name, "generated_adj": generated_adj, "html_output": html_output, "footnotes_span": footnotes_span}
-    """
 
     return json.loads(generated_answer)
 
@@ -224,6 +197,18 @@ def get_entity_name(parent: str, json_code: str)->str:
                 if el2["json_name"] == json_code:
                     return el2["name"]
     return "Couldn't find name"
+
+def correctAdjectives(dicti: dict)->dict:
+    """
+    from leading adjectives removes unwanted character '.', further capitalizes adjectives
+    """
+    for key, val in dicti.items():
+        for key2, val2 in val.items():
+            adj:str = val2["adjective"]
+            adj = adj.replace(".", "")
+            adj = adj.capitalize()
+            val2["adjective"] = adj
+    return dicti
 
 
 def generateAnswer(input: str, sourcefolder)->dict:
@@ -300,6 +285,7 @@ def generateAnswer(input: str, sourcefolder)->dict:
     if context.strip():
 
         response_dic: dict = activate_api(input=input, question=prompt, rag_inf=context, comp=comp)
+        response_dic = correctAdjectives(response_dic)
         
 
     # print(response_dic)

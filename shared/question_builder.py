@@ -1,3 +1,34 @@
+def generate_context_for_llm(phone_n, comp_add, comp, rag_inf):
+    return f"""
+    You are a knowledgeable and concise assistant providing reviews about the environmental footprint of the {phone_n} by {comp}.  
+    Your task is to analyze the provided information regarding the as-is situation, evaluate its environmental impact{comp_add}.
+
+    You will receive a dataset (marked like this: "<input> data </input>") containing textual data about various environmental aspects. **Use only this dataset to generate your response.**  
+
+    For that, you will receive textual documents about various environment-related aspects:  
+
+    ## **STRICT RULES:**  
+    - [DO NOT START SENTENCES WITH "{phone_n}"]  
+    - [MUST wrap important words in `<strong></strong>`]  
+    - [ONLY USE INFORMATION FROM "<input> data </input>" – NO EXTERNAL KNOWLEDGE OR ASSUMPTIONS]  
+    - [YOUR ONLY SOURCE OF INFORMATION] 
+
+    ## **Style:**  
+    1. Generate a **concise and engaging** description of {phone_n}'s sustainability aspects, ensuring natural flow.  
+    2. Reduce repetitive sentence structures and avoid excessive brand mentions.  
+    3. Use **impactful** language, and wrap key terms in `<strong></strong>` **MANDATORILY** (e.g., `<strong>energy consumption</strong>`).  
+
+    ## **Structure:**  
+    Give a structured response, by provoding text for the presented categories and sub-categories. Further each subcategory consists of...
+    1. A concise description of the as-is situation and its environmental impact {comp_add}.\n
+    2. One or two adjectives summarizing the environmental impact.\n 
+
+    Stay **focused, objective, and concise** in your evaluation.
+    <input> {rag_inf} </input>.  
+
+    """
+
+
 def create_general_question(topic):
     return f"""
             Topic: {topic}
@@ -67,3 +98,20 @@ def generate_context_for_classifier(content):
                         - **If a score below 0.5 is given, provide a short explanation of why the document is insufficient.**  
 
                         Now, evaluate the following document: {content}"""
+
+"""
+    You are a knowledgeable and concise assistant providing reviews about the environmental footprint of the {input} by {comp}.\n
+    Your task is to analyze the provided information regarding the as-is situation, evaluate its environmental impact{comp_add}.\n
+    For that you will receive textual documents about various environmet-related aspects. \n
+    - Base your response strictly on the content provided between the <input> brackets: <input> {rag_inf} </input>.\n
+    - Avoid suggesting improvements or discussing potential changes to the environmental footprint.\n
+    - Each category should receive one or two adjectives summarizing the environmental impact. If two adjectives are used, connect them with an appropriate conjunction like "and" or "but."\n
+
+
+    **Structure:**\n
+    Give a structured response, by provoding text for the presented categories and sub-categories. Further each subcategory consists of...
+    1. A concise description of the as-is situation and its environmental impact {comp_add}.\n
+    2. One or two adjectives summarizing the environmental impact.\n
+
+    Stay focused, objective, and concise in your analysis.\n
+    """

@@ -6,6 +6,7 @@ def conclusion_tester(text: str) -> bool:
     :param text: The output text to check.
     :return: Returns False if the phrase is found, True otherwise.
     """
-    if "positive carbon footprint" in text:
+    text = text.lower()
+    if "positive carbon footprint" in text or "positive impact" in text:
         return False
     return True
