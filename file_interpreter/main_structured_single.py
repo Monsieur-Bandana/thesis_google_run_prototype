@@ -160,7 +160,7 @@ def main():
                     with open(save_file, "a", encoding="utf-8") as file:
                         file.write(summary)
                     global upload_data
-                    upload_data.append(f"{brand}-{json_name}.txt")
+                    upload_data.append(save_file)
         interpreted_files.append(source_n)   
 
 
@@ -171,6 +171,20 @@ def main():
                 
 
                 
+# for testing upload process
+def generateUp():
+    brandlist = list_directories_in_bucket(bucket_name, prefix)
+    global upload_data
+    subclasses = []
+    load_class_data_from_git(main_folder)
+    with open(f"{main_folder}/temp/classes.json", "r") as file:
+        entities = json.load(file)
+    for ent in entities: 
+        subclasses += ent["list"]
+    for el in brandlist:
+        for el2 in subclasses:
+            upload_data.append(f"""{main_folder}/temp/{el}-{el2["json_name"]}3.txt""")
+    return upload_data
 
 if __name__ == "__main__":
     create_temp_folder(main_folder)
@@ -181,5 +195,11 @@ if __name__ == "__main__":
         json.dump(interpreted_files, file, indent=4)
     upload_file("raw_pdf_files", f"{main_folder}/temp/{file_n}", f"json_files/{file_n}")
     for el in upload_data:
-        upload_file("raw_pdf_files", f"{main_folder}/temp/{el}", f"summaries/{el}")
+        el_phile_name = el.split("/")[2]
+        try:
+            upload_file("raw_pdf_files", f"{el}", f"summaries/{el_phile_name}")
+        except:
+            print("leck mi doch am oarschl!!")
+
+
   

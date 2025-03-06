@@ -74,7 +74,7 @@ def generate_texts():
         all_phones.remove(p)
 
     for phone in all_phones:
-        generateAnswer(phone, source_folder, False)
+        generateAnswer(phone, source_folder)
     # generateAnswer saves file "generated_reviews_no_score.json"
 
     upload_file(bucket_name=bucket_name, source_file_name=f"{source_folder}/temp/generated_reviews_no_score.json", destination_blob_name=f"json_files/generated_reviews_no_score.json")

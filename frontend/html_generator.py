@@ -161,8 +161,8 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
     for key, val in new_resp.items():
         if key not in ["conclusion", "name", "in_list"]:
             
-            header = f"""<tr id={key}><td colspan="2">
-                            <div style="display: flex; justify-content: space-between; color: white">
+            header = f"""<tr id={key} class="headline_tr"><td colspan="2">
+                            <div style="display: flex; justify-content: space-between; color: white" class="headline">
                                 <div class="span_alike"><span class="title_span">{val["0"]["name"]}</span></div>
                                 {render_header_row(key, val["0"], is_in_score_list1)}{render_header_row(key, val["1"], is_in_score_list2)}</div>
                         </td></tr>

@@ -273,7 +273,7 @@ def generateAnswer(input: str, sourcefolder)->dict:
             css_name = entity["json_name"]
             context = context + f"\n \n##{class_name}##\n \n"
             try:
-                download_file_from_bucket(bucket_name, f"summaries_struct_c/{dir}-{css_name}.txt", f"{sourcefolder}/temp/{dir}-{css_name}.txt")
+                download_file_from_bucket(bucket_name, f"summaries/{dir}-{css_name}3.txt", f"{sourcefolder}/temp/{dir}-{css_name}.txt")
                 context =  context + getContext(dir, css_name, sourcefolder) +"\n"
             except NotFound:
                 print(f"file summaries_struct_c/{dir}-{css_name}.txt not found")
@@ -293,10 +293,10 @@ def generateAnswer(input: str, sourcefolder)->dict:
     prompt = prompt + f"Your answer should in total consist at least of {str(count * 50  + 100)} tokens."
     if not dir == "general":
         try:
-            download_file_from_bucket(bucket_name, f"summaries_struct_c/general-{css_name}.txt", f"{sourcefolder}/temp/general-{css_name}.txt")
+            download_file_from_bucket(bucket_name, f"summaries/general-{css_name}3.txt", f"{sourcefolder}/temp/general-{css_name}.txt")
             context = get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input) + context + getContext("general", css_name, sourcefolder) 
         except NotFound:
-            print(f"file summaries_struct_c/general-{css_name}.txt not found")
+            print(f"file summaries/general-{css_name}.txt not found")
     if context.strip():
 
         response_dic: dict = activate_api(input=input, question=prompt, rag_inf=context, comp=comp)

@@ -345,14 +345,26 @@ li {
     background-position: center;
     display: flex;
     justify-content: space-between;
-    min-height: 50px;
+    height: 150px;
     margin-top: 50px;
+    align-content: flex-end;
+    /*
     background: radial-gradient(circle at 20% 30%, #fdfcfb, #f5ebe0 30%, transparent 60%),
         radial-gradient(circle at 80% 20%, #e4d3c3, #d5bdaF 50%, transparent 70%),
         radial-gradient(circle at 50% 80%, #c2a28b, #a78f78 40%, transparent 80%);
+        */
 }
 
+.headline_tr {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 150px;
+}
 
+.headline_tr .headline {
+    margin-top: unset;
+}
 
 .title_span {
 
@@ -365,10 +377,10 @@ li {
 }
 
 .span_alike {
-    background-color: #0000008a;
+    background-color: #000000bf;
     border-radius: 5px;
     padding: 0 10px;
-
+    align-self: flex-end;
     display: flex;
     flex-direction: column;
 }
@@ -379,18 +391,35 @@ li {
 }
 
 
-#materials {
-    background-image: url(/static/images/origin.jpg);
-}
-
-#transportation {
-    background-image: url(/static/images/transportation.jpg);
-}
-
 #quality_of_battery {
-    background-image: url(/static/images/use-neg.jpg);
-
+    background-image: url(/static/images/Folie1.png);
 }
+
+#longevity {
+    background-image: url(/static/images/Folie2.png);
+}
+
+#repairability_and_modifiability {
+    background-image: url(/static/images/Folie3.png);
+}
+
+#production {
+    background-image: url(/static/images/Folie4.png);
+}
+
+#recycled_parts {
+    background-image: url(/static/images/Folie5.png);
+}
+
+#innovativity {
+    background-image: url(/static/images/Folie6.png);
+}
+
+#co_footprint {
+    background-image: url(/static/images/Folie7.png);
+}
+
+
 
 /*
 #production {
