@@ -239,7 +239,9 @@ def generateAnswer(input: str, sourcefolder)->dict:
         data = json.load(file)
     context = ""
     comp = extract_comp_name(dir)
-    prompt = f"""In the following there is a list of questions. 
+    prompt = f"""
+    You will receive the description of a phone.
+    Further in the following there is a list of questions. 
     Please describe for each the status quo related to the {input} and what the {comp} is doing to improve the situation.\n
     """
     count = 0
@@ -276,10 +278,12 @@ def generateAnswer(input: str, sourcefolder)->dict:
             count = count + 1
             
     prompt = prompt + f"Your answer should in total consist at least of {str(count * 50  + 100)} tokens."
+    prompt += "Phone information:"
+    prompt += get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input)
     if not dir == "general":
         try:
             download_file_from_bucket(bucket_name, f"summaries/general-{css_name}3.txt", f"{sourcefolder}/temp/general-{css_name}.txt")
-            context = get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input) + context + getContext("general", css_name, sourcefolder) 
+            context =  context + getContext("general", css_name, sourcefolder) 
         except NotFound:
             print(f"file summaries/general-{css_name}.txt not found")
     if context.strip():

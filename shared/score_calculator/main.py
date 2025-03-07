@@ -15,14 +15,7 @@ def add_entry_to_all_scores_list(all_scores, key, score, save_file1, isLocPhone:
 
 
 def _ex(response_dic:dict, sourcefolder:str, isLocPhone=False):
-    save_file1 = f"{sourcefolder}/temp/all_scores.json"
     scores_list: list[float] = []
-    all_scores = {}
-    try:
-        with open(save_file1, "r") as file:
-            all_scores = json.load(file)
-    except:
-        print("all-scores-file does not exist yet!")
 
     for key, val in response_dic.items():
         print(key)
@@ -37,13 +30,11 @@ def _ex(response_dic:dict, sourcefolder:str, isLocPhone=False):
                         print(f"--------------->problem with {val2}")
             score: float = generate_score(text, key)
 
-            add_entry_to_all_scores_list(all_scores, key, score, save_file1, isLocPhone)
             
             response_dic[key]["score"] = score
             scores_list.append(score)
     total_score = get_total_score(scores_list)
     response_dic["conclusion"]["score"] = total_score
-    add_entry_to_all_scores_list(all_scores, "total_score", total_score, save_file1, isLocPhone)
     if not isLocPhone:
         save_file = f"{sourcefolder}/temp/generated_reviews_with_score.json"
         create_json_file(response_dic, "", save_file)

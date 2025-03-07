@@ -10,8 +10,7 @@ def generate_context_for_llm(phone_n, comp_add, comp, rag_inf):
     ## **STRICT RULES:**  
     - [DO NOT START SENTENCES WITH "{phone_n}"]  
     - [MUST wrap important words in `<strong></strong>`]  
-    - [ONLY USE INFORMATION FROM "<input> data </input>" – NO EXTERNAL KNOWLEDGE OR ASSUMPTIONS]  
-    - [YOUR ONLY SOURCE OF INFORMATION] 
+    - [ONLY USE INFORMATION FROM "<input> data </input>" OR THE PROMPT – NO EXTERNAL KNOWLEDGE OR ASSUMPTIONS]
 
     ## **Style:**  
     1. Generate a **concise and engaging** description of {phone_n}'s sustainability aspects, ensuring natural flow.  

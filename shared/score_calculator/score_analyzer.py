@@ -62,10 +62,13 @@ def get_total_score(scores:list[float]):
     prod = scores[3]
     rec = scores[4]
     co2 = scores[6]
-    long = (long + bat + rep)/3
-    neg1 = (5-prod) - 0.1 * rec - 0.5 * long
-    neg2 = 5- co2
-    t_score = 5- (neg1 + neg2)/2
+    long = ((long + bat) / 2) - 2.5 # 1
+    long = (long + rep) / 2         # 1.5
+    long = max(0, long)             # 1.5
+    neg1 = (5-prod) - 0.1 * rec - 0.5 * long   # 1.5   -0.45 - 0.75 =0.3
+    neg1 = max(0, neg1)
+    neg2 = 5- co2                   # 0.5
+    t_score = 5- (neg1 + neg2)/2       # 0.8/2 = 0.4
     t_score = min(5.0, t_score)
     t_score = round(t_score, 1)
     return t_score

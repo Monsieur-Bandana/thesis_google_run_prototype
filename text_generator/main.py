@@ -25,7 +25,7 @@ def access_list_of_phones():
             with open(dest, 'r') as file:
                 data: list = json.load(file)
                 #TODO: remove limit
-                for el in data[:1]:
+                for el in data:
                     phones.append(el["name"])
     # Replace this list with dynamic data generation logic
     return phones
@@ -78,7 +78,23 @@ def generate_texts():
     # generateAnswer saves file "generated_reviews_no_score.json"
 
     upload_file(bucket_name=bucket_name, source_file_name=f"{source_folder}/temp/generated_reviews_no_score.json", destination_blob_name=f"json_files/generated_reviews_no_score.json")
+
+def generateAllScoresList():
+    file_n = f"{source_folder}/temp/generated_reviews_with_score.json"
+    save_file1 = f"{source_folder}/temp/all_scores.json"
+    all_scores = {}
+    with open(file_n, "r") as file:
+        scored_phones = json.load(file)
+    for sc_p in scored_phones:
+        dicti: dict = sc_p
+
+        for key, value in dicti.items():
+            if isinstance(value, dict):
+                main.add_entry_to_all_scores_list(all_scores=all_scores, key=key, score=value["score"], save_file1=save_file1, isLocPhone=False)
+
     
+
+
 def generate_scores():
     download_file_from_bucket("raw_pdf_files", f"json_files/all_scores.json", f"{source_folder}/temp/all_scores.json")
     with open(f"{source_folder}/temp/generated_reviews_no_score.json", "r") as file:
@@ -94,9 +110,10 @@ def generate_scores():
 
     for p in all_rendered_phones:
         main._ex(p, "text_generator")
-    upload_file(bucket_name=bucket_name, source_file_name=f"{source_folder}/temp/all_scores.json", destination_blob_name=f"json_files/all_scores.json")
-    upload_file(bucket_name=bucket_name, source_file_name=f"{source_folder}/temp/generated_reviews_with_score.json", destination_blob_name=f"json_files/generated_reviews_with_score.json")
 
+    upload_file(bucket_name=bucket_name, source_file_name=f"{source_folder}/temp/generated_reviews_with_score.json", destination_blob_name=f"json_files/generated_reviews_with_score.json")
+    generateAllScoresList()
+    upload_file(bucket_name=bucket_name, source_file_name=f"{source_folder}/temp/all_scores.json", destination_blob_name=f"json_files/all_scores.json")
 
 
 create_temp_folder(source_folder)

@@ -107,8 +107,8 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
         r1 = f"""<tr><td>Category</td><td>{dicti["name"]["0"]}</td><td>{dicti["name"]["1"]}</td></tr>"""
         t1 = dicti["conclusion"]["0"]["score"]
         t2 = dicti["conclusion"]["1"]["score"]
-        ouptut_t1 = calc_ratio("total_score", t1, is_in_score_list1)
-        ouptut_t2 = calc_ratio("total_score", t2, is_in_score_list2)
+        ouptut_t1 = calc_ratio("conclusion", t1, is_in_score_list1)
+        ouptut_t2 = calc_ratio("conclusion", t2, is_in_score_list2)
 
         r1 += f"""<tr style="font-size: 1.6rem"><td>Estimated total score</td><td>{color_leafs(t1, "black")}
                     <div class="ratio-with-perc">
@@ -223,7 +223,7 @@ def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit =
     return final_response
 
 def generate_conclusional_header(conclusion, total_score: float, table,is_in_score_list):
-    output_t = calc_ratio("total_score", total_score, is_in_score_list)
+    output_t = calc_ratio("conclusion", total_score, is_in_score_list)
     header = f"""<div class="t-header">
                     <div class="t-frame">
                         <span>Estimated score</span>
