@@ -14,10 +14,16 @@ from shared.prefilter_extractor import extract_comp_name
 from shared.structured_output_creator import InterpreterFormatWithAdjectiveStructure
 from shared.json_processor import create_json_file
 from shared.question_builder import generate_context_for_llm
+import tiktoken
 
 sk = rand_k
 client = OpenAI(api_key=sk)
 data = []
+
+def get_token_length(text, model="gpt-4"):
+    encoding = tiktoken.encoding_for_model(model)
+    tokens = encoding.encode(text)
+    return len(tokens)
 
 def replace_sentence_start(sentence:str, input):
     # List of typical sentence starting phrases
@@ -71,7 +77,7 @@ def give_conlusion(previous_text:str, phone_name, count)->str:
 
     question = f"""
     Provide a brief summary of the environmental footprint of the {phone_name}. 
-    In your summary, indicate whether the phone likely has a high (which is bad) or low (which is better) impact on the environmental footprint.
+    In your summary, indicate whether the phone likely has a high (which is bad) or relatively low (which is better) impact on the environmental footprint.
     """
 
     
@@ -220,8 +226,9 @@ def generateAnswer(input: str, sourcefolder)->dict:
     # print(foot_note_list)
     brandlist.append("general")
 
+    # set generall as standard brand
     dir = "general"
-    # TODO load data from scraped company json
+    # overwrite standard brand by actual brand
     for brand in brandlist:
         if brand in input.lower():
             print(f"{brand} found in request {input.lower()}")
@@ -229,10 +236,6 @@ def generateAnswer(input: str, sourcefolder)->dict:
             download_file_from_bucket(bucket_name, f"json_files/scraped-{dir}-data.json", f"{sourcefolder}/temp/scraped-{dir}-data.json")
         else: print(f"{brand} not found in request {input}")
 
-    # extract model specific information
-    scores_list = []
-    final_responses = []
-    # Step 1: Download and read JSON files
     load_class_data_from_git(sourcefolder)
     global data
     with open(f"{sourcefolder}/temp/classes.json", "r") as file:
@@ -242,15 +245,12 @@ def generateAnswer(input: str, sourcefolder)->dict:
     prompt = f"""
     You will receive the description of a phone.
     Further in the following there is a list of questions. 
-    Please describe for each the status quo related to the {input} and what the {comp} is doing to improve the situation.\n
     """
     count = 0
     score_name_list: list[str] = []
     for parentcl_ in data:
         # transform data in llm format
         entities = parentcl_["list"]
-        responses = []
-        isParent = True
         score_name = parentcl_["json_name"]
         score_name_list.append(score_name)
         # Step 2: Process each class
@@ -259,11 +259,18 @@ def generateAnswer(input: str, sourcefolder)->dict:
             descr = entity["description"]
             css_name = entity["json_name"]
             context = context + f"\n \n##{class_name}##\n \n"
+            download_file_from_bucket(bucket_name, f"summaries/{dir}-{css_name}3.txt", f"{sourcefolder}/temp/{dir}-{css_name}.txt")
             try:
-                download_file_from_bucket(bucket_name, f"summaries/{dir}-{css_name}3.txt", f"{sourcefolder}/temp/{dir}-{css_name}.txt")
-                context =  context + getContext(dir, css_name, sourcefolder) +"\n"
+                context += getContext(dir, css_name, sourcefolder) +"\n"
             except NotFound:
                 print(f"file summaries_struct_c/{dir}-{css_name}.txt not found")
+            print(f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{dir}")
+            if dir != "general":
+                download_file_from_bucket(bucket_name, f"summaries/general-{css_name}3.txt", f"{sourcefolder}/temp/general-{css_name}.txt")
+                try:
+                    context += getContext("general", css_name, sourcefolder) 
+                except NotFound:
+                    print(f"file summaries/general-{css_name}.txt not found")
 
 
 
@@ -273,40 +280,56 @@ def generateAnswer(input: str, sourcefolder)->dict:
             class_description: str = descr
             class_description = class_description.replace("<replacer>", input)
             
-
-            prompt = prompt + class_description + "\n"
-            count = count + 1
+            prompt+=f"""How would you assess the {class_name} of the {input} by {comp}? Does it have a high or low impact on the {input}'s environmental footprint? What factors contribute to your evaluation?\n"""
+            prompt+=class_description + "\n"
+            count += 1
             
-    prompt = prompt + f"Your answer should in total consist at least of {str(count * 50  + 100)} tokens."
+    prompt = prompt + f"Your answer should have a total length of about {str(count * 50  + 100)} tokens.\n"
     prompt += "Phone information:"
     prompt += get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input)
-    if not dir == "general":
-        try:
-            download_file_from_bucket(bucket_name, f"summaries/general-{css_name}3.txt", f"{sourcefolder}/temp/general-{css_name}.txt")
-            context =  context + getContext("general", css_name, sourcefolder) 
-        except NotFound:
-            print(f"file summaries/general-{css_name}.txt not found")
-    if context.strip():
-
+    ## hier einbauen: while loop 
+    trial_counter = 0
+    resp_options = []
+    size_val = count * 50  + 100
+    while trial_counter < 5:
         response_dic: dict = activate_api(input=input, question=prompt, rag_inf=context, comp=comp)
         response_dic = correctAdjectives(response_dic)
-        
+            
 
-    # print(response_dic)
+        # print(response_dic)
 
-    final_resp = ""
-    for sc_ in score_name_list:
-        enity_dic: dict = response_dic[sc_]
-        summary_col: str = ""
-        sc_dict = get_parent_name(data=data, json_code=sc_)
-        for key, value in enity_dic.items(): 
-            summary: str = value["summary"]
-            summary_col = f"{summary_col} {summary}"
-            value["class_name"] = get_entity_name(sc_, key)
-        response_dic[sc_]["name"] = sc_dict["name"]
-           
-        final_resp = final_resp + f" {summary_col}"
+        final_resp = ""
+        for sc_ in score_name_list:
+            enity_dic: dict = response_dic[sc_]
+            summary_col: str = ""
+            sc_dict = get_parent_name(data=data, json_code=sc_)
+            for key, value in enity_dic.items(): 
+                summary: str = value["summary"]
+                summary_col = f"{summary_col} {summary}"
+                value["class_name"] = get_entity_name(sc_, key)
+            response_dic[sc_]["name"] = sc_dict["name"]
+            
+            final_resp = final_resp + f" {summary_col}"
+        text_len = get_token_length(final_resp)
+        if (size_val-100) <= text_len <= (size_val+100):
+            resp_options = []
+            break
+        resp_options.append({"len": text_len, "cont": response_dic})
+        trial_counter+=1
 
+    other_options = ""
+    for opt in resp_options:
+        other_options+=f"""{opt["len"]}, """
+    # in case no answer fits into conditions
+    if resp_options:
+        max_entity = max(resp_options, key=lambda x: x["len"])
+        response_dic = max_entity["cont"]
+        other_options.replace(f"""{max_entity["len"]}, """, "")
+    
+    with open(f"{sourcefolder}/temp/{input}-context.txt", "w", encoding="utf-8") as file:
+        file.write(f"{prompt}\n{context}")
+    with open(f"{sourcefolder}/temp/length_collector.txt", "a", encoding="utf-8") as file:
+        file.write(f"{input}:   {get_token_length(final_resp)} other options: {other_options}\n")
     conclusion = give_conlusion(final_resp, input, 0)
     response_dic["conclusion"] = {"summary": conclusion}
     response_dic["name"] = input

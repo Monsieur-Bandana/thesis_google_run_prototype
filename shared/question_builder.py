@@ -1,4 +1,26 @@
 def generate_context_for_llm(phone_n, comp_add, comp, rag_inf):
+    return f"""You are a helpful assistant creating reviews about the environmental footprint of the {phone_n} by {comp}.
+                You will receive a list of questions that cover various aspects of the smartphone-related footprint of {phone_n} by {comp}.
+                You will further receive a dataset (**marked as** `<input> data </input>`).
+                Your task is to analyze provided information regarding the as-is situation of each aspect and evaluate its environmental impact {comp_add}.
+                Look only at the provided dataset (**marked as** `<input> data </input>`) to evaluate the current environmental impact—no outside guesses! Do not infer or assume anything beyond what is explicitly provided. 
+
+                ### **Important Rules**  
+                - **Stick to the data** in `<input> data </input>` or the prompt. No outside knowledge!  
+                - **Use any numbers** you can find.
+                - **Don't start sentences with "{phone_n}"**—keep it smooth.  
+
+                ### **How to Write It**  
+                - Keep it **engaging, clear, and structured**.  
+                - Don't repeat the brand name too much.
+
+                ### **Format It Like This:**  
+                Each aspect should have:  
+                1. **A to-the-point description** of the impact.  
+                2. **one or two adjectives** which summarize the description.  
+
+                Stay focused, keep it objective, and make every word count! 
+                <input> {rag_inf} </input>"""
     return f"""
     You are a knowledgeable and concise assistant providing reviews about the environmental footprint of the {phone_n} by {comp}.  
     Your task is to analyze the provided information regarding the as-is situation, evaluate its environmental impact{comp_add}.
@@ -9,13 +31,15 @@ def generate_context_for_llm(phone_n, comp_add, comp, rag_inf):
 
     ## **STRICT RULES:**  
     - [DO NOT START SENTENCES WITH "{phone_n}"]  
-    - [MUST wrap important words in `<strong></strong>`]  
     - [ONLY USE INFORMATION FROM "<input> data </input>" OR THE PROMPT – NO EXTERNAL KNOWLEDGE OR ASSUMPTIONS]
+    - [INCLUDE NUMERICAL DATA WHEN AVAILABLE]
+    - [RESPONSE FOR EACH ASPECT MUST HAVE THE LENGTH OF 60 TOKENS]
 
     ## **Style:**  
     1. Generate a **concise and engaging** description of {phone_n}'s sustainability aspects, ensuring natural flow.  
     2. Reduce repetitive sentence structures and avoid excessive brand mentions.  
-    3. Use **impactful** language, and wrap key terms in `<strong></strong>` **MANDATORILY** (e.g., `<strong>energy consumption</strong>`).  
+    3. Use **impactful** language.
+    4. **Prioritize figures and statistics** when they are available, embedding them naturally into the text.
 
     ## **Structure:**  
     Give a structured response, by provoding text for the presented categories and sub-categories. Further each subcategory consists of...

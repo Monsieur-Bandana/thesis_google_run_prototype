@@ -90,7 +90,7 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
                 n:str = v["class_name"]
                 n = n.lower()
                 cont+=f"""
-                        <li><span style="font-weight: bold">{v["adjective"]} {n}:</span> {v["summary"]}</li>
+                        <li><span style="font-weight: bold; text-align: justify">{v["adjective"]} {n}:</span> {v["summary"]}</li>
                     """
         cont+="</ul></td>"
         td+=cont
@@ -208,7 +208,7 @@ def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit =
                     n:str = v["class_name"]
                     n = n.lower()
                     line = f"""
-                        <li><span style="font-weight: bold">{v["adjective"]} {n}:</span> {v["summary"]}</li>
+                        <li><span style="font-weight: bold; text-align: justify">{v["adjective"]} {n}:</span> {v["summary"]}</li>
                     """
                     final_response += line
 
@@ -246,7 +246,7 @@ def generate_conclusional_header(conclusion, total_score: float, table,is_in_sco
             <i class="fa fa-info-circle"></i> Press the links for getting further insights!
         </div>
     </div>
-    <div style="display: block; margin-top: 15px">{conclusion}</div>
+    <div style="display: block; margin-top: 15px; text-align: justify">{conclusion}</div>
     <div class="t-header" style="height: 50px; justify-content: center;">
         <div class="t-frame">
             <span>Fulltext reviews:</span>

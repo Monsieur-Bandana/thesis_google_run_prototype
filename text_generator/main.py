@@ -25,7 +25,7 @@ def access_list_of_phones():
             with open(dest, 'r') as file:
                 data: list = json.load(file)
                 #TODO: remove limit
-                for el in data:
+                for el in data[:1]:
                     phones.append(el["name"])
     # Replace this list with dynamic data generation logic
     return phones
@@ -40,6 +40,8 @@ def create_list_of_already_rendered_phones_depriciated():
     return return_list
 
 def create_list_of_already_rendered_phones(score: str) -> list[str]:
+    # TODO: adapt after editing
+    return []
     return_list = []
     file_n = f"generated_reviews_{score}.json"
     download_file_from_bucket(
@@ -68,10 +70,12 @@ def create_and_upload_json(list_, additive=""):
 def generate_texts():
     all_phones = access_list_of_phones()
     already_rendered_phones = []
-    already_rendered_phones = create_list_of_already_rendered_phones("no_score")
+    # TODO: decommend later
+    # already_rendered_phones = create_list_of_already_rendered_phones("no_score")
 
     for p in already_rendered_phones:
-        all_phones.remove(p)
+        if p in all_phones:
+            all_phones.remove(p)
 
     for phone in all_phones:
         generateAnswer(phone, source_folder)

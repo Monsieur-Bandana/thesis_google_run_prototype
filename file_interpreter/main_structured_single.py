@@ -131,7 +131,8 @@ def main():
                 dir = cy["company"]
         if source_n not in interpreted_files:
             pdf_file_path = f"{main_folder}/temp/{file_n}"
-            download_file_from_bucket(bucket_name, f"{brand}/{file_n}", pdf_file_path)
+            download_file_from_bucket(bucket_name, f"raw_pdf_files/{brand}/{file_n}", pdf_file_path)
+
             reader = PdfReader(pdf_file_path)
             content = ""
             for page in reader.pages:
@@ -161,7 +162,8 @@ def main():
                         file.write(summary)
                     global upload_data
                     upload_data.append(save_file)
-        interpreted_files.append(source_n)   
+
+            interpreted_files.append(source_n)   
 
 
 
