@@ -438,6 +438,21 @@ def generateAnswer(input: str, sourcefolder) -> dict:
     final_dic_for_further_processing["conclusion"] = {"summary": conclusion}
     final_dic_for_further_processing["name"] = input
 
+    lit_file = f"{sourcefolder}/temp/literature"
+    download_file_from_bucket(
+        "raw_pdf_files",
+        f"json_files/literature.json",
+        lit_file,
+    )
+
+    with open(lit_file, "r") as file:
+        literature_links = json.load(file)
+    library = []
+    if dir != "general":
+        library += literature_links[dir]
+    library += literature_links["general"]
+    final_dic_for_further_processing["sources"] = library
+
     save_file = f"{sourcefolder}/temp/generated_reviews_no_score.json"
     create_json_file(final_dic_for_further_processing, "", save_file)
 

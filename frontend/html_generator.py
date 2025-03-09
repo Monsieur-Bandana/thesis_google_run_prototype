@@ -1,31 +1,40 @@
 # response = f"""<li class="{css_name}-css-class"><span style="font-weight: bold">{response_dic["generated_adj"]} {class_name}:</span> {response_dic["html_output"]}<span class="sources">{response_dic["footnotes_span"]}</span></li>"""
 
 all_phones_scores = {}
+list_of_additional_inf = ["conclusion", "name", "sources", "in_list"]
 
-def calc_ratio(json_name, score, is_in_score_list)->float:
+
+def calc_ratio(json_name, score, is_in_score_list) -> float:
     list_of_other_scores: list[float] = all_phones_scores[json_name]
     if is_in_score_list == "false":
-        print("//////////////////////////////////////////////////////////////////////////////////////")
+        print(
+            "//////////////////////////////////////////////////////////////////////////////////////"
+        )
         list_of_other_scores.append(score)
     num_of_other_scores = 0
     for el in list_of_other_scores:
         if el <= score:
-            num_of_other_scores+=1
-    ouptut_t = (num_of_other_scores-1)/(len(list_of_other_scores)-1)
+            num_of_other_scores += 1
+    ouptut_t = (num_of_other_scores - 1) / (len(list_of_other_scores) - 1)
     return ouptut_t
 
-def render_calc_text(ratio: float)->str:
-    t:str = str(ratio * 100).split(".")[0]
-    spaces_needed = 3-len(t)
+
+def render_calc_text(ratio: float) -> str:
+    t: str = str(ratio * 100).split(".")[0]
+    spaces_needed = 3 - len(t)
     spaces = ""
     for i in range(0, spaces_needed):
-        spaces+="&nbsp;&nbsp;"
-    t=f"{spaces}{t}"
+        spaces += "&nbsp;&nbsp;"
+    t = f"{spaces}{t}"
     print(t)
     return t
 
-def render_calc_display(ratio:float, width=75):
+
+def render_calc_display(ratio: float, width=75, total_header=False):
     total_width = width
+    additive = 6
+    if total_header:
+        additive += 1.5
     return f"""
         <div class="ratio_container">
             <div class="outer_ratio" style="width: {total_width}px">
@@ -33,13 +42,14 @@ def render_calc_display(ratio:float, width=75):
 
                 </div>
             </div>
-            <div class="arrow_placer" style="width: {total_width*ratio+6}px">
+            <div class="arrow_placer" style="width: {total_width*ratio+additive}px">
                 &#9650;
             </div>
         </div>
     """
 
-def create_header(title: str, score: float, json_name, is_in_score_list, add_key = True):
+
+def create_header(title: str, score: float, json_name, is_in_score_list, add_key=True):
 
     ouptut_t = calc_ratio(json_name, score, is_in_score_list)
 
@@ -60,7 +70,8 @@ def create_header(title: str, score: float, json_name, is_in_score_list, add_key
                     </div>
                   
     """
-    return header_html 
+    return header_html
+
 
 def addTableEntry(title: str, json_name: str, score: float):
 
@@ -75,34 +86,37 @@ def addTableEntry(title: str, json_name: str, score: float):
                     </td>
                     
     """
-    return header_html   
+    return header_html
+
 
 def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
     is_in_score_list1 = resp1["in_list"]
-    is_in_score_list2 = resp2["in_list"]     
-    def create_td(diczt:dict, direction: str):
+    is_in_score_list2 = resp2["in_list"]
+
+    def create_td(diczt: dict, direction: str):
         print(diczt)
-        td= f"""<td style="width: 50%; padding-{direction}: 3px;"><ul>"""
-        cont=""
-        
+        td = f"""<td style="width: 50%; padding-{direction}: 3px;"><ul>"""
+        cont = ""
+
         for k, v in diczt.items():
-            if k not in ["score", "name", "in_list"]:
-                n:str = v["class_name"]
+            if isinstance(v, dict):
+                n: str = v["class_name"]
                 n = n.lower()
-                cont+=f"""
+                cont += f"""
                         <li><span style="font-weight: bold; text-align: justify">{v["adjective"]} {n}:</span> {v["summary"]}</li>
                     """
-        cont+="</ul></td>"
-        td+=cont
+        cont += "</ul></td>"
+        td += cont
 
         return td
-    
+
     def render_comparative_table(dicti: dict):
-        def check_for_bigger(val1,val2):
-            div=""
-            if val1>=val2:
-                div="""<i class="fa fa-leaf" style="color: white"></i>"""
+        def check_for_bigger(val1, val2):
+            div = ""
+            if val1 >= val2:
+                div = """<i class="fa fa-leaf" style="color: white"></i>"""
             return div
+
         print(dicti)
         r1 = f"""<tr><td>Category</td><td>{dicti["name"]["0"]}</td><td>{dicti["name"]["1"]}</td></tr>"""
         t1 = dicti["conclusion"]["0"]["score"]
@@ -122,15 +136,15 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
                 </td></tr>
                 """
         for key, val in dicti.items():
-            if key not in ["conclusion", "name", "in_list"]:
+            if key not in list_of_additional_inf:
                 na = f"""<a href="#{key}">{val["0"]["name"]}</a>"""
                 sc1 = val["0"]["score"]
                 sc2 = val["1"]["score"]
                 r1 += f"""<tr><td style="width: 30%">{na}</td><td style="width: 35%">{color_leafs(sc1, "black", check_for_bigger(sc1, sc2))}</td>
                                 <td style="width: 35%">{color_leafs(sc2, "black", check_for_bigger(sc2, sc1))}</td></tr>"""
         return f"""<table style="width: 100%">{r1}</table>"""
-    
-    def render_header_row(key, dicti:dict, is_in_score_list2):
+
+    def render_header_row(key, dicti: dict, is_in_score_list2):
         ouptut = calc_ratio(key, dicti["score"], is_in_score_list2)
         sc = dicti["score"]
 
@@ -146,23 +160,23 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
                         </div>
             """
         return r1
+
     global all_phones_scores
     all_phones_scores = all_phones_scores2
-
 
     table = """<table style="width: 100%">"""
     new_resp = {}
     for key, val in resp1.items():
         new_resp[key] = {"0": val, "1": resp2[key]}
-    
+
     cont_row = f"""<tr><td colspan="2">{render_comparative_table(new_resp)}</td></tr>"""
     table_content = ""
     first_row = f"""<tr><td>{new_resp["conclusion"]["0"]["summary"]}</td>
     <td>{new_resp["conclusion"]["1"]["summary"]}</td></tr>"""
 
     for key, val in new_resp.items():
-        if key not in ["conclusion", "name", "in_list"]:
-            
+        if key not in list_of_additional_inf:
+
             header = f"""<tr id={key} class="headline_tr"><td colspan="2">
                             <div style="display: flex; justify-content: space-between; color: white" class="headline">
                                 <div class="span_alike"><span class="title_span">{val["0"]["name"]}</span></div>
@@ -171,17 +185,16 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
                     """
 
             ## header durchgehend, für score and ration jeweils in einer zeile
-            row=f"""{header}<tr> {create_td(val["0"], "right")}{create_td(val["1"], "left")}</tr>"""
+            row = f"""{header}<tr> {create_td(val["0"], "right")}{create_td(val["1"], "left")}</tr>"""
 
-            table_content +=row
+            table_content += row
 
-    final_response=f"""{table}{cont_row}{first_row}{table_content}</table>"""
+    final_response = f"""{table}{cont_row}{first_row}{table_content}</table>"""
 
     return final_response
 
 
-
-def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit = True):
+def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit=True):
     global all_phones_scores
     all_phones_scores = all_phones_scores2
 
@@ -192,12 +205,23 @@ def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit =
     print("*******************************************************")
     print(resp)
     for key, val in resp.items():
-        if key not in ["conclusion", "name", "in_list"]:
-            h_ = create_header(title=val["name"], json_name=key, score=val["score"], is_in_score_list=is_in_score_list)
-            if tablecounter%2==0:
-                table = table + f"<tr>{addTableEntry(title=val["name"], json_name=key, score=val["score"])}"
+        if isinstance(val, dict) and key != "conclusion":
+            h_ = create_header(
+                title=val["name"],
+                json_name=key,
+                score=val["score"],
+                is_in_score_list=is_in_score_list,
+            )
+            if tablecounter % 2 == 0:
+                table = (
+                    table
+                    + f"<tr>{addTableEntry(title=val["name"], json_name=key, score=val["score"])}"
+                )
             else:
-                table = table + f"{addTableEntry(title=val["name"], json_name=key, score=val["score"])}</tr>"
+                table = (
+                    table
+                    + f"{addTableEntry(title=val["name"], json_name=key, score=val["score"])}</tr>"
+                )
             tablecounter += 1
             final_response += h_
             sub_dic_list: dict = val
@@ -205,7 +229,7 @@ def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit =
             for k, v in sub_dic_list.items():
                 # el_dict: dict = next(iter(el.values()))
                 if type(v) == dict:
-                    n:str = v["class_name"]
+                    n: str = v["class_name"]
                     n = n.lower()
                     line = f"""
                         <li><span style="font-weight: bold; text-align: justify">{v["adjective"]} {n}:</span> {v["summary"]}</li>
@@ -217,12 +241,25 @@ def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit =
         table = table + "</tr>"
 
     table = table + "</table>"
-    final_response = generate_conclusional_header(conclusion=resp["conclusion"]["summary"], table = table, total_score=resp["conclusion"]["score"], is_in_score_list=is_in_score_list) + final_response
-        
-
+    final_response = (
+        generate_conclusional_header(
+            conclusion=resp["conclusion"]["summary"],
+            table=table,
+            total_score=resp["conclusion"]["score"],
+            is_in_score_list=is_in_score_list,
+        )
+        + final_response
+    )
+    final_response += "<a href='#lastline' onclick='showSources()'>Source material</a><ul id='source_container'>"
+    for el in resp["sources"]:
+        final_response += f"""<li><a href="{el}">{el}</a></li>"""
+    final_response += "<li id='lastline'></li></ul>"
     return final_response
 
-def generate_conclusional_header(conclusion, total_score: float, table,is_in_score_list):
+
+def generate_conclusional_header(
+    conclusion, total_score: float, table, is_in_score_list
+):
     output_t = calc_ratio("conclusion", total_score, is_in_score_list)
     header = f"""<div class="t-header">
                     <div class="t-frame">
@@ -233,7 +270,7 @@ def generate_conclusional_header(conclusion, total_score: float, table,is_in_sco
                     </div>
                     <div class="t-ratio">
                         <div style="width: 180px">
-                            {render_calc_display(output_t, 200)}
+                            {render_calc_display(output_t, 200, True)}
                             <div class="t-ratio-corrector">
                                 equal or better score than of {str(output_t * 100).split(".")[0]}% of phones on this plattform
                             </div>
@@ -255,7 +292,8 @@ def generate_conclusional_header(conclusion, total_score: float, table,is_in_sco
     """
     return final_resp
 
-def color_leafs(score: float, default_color="white", add_ons = ""):
+
+def color_leafs(score: float, default_color="white", add_ons=""):
     color = "green"
     if score < 4.0:
         color = "rgb(138, 193, 107)"
@@ -264,22 +302,25 @@ def color_leafs(score: float, default_color="white", add_ons = ""):
     if score < 2.0:
         color = "rgb(159 101 78)"
     returnhtml: str = ""
-    scd_digit = score%1
-    first_digit = score-scd_digit
+    scd_digit = score % 1
+    first_digit = score - scd_digit
     first_digit = int(first_digit)
     for i in range(0, first_digit):
-        returnhtml = returnhtml + f"""<i class="fa fa-leaf" style="color: {color}"></i>"""
+        returnhtml = (
+            returnhtml + f"""<i class="fa fa-leaf" style="color: {color}"></i>"""
+        )
     if first_digit < 5:
         border_percent = int(scd_digit * 100)
         relative_icon = f"""<i class="fa fa-leaf" style="background: linear-gradient(to right, {color} 0% {str(border_percent)}%, {default_color} {str(border_percent)}% 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>"""
         returnhtml = returnhtml + relative_icon
-    for i in range(first_digit + 1 , 5):
+    for i in range(first_digit + 1, 5):
         returnhtml += f"""<i class="fa fa-leaf" style="color: {default_color}"></i>"""
     add_html = ""
     if score == 5.0:
         add_html += "color: green; "
-    returnhtml=f"""<div style="{add_html}">{returnhtml} {score} {add_ons}</div>"""
+    returnhtml = f"""<div style="{add_html}">{returnhtml} {score} {add_ons}</div>"""
     return returnhtml
+
 
 # print(color_leafs(4.0))
 """

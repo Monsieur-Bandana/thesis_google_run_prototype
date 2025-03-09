@@ -218,6 +218,10 @@ inputFieldo.addEventListener('input', function () {
     }
 });
 
+function showSources() {
+    document.getElementById("source_container").style.display = "block";
+}
+
 
 
 // MutationObserver einrichten

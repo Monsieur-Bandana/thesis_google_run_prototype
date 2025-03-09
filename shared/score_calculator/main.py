@@ -2,6 +2,7 @@ import json
 from shared.score_calculator.score_analyzer import generate_score, get_total_score
 from shared.json_processor import create_json_file
 
+
 def add_entry_to_all_scores_list(all_scores, key, score, save_file1, isLocPhone: bool):
     if not isLocPhone:
         try:
@@ -11,15 +12,14 @@ def add_entry_to_all_scores_list(all_scores, key, score, save_file1, isLocPhone:
             print("")
         with open(save_file1, "w") as file:
             json.dump(all_scores, file, indent=4)
-      
 
 
-def _ex(response_dic:dict, sourcefolder:str, isLocPhone=False):
+def _ex(response_dic: dict, sourcefolder: str, isLocPhone=False):
     scores_list: list[float] = []
 
     for key, val in response_dic.items():
         print(key)
-        if  key != "conclusion" and key != "name":
+        if isinstance(val, dict) and key != "conclusion":
             smaller_dict: dict = val
             text: str = ""
             for key2, val2 in smaller_dict.items():
@@ -30,7 +30,6 @@ def _ex(response_dic:dict, sourcefolder:str, isLocPhone=False):
                         print(f"--------------->problem with {val2}")
             score: float = generate_score(text, key)
 
-            
             response_dic[key]["score"] = score
             scores_list.append(score)
     total_score = get_total_score(scores_list)
@@ -40,12 +39,6 @@ def _ex(response_dic:dict, sourcefolder:str, isLocPhone=False):
         create_json_file(response_dic, "", save_file)
     if isLocPhone:
         return response_dic
-
-
-
-
-
-
 
 
 """
