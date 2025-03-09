@@ -1,8 +1,4 @@
 from pydantic import BaseModel
-from shared.question_builder import (
-    generate_comp_related_question,
-    create_general_question,
-)
 
 
 class FormatWithAdjective(BaseModel):
@@ -58,7 +54,7 @@ def create_inner_struct(descr, min_token_size):
         "properties": {
             "summary": {
                 "type": "string",
-                "description": f"""{descr} The summary must have a length of **at least {min_token_size} tokens** and maximum of {min_token_size + 10} tokens. Extend the summary by further explanation in order to achieve the requivered length.""",
+                "description": f"""The summary must have a length of **at least {min_token_size} tokens** and maximum of {min_token_size + 10} tokens. Extend the summary by further explanation in order to achieve the requivered length. {descr}""",
             },
             "adjective": {
                 "type": "string",

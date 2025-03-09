@@ -52,6 +52,18 @@ def generate_context_for_llm(phone_n, comp_add, comp, rag_inf):
     """
 
 
+def create_general_question_for_final_output(topic, input):
+    return f"""
+            What is {topic}, and how does it function in modern smartphone and/or ICT industries?
+            What are the key factors influencing {topic} in the ICT sector?
+            How has {topic} evolved over time, and what are the current trends?
+            What are the environmental consequences of {topic}?
+            How does {topic} contribute to or hinder circular economy initiatives in the tech industry?
+            How does {topic} influence consumer behavior and purchasing decisions?
+            Who benefits from {topic}, and who might be disadvantaged by it?        
+            Why is {topic} an important factor in smartphone sustainability? """
+
+
 def create_general_question(topic):
     return f"""
             Topic: {topic}
@@ -75,11 +87,13 @@ def create_general_question(topic):
             Why is {topic} an important factor in smartphone sustainability? 
             """
 
+
 def generate_comp_related_question(topic, company):
     return f"""
             What strategies and initiatives has {company} implemented concerning {topic}, and how effective are they?
 
             """
+
 
 def generate_context_for_classifier(content):
     return f"""         You are a helpful assistant. You will receive a long document and evaluate its relevance to specific topics.  

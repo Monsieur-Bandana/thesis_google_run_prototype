@@ -17,7 +17,10 @@ from shared.structured_output_creator import (
     create_inner_struct,
 )
 from shared.json_processor import create_json_file
-from shared.question_builder import generate_context_for_llm
+from shared.question_builder import (
+    generate_context_for_llm,
+    create_general_question_for_final_output,
+)
 import tiktoken
 
 sk = rand_k
@@ -330,7 +333,7 @@ def generateAnswer(input: str, sourcefolder) -> dict:
             class_description: str = descr
             class_description = class_description.replace("<replacer>", input)
             prompt = ""
-            prompt += f"""How would you assess the {class_name} of the {input} by {comp}? Does it have a high or low impact on the {input}'s environmental footprint? What factors contribute to your evaluation?\n"""
+            prompt += f"""How would you assess the {class_name} of the {input} by {comp}? Does it have a high or low impact on the {input}'s environmental footprint? What factors contribute to your evaluation? {create_general_question_for_final_output(topic=class_name, input=input)} \n"""
             prompt += class_description + "\n"
             prompt = prompt.replace('"', "")
             prompt = prompt.replace("'", "")
@@ -343,8 +346,8 @@ def generateAnswer(input: str, sourcefolder) -> dict:
     json_strct["required"] = required_sub_list
 
     prompt = f"""
-    You will receive the description of a phone.
-    Further in the following there is a list of questions.
+    You will receive the description of a the phone {input}.
+    Conduct a environmental-focused analysis on this phone, based on it's data, your context data and given structure.
     """
 
     prompt += "Phone information:"
@@ -355,7 +358,7 @@ def generateAnswer(input: str, sourcefolder) -> dict:
     size_val = count * min_token_size
     print(json_strct)
     # input("Enter")
-
+    best_val = 0
     while trial_counter < 5:
 
         # try:
@@ -369,7 +372,6 @@ def generateAnswer(input: str, sourcefolder) -> dict:
         final_resp = ""
         for key, val in response_dic.items():
             final_resp += f"""{ val["summary"]}"""
-        # expected:50 per token -> ideally 550 tokens or 550 or 660
         """
         lengthL.append(get_token_length(str(token_mes_str)))
         with open(
@@ -394,9 +396,11 @@ def generateAnswer(input: str, sourcefolder) -> dict:
                             response_dic[key2][str_k]
                         )
 
+        # expected:40 per token -> ideally 440 tokens or 540
         text_len = get_token_length(final_resp)
         if (size_val - 0) <= text_len <= (size_val + 100):
             resp_options = []
+            best_val = text_len
             break
         print(f"size at {text_len} ->repeat")
         resp_options.append({"len": text_len, "cont": final_dic_for_further_processing})
@@ -429,9 +433,7 @@ def generateAnswer(input: str, sourcefolder) -> dict:
     with open(
         f"{sourcefolder}/temp/length_collector.txt", "a", encoding="utf-8"
     ) as file:
-        file.write(
-            f"{input}:   {get_token_length(final_resp)} other options: {other_options}\n"
-        )
+        file.write(f"{input}:   {best_val} other options: {other_options}\n")
     conclusion = give_conlusion(final_resp, input, 0)
     final_dic_for_further_processing["conclusion"] = {"summary": conclusion}
     final_dic_for_further_processing["name"] = input
