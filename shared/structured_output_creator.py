@@ -1,4 +1,8 @@
 from pydantic import BaseModel
+from shared.question_builder import (
+    generate_comp_related_question,
+    create_general_question,
+)
 
 
 class FormatWithAdjective(BaseModel):
@@ -48,15 +52,13 @@ class InterpreterFormatWithAdjectiveStructure(BaseModel):
     co_footprint: Co_Footprint
 
 
-def create_inner_struct(descr):
+def create_inner_struct(descr, min_token_size):
     return {
         "type": "object",
         "properties": {
             "summary": {
                 "type": "string",
-                "description": f"""{descr}""",
-                "minLength": 250,  # Minimum length
-                "maxLength": 350,  # Maximum length
+                "description": f"""{descr} The summary must have a length of **at least {min_token_size} tokens** and maximum of {min_token_size + 10} tokens. Extend the summary by further explanation in order to achieve the requivered length.""",
             },
             "adjective": {
                 "type": "string",

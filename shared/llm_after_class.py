@@ -23,6 +23,7 @@ import tiktoken
 sk = rand_k
 client = OpenAI(api_key=sk)
 data = []
+min_token_size = 40
 
 
 def get_token_length(text, model="gpt-4"):
@@ -128,7 +129,7 @@ def activate_api(
     )
 
     completion = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": context},
             {"role": "user", "content": question},
@@ -146,10 +147,11 @@ def activate_api(
 
     # TODO: function json statt baseclass
     # für jedes class element fügen wir per code noch die paramter hinzu ...[paramters] sowie die standardfrage [interpreter wird zu descripotion gepackt] tokens removed
-
+    js_resp = completion.choices[0].message.function_call.arguments
     structured_response = json.loads(
         completion.choices[0].message.function_call.arguments
     )
+    print(js_resp)
 
     return structured_response
 
@@ -224,17 +226,35 @@ def get_entity_name(parent: str, json_code: str) -> str:
     return "Couldn't find name"
 
 
-def correctAdjectives(dicti: dict) -> dict:
+def correctAdjectives(dicti: dict, nested=False) -> dict:
     """
     from leading adjectives removes unwanted character '.', further capitalizes adjectives
     """
+    if nested:
+        for key, val in dicti.items():
+            for key2, val2 in val.items():
+                adj: str = val2["adjective"]
+                adj = adj.replace(".", "")
+                adj = adj.capitalize()
+                val2["adjective"] = adj
+        return dicti
     for key, val in dicti.items():
-        for key2, val2 in val.items():
-            adj: str = val2["adjective"]
-            adj = adj.replace(".", "")
-            adj = adj.capitalize()
-            val2["adjective"] = adj
+        adj: str = val["adjective"]
+        adj = adj.replace(".", "")
+        adj = adj.capitalize()
+        val["adjective"] = adj
     return dicti
+
+
+def create_empty_new_dict():
+    new_dict: dict = {}
+    for ent in data:
+        k = ent["json_name"]
+        new_dict[k] = {"name": ent["name"]}
+        for el in ent["list"]:
+            k2 = el["json_name"]
+            new_dict[k][k2] = {"class_name": el["name"]}
+    return new_dict
 
 
 def generateAnswer(input: str, sourcefolder) -> dict:
@@ -271,14 +291,13 @@ def generateAnswer(input: str, sourcefolder) -> dict:
     count = 0
     score_name_list: list[str] = []
     json_strct = {"type": "object", "properties": {}}
+    required_sub_list = []
     for parentcl_ in data:
         # transform data in llm format
         entities = parentcl_["list"]
         score_name = parentcl_["json_name"]
         score_name_list.append(score_name)
         # Step 2: Process each class
-        json_strct["properties"][score_name] = {"type": "object", "properties": {}}
-        required_sub_list = []
         for entity in entities:
             class_name = entity["name"]
             descr = entity["description"]
@@ -293,9 +312,7 @@ def generateAnswer(input: str, sourcefolder) -> dict:
                 context += getContext(dir, css_name, sourcefolder) + "\n"
             except NotFound:
                 print(f"file summaries_struct_c/{dir}-{css_name}.txt not found")
-            print(
-                f"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{dir}"
-            )
+
             if dir != "general":
                 download_file_from_bucket(
                     bucket_name,
@@ -318,14 +335,12 @@ def generateAnswer(input: str, sourcefolder) -> dict:
             prompt = prompt.replace('"', "")
             prompt = prompt.replace("'", "")
             required_sub_list.append(css_name)
-            json_strct["properties"][score_name]["properties"][css_name] = (
-                create_inner_struct(descr=prompt)
+            json_strct["properties"][css_name] = create_inner_struct(
+                descr=prompt, min_token_size=min_token_size
             )
             count += 1
 
-        json_strct["properties"][score_name]["required"] = required_sub_list
-
-    json_strct["required"] = score_name_list
+    json_strct["required"] = required_sub_list
 
     prompt = f"""
     You will receive the description of a phone.
@@ -337,11 +352,12 @@ def generateAnswer(input: str, sourcefolder) -> dict:
     ## hier einbauen: while loop
     trial_counter = 0
     resp_options = []
-    size_val = count * 50 + 100
+    size_val = count * min_token_size
     print(json_strct)
     # input("Enter")
 
-    while trial_counter < 1:
+    while trial_counter < 5:
+
         # try:
         response_dic: dict = activate_api(
             input=input,
@@ -350,43 +366,61 @@ def generateAnswer(input: str, sourcefolder) -> dict:
             comp=comp,
             json_strct=json_strct,
         )
+        final_resp = ""
+        for key, val in response_dic.items():
+            final_resp += f"""{ val["summary"]}"""
+        # expected:50 per token -> ideally 550 tokens or 550 or 660
+        """
+        lengthL.append(get_token_length(str(token_mes_str)))
+        with open(
+            f"test_section/dsasd-outcome.json", "w", encoding="utf-8"
+        ) as file:
+            json.dump(lengthL, file, indent=4)
+        """
+
         print(response_dic)
         # input("Press Enter to continue...")
         response_dic = correctAdjectives(response_dic)
 
         # print(response_dic)
 
-        final_resp = ""
-        for sc_ in score_name_list:
-            enity_dic: dict = response_dic[sc_]
-            summary_col: str = ""
-            sc_dict = get_parent_name(data=data, json_code=sc_)
-            for key, value in enity_dic.items():
-                summary: str = value["summary"]
-                summary_col = f"{summary_col} {summary}"
-                value["class_name"] = get_entity_name(sc_, key)
-            response_dic[sc_]["name"] = sc_dict["name"]
+        final_dic_for_further_processing: dict = create_empty_new_dict()
+        for key1, val1 in final_dic_for_further_processing.items():
+            sub_dict: dict = val1
+            for key2 in sub_dict.keys():
+                if key2 in response_dic:
+                    for str_k in ["adjective", "summary"]:
+                        final_dic_for_further_processing[key1][key2][str_k] = (
+                            response_dic[key2][str_k]
+                        )
 
-            final_resp = final_resp + f" {summary_col}"
         text_len = get_token_length(final_resp)
-        if (size_val - 100) <= text_len <= (size_val + 100):
+        if (size_val - 0) <= text_len <= (size_val + 100):
             resp_options = []
             break
         print(f"size at {text_len} ->repeat")
-        resp_options.append({"len": text_len, "cont": response_dic})
+        resp_options.append({"len": text_len, "cont": final_dic_for_further_processing})
         trial_counter += 1
         # except:
         #   print("problem at interprete")
         #   trial_counter -= 1
-
+    # in case no answer fits into conditions
     other_options = ""
     for opt in resp_options:
         other_options += f"""{opt["len"]}, """
-    # in case no answer fits into conditions
+
+    def closest_to_range(values, lower=(size_val - 0), upper=(size_val + 100)):
+        closest_value = min(values, key=lambda x: min(abs(x - lower), abs(x - upper)))
+        return closest_value
+
     if resp_options:
-        max_entity = max(resp_options, key=lambda x: x["len"])
-        response_dic = max_entity["cont"]
-        other_options.replace(f"""{max_entity["len"]}, """, "")
+        val_list = []
+        for r in resp_options:
+            val_list.append(r["len"])
+        best_val = closest_to_range(values=val_list)
+        for r in resp_options:
+            if best_val == r["len"]:
+                final_dic_for_further_processing = r["cont"]
 
     with open(
         f"{sourcefolder}/temp/{input}-context.txt", "w", encoding="utf-8"
@@ -399,13 +433,13 @@ def generateAnswer(input: str, sourcefolder) -> dict:
             f"{input}:   {get_token_length(final_resp)} other options: {other_options}\n"
         )
     conclusion = give_conlusion(final_resp, input, 0)
-    response_dic["conclusion"] = {"summary": conclusion}
-    response_dic["name"] = input
+    final_dic_for_further_processing["conclusion"] = {"summary": conclusion}
+    final_dic_for_further_processing["name"] = input
 
     save_file = f"{sourcefolder}/temp/generated_reviews_no_score.json"
-    create_json_file(response_dic, "", save_file)
+    create_json_file(final_dic_for_further_processing, "", save_file)
 
-    return response_dic
+    return final_dic_for_further_processing
 
     """
     final_responses.append(generate_html_output(resp=responses, parent=parentcl_, score_dict=score))
