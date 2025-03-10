@@ -134,11 +134,11 @@
         ]
     },
     {
-        "name": "Sustainable Innovativity",
+        "name": "Sustainable Innovation",
         "json_name": "innovativity",
         "list": [
             {
-                "name": "Sustainable Innovativity",
+                "name": "Sustainable Innovation",
                 "json_name": "innovativity",
                 "description": "What does the manufacturer of the <replacer>-phone do for the environment? Does the <replacer>-phone has unique innovations in terms of enabling increased sustainability?",
                 "parent": "End of Life",
