@@ -1,10 +1,10 @@
 [
     {
-        "name": "Battery Quality",
+        "name": "Battery Reliability",
         "json_name": "quality_of_battery",
         "list": [
             {
-                "name": "Battery Quality",
+                "name": "Battery Reliability",
                 "json_name": "quality_of_battery",
                 "description": "How long does the battery of a <replacer>-phone remain reliable? Is the battery easily replaceable? How does battery quality influence the overall lifespan and durability of a smartphone? What environmental and safety concerns arise from poor battery quality? How do manufacturers ensure battery quality while balancing cost and sustainability?",
                 "interpreter": "The role of the smartphone's battery on the smartphones footprint",
