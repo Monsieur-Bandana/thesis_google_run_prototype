@@ -19,7 +19,7 @@ from shared.structured_output_creator import (
 from shared.json_processor import create_json_file
 from shared.question_builder import (
     generate_context_for_llm,
-    create_general_question_for_final_output,
+    create_final_prompt,
 )
 import tiktoken
 
@@ -333,8 +333,11 @@ def generateAnswer(input: str, sourcefolder) -> dict:
             class_description: str = descr
             class_description = class_description.replace("<replacer>", input)
             prompt = ""
-            prompt += f"""How would you assess the {class_name} of the {input} by {comp}? Does it have a high or low impact on the {input}'s environmental footprint? What factors contribute to your evaluation? {create_general_question_for_final_output(topic=class_name, input=input)} \n"""
+            prompt += f"""How would you assess the {class_name} of the {input} by {comp}? 
+            Does it have a high or low impact on the {input}'s environmental footprint? 
+            What factors contribute to your evaluation? \n"""
             prompt += class_description + "\n"
+            # prompt += create_final_prompt(topic=class_name, input=input)
             prompt = prompt.replace('"', "")
             prompt = prompt.replace("'", "")
             required_sub_list.append(css_name)

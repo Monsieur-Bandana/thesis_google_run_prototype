@@ -1,3 +1,5 @@
+import random
+
 # response = f"""<li class="{css_name}-css-class"><span style="font-weight: bold">{response_dic["generated_adj"]} {class_name}:</span> {response_dic["html_output"]}<span class="sources">{response_dic["footnotes_span"]}</span></li>"""
 
 all_phones_scores = {}
@@ -87,6 +89,23 @@ def addTableEntry(title: str, json_name: str, score: float):
                     
     """
     return header_html
+
+
+def remove_rep(input: str, sentence: str):
+    options = [True, False, False]
+    selected = random.choice(options)
+    if selected:
+        return sentence
+
+    typical_phrases = [
+        f" in the {input}",
+        f" of the {input}",
+        f" for the {input}",
+    ]
+    for tf in typical_phrases:
+        if tf in sentence:
+            sentence = sentence.replace(tf, "")
+    return sentence
 
 
 def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
@@ -230,9 +249,11 @@ def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit=T
                 # el_dict: dict = next(iter(el.values()))
                 if type(v) == dict:
                     n: str = v["class_name"]
+                    text = v["summary"]
+                    text = remove_rep(resp["name"], text)
                     n = n.lower()
                     line = f"""
-                        <li><span style="font-weight: bold; text-align: justify">{v["adjective"]} {n}:</span> {v["summary"]}</li>
+                        <li><span style="font-weight: bold; text-align: justify">{v["adjective"]} {n}:</span> {text}</li>
                     """
                     final_response += line
 

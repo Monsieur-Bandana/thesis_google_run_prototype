@@ -52,16 +52,20 @@ def generate_context_for_llm(phone_n, comp_add, comp, rag_inf):
     """
 
 
-def create_general_question_for_final_output(topic, input):
-    return f"""
-            What is {topic}, and how does it function in modern smartphone and/or ICT industries?
-            What are the key factors influencing {topic} in the ICT sector?
-            How has {topic} evolved over time, and what are the current trends?
-            What are the environmental consequences of {topic}?
-            How does {topic} contribute to or hinder circular economy initiatives in the tech industry?
+def create_final_prompt(topic, input):
+    """
+    How would you assess the {topic} of the {input} by {comp}?
+    Does it have a high or low impact on the {input}'s environmental footprint?
+    What factors contribute to your evaluation?
+            Does {topic} contribute to or hinder circular economy initiatives in the tech industry? If yes, in what ways?
             How does {topic} influence consumer behavior and purchasing decisions?
-            Who benefits from {topic}, and who might be disadvantaged by it?        
-            Why is {topic} an important factor in smartphone sustainability? """
+            Who benefits from {topic}, and who might be disadvantaged by it?
+    """
+    return f"""
+            Which aspects of {input}'s {topic} would you consider less sustainable?  
+            Which aspects of {input}'s {topic} would you consider very sustainable?  
+            What role does {topic} play for the {input}?  
+            """
 
 
 def create_general_question(topic):

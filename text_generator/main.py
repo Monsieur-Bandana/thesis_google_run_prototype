@@ -31,7 +31,7 @@ def access_list_of_phones():
             with open(dest, "r") as file:
                 data: list = json.load(file)
                 # TODO: remove limit
-                for el in data[:3]:
+                for el in data[:1]:
                     phones.append(el["name"])
     # Replace this list with dynamic data generation logic
     return phones
