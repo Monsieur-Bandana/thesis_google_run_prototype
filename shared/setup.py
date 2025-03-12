@@ -8,6 +8,7 @@ setup(
         "openai",
         "google-api-core",
         "google-cloud-core",
-        "google-cloud-storage"
-    ],       
+        "google-cloud-storage",
+        "tiktoken",
+    ],
 )

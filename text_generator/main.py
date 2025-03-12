@@ -31,7 +31,7 @@ def access_list_of_phones():
             with open(dest, "r") as file:
                 data: list = json.load(file)
                 # TODO: remove limit
-                for el in data[:1]:
+                for el in data:
                     phones.append(el["name"])
     # Replace this list with dynamic data generation logic
     return phones
@@ -87,15 +87,18 @@ def generate_texts():
         if p in all_phones:
             all_phones.remove(p)
 
+    update_after_five_phones = 0
     for phone in all_phones:
         generateAnswer(phone, source_folder)
-    # generateAnswer saves file "generated_reviews_no_score.json"
-
-    upload_file(
-        bucket_name=bucket_name,
-        source_file_name=f"{source_folder}/temp/generated_reviews_no_score.json",
-        destination_blob_name=f"json_files/generated_reviews_no_score.json",
-    )
+        # generateAnswer saves file "generated_reviews_no_score.json"
+        if update_after_five_phones % 5 == 0:
+            upload_file(
+                bucket_name=bucket_name,
+                source_file_name=f"{source_folder}/temp/generated_reviews_no_score.json",
+                destination_blob_name=f"json_files/generated_reviews_no_score.json",
+            )
+            generate_scores()
+        update_after_five_phones += 1
 
 
 def generateAllScoresList():

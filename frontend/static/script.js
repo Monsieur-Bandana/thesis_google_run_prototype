@@ -69,6 +69,8 @@ function getButtons2(filter = "", mode = "") {
     const filteredButtons = allButtons.filter(b =>
         b.text.toLowerCase().includes(filter.toLowerCase())
     );
+    filteredButtons.sort((a, b) => a.text.localeCompare(b.text));
+
     filteredButtons.forEach(tuple => {
         htmlEl = htmlEl + createButton(tuple, mode);
 
@@ -147,6 +149,7 @@ function deactivate_other_els(mode = "") {
 
         const locHeadm = document.getElementById(`head_menu${mode}`);
         locHeadm.style = "display: flex; margin-top: 20px";
+        document.getElementById("topSeAll").style.display = "block"
         const locSeeAllBottom = document.getElementById(`bottomSeeAll${mode}`);
         locSeeAllBottom.style = "display: none";
     }
@@ -191,6 +194,9 @@ function render_main_screen(mode = "") {
 
 function load_all_buttons(filter = "", mode = "") {
     deactivate_other_els(mode)
+    if (filter == "" && mode == "") {
+        document.getElementById("topSeAll").style.display = "none"
+    }
     getButtons2(filter, mode);
 }
 

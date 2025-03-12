@@ -393,31 +393,31 @@ li {
 
 
 #quality_of_battery {
-    background-image: url(/static/images/Folie1.png);
+    background-image: url(../images/Folie1.PNG);
 }
 
 #longevity {
-    background-image: url(/static/images/Folie2.png);
+    background-image: url(../images/Folie2.PNG);
 }
 
 #repairability_and_modifiability {
-    background-image: url(/static/images/Folie3.png);
+    background-image: url(../images/Folie3.PNG);
 }
 
 #production {
-    background-image: url(/static/images/Folie4.png);
+    background-image: url(../images/Folie4.PNG);
 }
 
 #recycled_parts {
-    background-image: url(/static/images/Folie5.png);
+    background-image: url(../images/Folie5.PNG);
 }
 
 #innovativity {
-    background-image: url(/static/images/Folie6.png);
+    background-image: url(../images/Folie6.PNG);
 }
 
 #co_footprint {
-    background-image: url(/static/images/Folie7.png);
+    background-image: url(../images/Folie7.PNG);
 }
 
 #source_container {

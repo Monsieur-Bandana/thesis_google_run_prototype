@@ -161,13 +161,20 @@ def activate_api(
 
 def getContext(dir, class_name, sourcefolder):
     local_file_path = f"{sourcefolder}/temp/{dir}-{class_name}.txt"
+    context = ""
     try:
         with open(local_file_path, "r", encoding="utf-8") as file:
-            print(f"extracted text from {local_file_path}")
             context = file.read()
+        print(f"context extracted from {local_file_path}")
     except UnicodeDecodeError:
-        with open(local_file_path, "r", encoding="ISO-8859-1") as file:
-            context = file.read()
+        try:
+            with open(local_file_path, "r", encoding="ISO-8859-1") as file:
+                context = file.read()
+            print(f"context extracted from {local_file_path}")
+        except:
+            print("file does not exist")
+    except:
+        print("file does not exist")
     return context
 
 
@@ -260,7 +267,8 @@ def create_empty_new_dict():
     return new_dict
 
 
-def generateAnswer(input: str, sourcefolder) -> dict:
+def generateAnswer(input: str, sourcefolder, repetitions=5) -> dict:
+
     bucket_name = "raw_pdf_files"
 
     create_temp_folder(sourcefolder)
@@ -362,7 +370,7 @@ def generateAnswer(input: str, sourcefolder) -> dict:
     print(json_strct)
     # input("Enter")
     best_val = 0
-    while trial_counter < 5:
+    while trial_counter < repetitions:
 
         # try:
         response_dic: dict = activate_api(
