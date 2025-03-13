@@ -63,8 +63,7 @@ def create_final_prompt(topic, input):
     """
     return f"""
             Which aspects of {input}'s {topic} would you consider less sustainable?  
-            Which aspects of {input}'s {topic} would you consider very sustainable?  
-            What role does {topic} play for the {input}?  
+            Which aspects of {input}'s {topic} would you consider very sustainable?
             """
 
 

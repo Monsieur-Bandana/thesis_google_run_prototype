@@ -14,7 +14,7 @@ def add_entry_to_all_scores_list(all_scores, key, score, save_file1, isLocPhone:
             json.dump(all_scores, file, indent=4)
 
 
-def _ex(response_dic: dict, sourcefolder: str, isLocPhone=False):
+def _ex(response_dic: dict) -> dict:
     scores_list: list[float] = []
 
     for key, val in response_dic.items():
@@ -34,11 +34,8 @@ def _ex(response_dic: dict, sourcefolder: str, isLocPhone=False):
             scores_list.append(score)
     total_score = get_total_score(scores_list)
     response_dic["conclusion"]["score"] = total_score
-    if not isLocPhone:
-        save_file = f"{sourcefolder}/temp/generated_reviews_with_score.json"
-        create_json_file(response_dic, "", save_file)
-    if isLocPhone:
-        return response_dic
+
+    return response_dic
 
 
 """

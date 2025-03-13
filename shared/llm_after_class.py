@@ -341,11 +341,10 @@ def generateAnswer(input: str, sourcefolder, repetitions=5) -> dict:
             class_description: str = descr
             class_description = class_description.replace("<replacer>", input)
             prompt = ""
-            prompt += f"""How would you assess the {class_name} of the {input} by {comp}? 
-            Does it have a high or low impact on the {input}'s environmental footprint? 
+            prompt += f"""How would you assess the {class_name} of the {input} by {comp}?
             What factors contribute to your evaluation? \n"""
             prompt += class_description + "\n"
-            # prompt += create_final_prompt(topic=class_name, input=input)
+            prompt += create_final_prompt(topic=class_name, input=input)
             prompt = prompt.replace('"', "")
             prompt = prompt.replace("'", "")
             required_sub_list.append(css_name)
@@ -463,9 +462,6 @@ def generateAnswer(input: str, sourcefolder, repetitions=5) -> dict:
         library += literature_links[dir]
     library += literature_links["general"]
     final_dic_for_further_processing["sources"] = library
-
-    save_file = f"{sourcefolder}/temp/generated_reviews_no_score.json"
-    create_json_file(final_dic_for_further_processing, "", save_file)
 
     return final_dic_for_further_processing
 

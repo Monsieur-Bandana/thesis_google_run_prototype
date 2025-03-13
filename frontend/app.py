@@ -14,7 +14,7 @@ from shared.score_calculator import main
 
 app = Flask(__name__)
 
-
+version = "dev"
 folder = "frontend"
 bucket = "raw_pdf_files"
 phone_data: list[dict] = []
@@ -72,7 +72,7 @@ def loadAnswer(name, mode) -> str:
     def create_new_phone():
         new_p = generateAnswer(name, folder, 2)
 
-        new_P_w_sc = main._ex(new_p, folder, True)
+        new_P_w_sc = main._ex(new_p)
 
         phone_one = new_P_w_sc
         return phone_one
@@ -110,7 +110,7 @@ def responseButtons():
 @app.route("/get-selected-buttons", methods=["POST"])
 def responseBestPhones():
     selection_kind = request.form.get("input_text", "")
-    json_file = f"phones_with_scores_str_{selection_kind}.json"
+    json_file = f"phones_with_scores_str_{selection_kind}{version}.json"
     print(
         f"-------------------------------------------------------------------------------\n{json_file}"
     )
@@ -130,7 +130,7 @@ def before_request():
     dest: str = f"{folder}/temp/generated_reviews_with_score.json"
     download_file_from_bucket(
         bucket_name=bucket,
-        source_blob_name="json_files/generated_reviews_with_score.json",
+        source_blob_name=f"json_files/generated_reviews_with_score{version}.json",
         destination_file_name=dest,
     )
     global phone_data
@@ -139,7 +139,7 @@ def before_request():
     dest2 = f"{folder}/temp/all_scores.json"
     download_file_from_bucket(
         bucket_name=bucket,
-        source_blob_name="json_files/all_scores.json",
+        source_blob_name=f"json_files/all_scores{version}.json",
         destination_file_name=dest2,
     )
     global all_phones_scores
