@@ -19,8 +19,9 @@ import json
 
 source_folder = "text_generator"
 bucket_name = "raw_pdf_files"
-version = "dev"
-test_samples_per_brand = 3
+version = "dev"  # enter alterantive names e.g. "dev" here
+allow_download = True
+test_samples_per_brand = 2
 
 
 def access_list_of_phones():
@@ -34,7 +35,7 @@ def access_list_of_phones():
             with open(dest, "r") as file:
                 data: list = json.load(file)
                 # TODO: remove limit
-                if version == "dev":
+                if version != "":
                     data = data[:test_samples_per_brand]
                 for el in data:
                     phones.append(el["name"])
@@ -44,11 +45,11 @@ def access_list_of_phones():
 
 def create_list_of_already_rendered_phones(score: str) -> list[str]:
     # TODO: adapt after editing
-    if version == "dev" and score == "no_score":
+    if version == "dev" and score != "no_score":
         return []
     return_list = []
-    file_n = f"generated_reviews_{score}.json"
-    if version != "dev":
+    file_n = f"generated_reviews_{score}{version}.json"
+    if version != "dev" or allow_download:
         download_file_from_bucket(
             bucket_name=bucket_name,
             source_blob_name=f"json_files/{file_n}",
@@ -123,11 +124,6 @@ def generateAllScoresList():
 
 
 def generate_scores():
-    download_file_from_bucket(
-        "raw_pdf_files",
-        f"json_files/all_scores{version}.json",
-        f"{source_folder}/temp/all_scores.json",
-    )
     with open(f"{source_folder}/temp/generated_reviews_no_score.json", "r") as file:
         all_rendered_phones: list[dict] = json.load(file)
     print(all_rendered_phones)
@@ -139,9 +135,9 @@ def generate_scores():
             if p_["name"] == p:
                 all_rendered_phones.remove(p_)
 
+    save_file = f"{source_folder}/temp/generated_reviews_with_score.json"
     for p in all_rendered_phones:
         scored_dic = main._ex(p)
-        save_file = f"{source_folder}/temp/generated_reviews_with_score.json"
         create_json_file(scored_dic, "", save_file)
 
     upload_file(

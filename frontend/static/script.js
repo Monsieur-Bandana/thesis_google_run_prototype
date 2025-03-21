@@ -69,7 +69,7 @@ function getButtons2(filter = "", mode = "") {
     const filteredButtons = allButtons.filter(b =>
         b.text.toLowerCase().includes(filter.toLowerCase())
     );
-    filteredButtons.sort((a, b) => a.text.localeCompare(b.text));
+    // filteredButtons.sort((a, b) => b.text.localeCompare(a.text));
 
     filteredButtons.forEach(tuple => {
         htmlEl = htmlEl + createButton(tuple, mode);
