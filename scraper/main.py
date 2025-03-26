@@ -10,15 +10,19 @@ except:
     print("folder already exists")
 
 jsonList = []
-# subprocess.run(["python", "huawai_scraper.py"])
+subprocess.run(["python", "huawai_scraper.py"])
 jsonList.append("huawei")
-# subprocess.run(["python", "iphone_scraper.py"])
+subprocess.run(["python", "iphone_scraper.py"])
 jsonList.append("iphone")
-# subprocess.run(["python", "mi_scraper.py"])
+subprocess.run(["python", "mi_scraper.py"])
 jsonList.append("mi")
-# subprocess.run(["python", "samsung_scraper.py"])
+subprocess.run(["python", "samsung_scraper.py"])
 jsonList.append("galaxy")
 
 jsonList.append("fairphone")
 createJsonFromList(jsonList, "all_companies")
-upload_file("raw_pdf_files", f"{folder}/temp/all_companies.json", "json_files/all_companies.json" )
+upload_file(
+    "raw_pdf_files",
+    f"{folder}/temp/all_companies.json",
+    "json_files/all_companies.json",
+)
