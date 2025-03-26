@@ -72,7 +72,7 @@ def upload_file(bucket_name, source_file_name, destination_blob_name, folder_nam
     blob.upload_from_filename(source_file_name)
     print(f"File {source_file_name} uploaded to {destination_blob_name}.")
 
-def download_file_from_bucket(bucket_name, source_blob_name, destination_file_name, folder_name=None):
+def download_file_from_bucket(bucket_name, source_blob_name, destination_file_name, folder_name:str=None):
     """
     checks if file is already downloaded, if not loads from google cloud strorage
     """
@@ -82,14 +82,17 @@ def download_file_from_bucket(bucket_name, source_blob_name, destination_file_na
     client = storage.Client()
     bucket = client.bucket(bucket_name)
 
-    if folder_name:
-        if not folder_name.endswith('/'):
-            folder_name += '/'
-        source_blob_name = folder_name + source_blob_name
+    try:
+        if folder_name:
+            if not folder_name.endswith('/'):
+                folder_name += '/'
+            source_blob_name = folder_name + source_blob_name
 
-    blob = bucket.blob(source_blob_name)
-    blob.download_to_filename(destination_file_name)
-    print(f"Downloaded {source_blob_name} to {destination_file_name}")
+        blob = bucket.blob(source_blob_name)
+        blob.download_to_filename(destination_file_name)
+        print(f"Downloaded {source_blob_name} to {destination_file_name}")
+    except:
+        print("no file in bucket, going on")
 
 def create_temp_folder(parentf):
     folder_path = f"{parentf}/temp"

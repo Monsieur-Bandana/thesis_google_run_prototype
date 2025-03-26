@@ -7,9 +7,10 @@ RUN pip3 install ./shared
 COPY frontend/requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 COPY frontend/ ./frontend/
+ENV PYTHONPATH="/frontend_container/frontend"
 COPY keen-dispatch-385408-7150201568b0.json /app/key.json
 
-ENV flask_app = ./frontend/app.py
+ENV flask_app = frontend.app.py
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
 EXPOSE 8080
 

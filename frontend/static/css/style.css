@@ -6,6 +6,8 @@ body {
     width: 100%;
     font-size: 16px;
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
 }
 
 body {
@@ -20,12 +22,12 @@ body {
 }
 
 ul {
-    list-style-type: none;
     padding: 0;
     margin: 15px 0 0 0;
 }
 
 li {
+    list-style-type: none;
     margin-bottom: 10px;
 }
 
@@ -57,9 +59,12 @@ li {
     align-items: center;
 }
 
+.mobile {
+    width: 800px;
+}
 
 .phone {
-    width: 700px;
+    width: 100%;
     height: 1200px;
     background: linear-gradient(170deg, black 26%, white 45%, black 65%);
     border-radius: 60px;
@@ -338,39 +343,97 @@ li {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    min-height: 230px;
+    display: flex;
+    justify-content: space-between;
+    height: 150px;
+    margin-top: 50px;
+    align-content: flex-end;
+    /*
+    background: radial-gradient(circle at 20% 30%, #fdfcfb, #f5ebe0 30%, transparent 60%),
+        radial-gradient(circle at 80% 20%, #e4d3c3, #d5bdaF 50%, transparent 70%),
+        radial-gradient(circle at 50% 80%, #c2a28b, #a78f78 40%, transparent 80%);
+        */
 }
 
-.headline span {
-    background-color: #0000008a;
-    font-size: 2.3rem;
-    padding: 0 10px;
-    position: absolute;
+.headline_tr {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 150px;
+}
+
+.headline_tr .headline {
+    margin-top: unset;
+    padding: 0px 5px;
 }
 
 .title_span {
-    top: 30px;
-    left: 30px;
+
+    font-size: 1.5rem;
 }
 
 .score_span {
-
-    bottom: 30px;
-    right: 30px;
+    top: 10px;
+    right: 10px;
 }
 
-#materials {
-    background-image: url(/static/images/origin.jpg);
+.span_alike {
+    background-color: #000000bf;
+    border-radius: 5px;
+    padding: 0 10px;
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
 }
 
-#transportation {
-    background-image: url(/static/images/transportation.jpg);
+.span_alike span {
+    background-color: unset;
+    padding: 0 10px
+}
+
+
+#quality_of_battery {
+    background-image: url(../images/Folie1.PNG);
+}
+
+#longevity {
+    background-image: url(../images/Folie2.PNG);
+}
+
+#repairability_and_modifiability {
+    background-image: url(../images/Folie3.PNG);
 }
 
 #production {
-    background-image: url(/static/images/production.jpg);
+    background-image: url(../images/Folie4.PNG);
 }
 
+#recycled_parts {
+    background-image: url(../images/Folie5.PNG);
+}
+
+#innovativity {
+    background-image: url(../images/Folie6.PNG);
+}
+
+#co_footprint {
+    background-image: url(../images/Folie7.PNG);
+}
+
+#source_container {
+    font-size: 0.8em;
+    display: none;
+}
+
+#source_container li {
+    margin: unset
+}
+
+/*
+#production {
+    background-image: url(/static/images/production.jpg);
+}
+*/
 #use {
     background-image: url(/static/images/use-neg.jpg);
 }
@@ -378,6 +441,13 @@ li {
 #end_of_life {
     background-image: url(/static/images/eol.jpg);
 }
+
+td {
+    vertical-align: top;
+    text-align: left;
+    padding-bottom: 8px;
+}
+
 
 .tooltiptext {
     visibility: hidden;
@@ -405,25 +475,67 @@ li {
 }
 
 .t-header {
-    display: block;
+    display: flex;
     width: 100%;
     flex-direction: column;
     position: relative;
-    height: 70px;
+    height: 120px;
 }
 
 .t-frame {
     display: flex;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
     justify-content: space-between;
     width: 100%;
 }
 
 .t-frame span {
     font-size: 1.8rem;
-    padding: 0 10px;
+    padding: 0 10px 0 0;
+}
+
+.t-ratio {
+    display: flex;
+    justify-content: end;
+    width: 93%
+}
+
+.t-ratio-corrector {
+    margin-right: -40px;
+    margin-top: -5px;
+    font-size: 0.8rem;
+    margin-left: 10px;
+}
+
+.ratio_container {
+    padding-left: 12px;
+}
+
+.outer_ratio {
+    background-color: #292929;
+    height: 5px
+}
+
+.inner_ratio {
+    background-color: green;
+    height: 100%;
+}
+
+.arrow_placer {
+    display: flex;
+    justify-content: end;
+    color: #7d7d7d;
+}
+
+.ratio-with-perc {
+    display: flex;
+    font-size: 0.7em;
+
+}
+
+.ratio-with-perc span {
+    margin-top: -6px;
+    margin-left: -10px;
+    padding-left: -10px;
 }
 
 /* Styling for the return button */
@@ -477,6 +589,39 @@ li {
     /* No shadow */
 }
 
+.compare_menu_wrapper {
+    display: none;
+    width: 100%;
+    position: absolute;
+    justify-content: center;
+    top: 50px;
+    margin: -50px;
+
+}
+
+.compare_menu {
+    background: rgba(0, 0, 0, 0.87);
+    padding: 15px;
+    color: white;
+    border-radius: 0px 0px 15px 15px;
+    width: 500px;
+    box-shadow: 0 -10px 50px #353535;
+    max-height: 800px;
+    overflow: scroll;
+}
+
+.compare_menu .apps-area {
+    height: unset;
+}
+
+#dynamic-content2 {
+    padding: 10px 0px;
+}
+
+.compare_menu .eco-button {
+    background: linear-gradient(to top, rgb(238, 238, 238), rgb(172, 172, 172))
+}
+
 /* Optional: Add an icon to the button */
 #backButton::before {
     content: '←';
@@ -518,7 +663,7 @@ li {
     justify-content: space-between;
 }
 
-#drop_content_fr {
+.drop_content {
     max-height: 150px;
     position: absolute;
     overflow-y: scroll;
@@ -530,16 +675,20 @@ li {
     z-index: 100;
 }
 
-#drop_content_fr ul {
+.drop_content ul {
     width: 100%;
 }
 
-#drop_content_fr li {
+.drop_content li {
     padding-left: 20px;
 }
 
-#drop_content_fr li:hover {
+.drop_content li:hover {
     background-color: #0a9183
+}
+
+.compare_menu .drop_content {
+    position: unset;
 }
 
 .provided_brands_frame {
@@ -565,4 +714,19 @@ li {
 
 #logo_header img {
     height: 100%
+}
+
+/* Default link color */
+a {
+    color: black;
+}
+
+/* Link color after being clicked (visited state) */
+a:visited {
+    color: rgb(0, 49, 0);
+}
+
+/* Optional: Add hover effect */
+a:hover {
+    color: green;
 }

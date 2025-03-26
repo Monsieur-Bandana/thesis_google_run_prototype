@@ -49,8 +49,8 @@ test_list = [resp_str, resp_str1, resp_str2, resp_str3]
 phone_names = ["fairphone", "samsung", "iphone", "redmi"]
 inc_c = 0
 for t_ in test_list:
-    mat: list[dict] = [{"html_output": t_[0]}]
-    transp = [{"html_output": t_[1]}]
+    mat: str =  t_[0]
+    transp: str = t_[1]
     if phone_names[inc_c] in "fairphone, iphone":
         print(phone_names[inc_c]+ "-materials: " +str(generate_score(mat, "materials")))
         print(phone_names[inc_c]+ "-transport: " +str(generate_score(transp, "transportation")))

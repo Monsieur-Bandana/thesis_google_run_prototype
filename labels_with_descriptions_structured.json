@@ -1,131 +1,62 @@
 [
     {
-        "name": "Materials",
-        "json_name": "materials",
+        "name": "Battery Reliability",
+        "json_name": "quality_of_battery",
         "list": [
             {
-                "name": "Metals",
-                "json_name": "metals",
-                "description": "Which metals, particularly rare earth elements, are used in the production of <replacer> smartphones? Are components created from recycled materials, all components or only some particular components?",
-                "parent": "Materials",
+                "name": "Battery Reliability",
+                "json_name": "quality_of_battery",
+                "description": "How long does the battery of a <replacer>-phone remain reliable? Is the battery easily replaceable? How does the overall lifespan and durability of a smartphone may depend from the battery? ",
+                "interpreter": "The role of the smartphone's battery on the smartphones footprint. What environmental and safety concerns arise from poor battery quality? How do manufacturers ensure battery quality while balancing cost and sustainability?",
+                "parent": "Use",
                 "tokens": [
-                    "Tungsten",
-                    "Tin",
-                    "Plastic",
-                    "Gold",
-                    "Lead",
-                    "High-temperature solder",
-                    "Cobalt",
-                    "Lithium",
-                    "Tantalum",
-                    "Rare earth elements",
-                    "Ores"
-                ],
-                "fewshots": [
-                    "The Luminara-phone uses various rare earth elements such as gold, lead, and tin.",
-                    "While specific details about the Luminara-phone's materials are unavailable, common smartphone production involves rare earth elements like gold, lead, and tin."
-                ],
-                "additional_instructions": ""
-            },
-            {
-                "name": "Toxic Chemicals",
-                "json_name": "chemicals",
-                "description": "Which toxic chemicals and plastics are present in the components of <replacer> Smartphones?",
-                "parent": "Materials",
-                "tokens": [
-                    "Beryllium",
-                    "Brominated flame retardants",
-                    "PVC",
-                    "Phthalates",
-                    "Arsenic in glass",
-                    "Mercury",
-                    "Chemicals",
-                    "Chemical"
-                ]
-            },
-            {
-                "name": "Raw Materials Origin",
-                "json_name": "origin",
-                "description": "Where are the natural resources used in the <replacer> smartphone production coming from? Specifically, where are the mines located for rare earth elements used in metal extraction?",
-                "parent": "Materials",
-                "tokens": [
-                    "Mines",
-                    "Rare earth deposits"
+                    "Battery life",
+                    "Battery",
+                    "Recharge",
+                    "Replaceable battery"
                 ]
             }
         ]
     },
     {
-        "name": "Transportation",
-        "json_name": "transportation",
+        "name": "Longevity",
+        "json_name": "longevity",
         "list": [
             {
-                "name": "Transportation",
-                "json_name": "transportation",
-                "description": "What are the distances involved, not only between production sites, but also to the final point of distribution of <replacer>-Smartphones?",
-                "parent": "Transportation",
+                "name": "Durability",
+                "json_name": "durability",
+                "description": "How long can the <replacer>-phone remain functional and relevant? How resistant is it to physical damage? What is the estimated livespan?",
+                "interpreter": "What factors contribute to the durability of a smartphone, and how is it measured? What role do material choices and design play in enhancing smartphone durability?",
+                "parent": "Use",
                 "tokens": [
-                    "Km",
-                    "Miles",
-                    "Sea transportation",
-                    "Distant"
+                    "Longevity",
+                    "Planned obsolescence",
+                    "Parts quality"
+                ]
+            },
+            {
+                "name": "Planned Obsolescence",
+                "json_name": "planned_obsolescence",
+                "description": "Does the <replacer>-phone Company employ strategies, such as performance-reducing software updates, to encourage users to replace their phones within a few years?",
+                "interpreter": "What are the different forms of planned obsolescence in the smartphone industry? What alternatives exist to planned obsolescence that still support technological progress?",
+                "parent": "End of Life",
+                "tokens": [
+                    "Discontinuity of support",
+                    "Battery degradation",
+                    "Technological obsolescence"
                 ]
             }
         ]
     },
     {
-        "name": "Production",
-        "json_name": "production",
-        "list": [
-            {
-                "name": "Production Process",
-                "json_name": "production_process",
-                "description": "What processes are used to transform raw resources into consumer electronics? This includes intermediate products, such as printed circuit boards, and the assembly of the final smartphone. How does the <replacer>-Company act to improve those, from a sustainable point of view?",
-                "parent": "Production",
-                "tokens": [
-                    "Device assembly",
-                    "Assembly",
-                    "Manufacturing"
-                ]
-            },
-            {
-                "name": "Production Waste",
-                "json_name": "production_waste",
-                "description": "How much waste is generated during the manufacturing process of the <replacer>-Smartphone? How is this waste managed?",
-                "parent": "Production",
-                "tokens": []
-            },
-            {
-                "name": "Supplier Energy Use",
-                "json_name": "supplier_energy_use",
-                "description": "What is the energy consumption at production sites of the <replacer>-Smartphones? Is the energy used renewable or clean?",
-                "parent": "Production",
-                "tokens": [
-                    "kWh"
-                ]
-            },
-            {
-                "name": "Location of Assembly",
-                "json_name": "location_of_assembly",
-                "description": "Where are the assembly sites for intermediate products (e.g., printed circuit boards) and final <replacer>-smartphones located? Are these locations chosen for cost efficiency despite potentially weaker environmental regulations?",
-                "parent": "Production",
-                "tokens": [
-                    "Supplier",
-                    "Assembly",
-                    "Manufacturer",
-                    "Subcontractor"
-                ]
-            }
-        ]
-    },
-    {
-        "name": "Use",
-        "json_name": "use",
+        "name": "Repairability and Modifiability",
+        "json_name": "repairability_and_modifiability",
         "list": [
             {
                 "name": "Ease of Repair",
                 "json_name": "ease_of_reparation",
-                "description": "How easy is it for the end user to repair the <replacer>-phone?",
+                "description": "How easy is it for the end user to repair the <replacer>-phone? Are there barriers implemented by the manufacturer?",
+                "interpreter": "",
                 "parent": "Use",
                 "tokens": [
                     "Repairability",
@@ -138,94 +69,92 @@
                 "name": "Ease of Modification",
                 "json_name": "ease_of_modification",
                 "description": "Can the <replacer>-phone's performance be upgraded by the user?",
+                "interpreter": "What impact do modular designs and replaceable components have on repairability? What are the barriers preventing greater modifiability and user-repairable smartphones?",
                 "parent": "Use",
                 "tokens": [
                     "SD card slot",
                     "SD card storage slot"
                 ]
-            },
+            }
+        ]
+    },
+    {
+        "name": "Production",
+        "json_name": "production",
+        "list": [
             {
-                "name": "Top-notch Technology",
-                "json_name": "top_notch_technology",
-                "description": "Does the <replacer>-phone meet modern technological standards, reducing the likelihood of needing early replacement?",
-                "parent": "Use",
+                "name": "Raw Materials Origin",
+                "json_name": "origin",
+                "description": "Where are the natural resources used in the <replacer>-phone production coming from? Specifically, where are the mines located for rare earth elements used in metal extraction? What are the key metals used in smartphones, and why are they essential for ICT industries? How does the sourcing of raw materials, raw earths and minerals impact local communities and ecosystems?",
+                "interpreter": "How can transparency in raw material sourcing contribute to a more sustainable industry?",
+                "parent": "Materials",
                 "tokens": [
-                    "5G support",
-                    "eSIM support",
-                    "Snapdragon",
-                    "Bionic",
-                    "Dimensity",
-                    "Helio",
-                    "Exynos",
-                    "Tensor"
+                    "Mines",
+                    "Rare earth deposits"
                 ]
             },
             {
-                "name": "Battery Quality",
-                "json_name": "quality_of_battery",
-                "description": "How long does the battery of a <replacer>-phone remain reliable? Is the battery easily replaceable?",
-                "parent": "Use",
+                "name": "Transportation",
+                "json_name": "transportation",
+                "description": "What are the distances involved, not only between production sites, but also to the final point of distribution of <replacer>-Smartphones? Which transport vehicles are used?",
+                "interpreter": "What are the main logistical challenges in making smartphone supply chains more sustainable? How can manufacturers reduce the carbon footprint of transporting raw materials and finished products? What role do alternative transportation methods, such as low-emission shipping, play in reducing environmental impact?",
+                "parent": "Transportation",
                 "tokens": [
-                    "Battery life",
-                    "Battery",
-                    "Recharge",
-                    "Replaceable battery"
+                    "Km",
+                    "Miles",
+                    "Sea transportation",
+                    "Distant"
                 ]
             },
             {
-                "name": "Durability",
-                "json_name": "durability",
-                "description": "How long can the <replacer>-phone remain functional and relevant? How resistant is it to physical damage?",
-                "parent": "Use",
+                "name": "Manufactoring",
+                "json_name": "manufactoring",
+                "description": "What processes are used to transform raw resources into consumer electronics? This includes intermediate products and the assembly of the final smartphone. How does the <replacer>-Company act to improve those, from a sustainable point of view?",
+                "interpreter": "What are the most resource-intensive stages of smartphone manufacturing? How do energy consumption, waste production and emissions from manufacturing affect the industry's sustainability? What parts impact the footprint the most?",
+                "parent": "Production",
                 "tokens": [
-                    "Longevity",
-                    "Planned obsolescence",
-                    "Parts quality"
-                ]
-            },
-            {
-                "name": "Energy Consumption",
-                "json_name": "energy_consumption",
-                "description": "How energy-efficient is a <replacer>-phone? How often does it require charging?",
-                "parent": "Use",
-                "tokens": [
-                    "Energy efficiency",
-                    "Hours of use",
-                    "Power consumption",
-                    "Battery"
+                    "Device assembly",
+                    "Assembly",
+                    "Manufacturing"
                 ]
             }
         ]
     },
     {
-        "name": "End of Life",
-        "json_name": "end_of_life",
+        "name": "Recycled Parts",
+        "json_name": "recycled_parts",
         "list": [
             {
-                "name": "Planned Obsolescence",
-                "json_name": "planned_obsolescence",
-                "description": "Does the <replacer> Company employ strategies, such as performance-reducing software updates, to encourage users to replace their phones within a few years?",
+                "name": "Recycled Parts",
+                "json_name": "recycled_parts",
+                "description": "To what extent are the parts of a <replacer>-phone recycled?",
                 "parent": "End of Life",
-                "tokens": [
-                    "Discontinuity of support",
-                    "Battery degradation",
-                    "Technological obsolescence"
-                ]
-            },
+                "tokens": []
+            }
+        ]
+    },
+    {
+        "name": "Sustainable Innovation",
+        "json_name": "innovativity",
+        "list": [
             {
-                "name": "Second Use",
-                "json_name": "second_use",
-                "description": "How likely is the <replacer>-phone to be sold or reused after its initial use? This depends on its quality after the typical two-year usage period.",
+                "name": "Sustainable Innovation",
+                "json_name": "innovativity",
+                "description": "What does the manufacturer of the <replacer>-phone do for the environment? Does the <replacer>-phone has unique innovations in terms of enabling increased sustainability?",
                 "parent": "End of Life",
-                "tokens": [
-                    "Second-hand",
-                    "Refurbish"
-                ]
-            },
+                "tokens": []
+            }
+        ]
+    },
+    {
+        "name": "Estimated Carbon Footprint",
+        "json_name": "co_footprint",
+        "list": [
             {
-                "name": "Recycling",
-                "json_name": "recycling",
-                "description": "To what extent can the parts of a <replacer>-phone be recycled for future production?",
+                "name": "Estimated Carbon Footprint",
+                "json_name": "co_footprint",
+                "description": "What is the estimated carbon footprint of a <replacer>-phone per year? If it aligns with industry standards, what are they? Give me explicit figures!",
+                "interpreter": "Are figures mentioned regarding the carbon footprint?",
                 "parent": "End of Life",
                 "tokens": []
             }
