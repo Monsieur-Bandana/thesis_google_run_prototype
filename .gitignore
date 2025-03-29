@@ -17,3 +17,4 @@ htmls/
 */test_env.py
 __pycache__/
 docker_cheatsheet.md
+load_all_files.py
