@@ -1,64 +1,77 @@
+"""
+classifies the source-files
+
+"""
+
 from llama_index.core import SimpleDirectoryReader
 import json
 import os
 from shared.git_handler import load_class_data_from_git
 from pdf_handler import create_pdf_temp_folder
-from shared.gcs_handler import upload_file, download_file_from_bucket, list_directories_in_bucket
+from shared.gcs_handler import (
+    upload_file,
+    download_file_from_bucket,
+    list_directories_in_bucket,
+)
 
+# saves the details about the EF-categories
 classes = []
 tokens = []
 bucket_name = "raw_pdf_files"
 folder_name = "file_classifier"
 
+
 def extract_classes():
     load_class_data_from_git(folder_name)
-    with open(f'{folder_name}/temp/classes.json', 'r') as file:
+    with open(f"{folder_name}/temp/classes.json", "r") as file:
         data: list = json.load(file)
 
         for el in data:
             classes.append(el["name"])
             tokens.append(el["tokens"])
 
-def classify_text_using_retriever(dir: str, classes: list[str])->list[dict]:
+
+def classify_text_using_retriever(dir: str, classes: list[str]) -> list[dict]:
     """
     * exec retriever for each label
     * outcome for each label stored in list.
     * if list empty label not in use
     """
 
-    
     pdf_docs = create_pdf_temp_folder(bucket_name, folder_name, dir)
 
     pdf_list = [os.path.basename(file) for file in os.listdir(pdf_docs)]
 
-    reader = SimpleDirectoryReader(input_dir=pdf_docs, recursive=True,)
-    collection:list[dict] = []
-    i:int = 0
+    reader = SimpleDirectoryReader(
+        input_dir=pdf_docs,
+        recursive=True,
+    )
+    collection: list[dict] = []
+    i: int = 0
     for docs in reader.iter_data():
-        title:str = os.path.basename(pdf_list[i])
+        title: str = os.path.basename(pdf_list[i])
         label_list = []
         x: int = 0
         for cl in classes:
             tokens_list = tokens[x]
             for doc in docs:
-
+                # search file by keywords
                 if cl in doc.text and cl not in label_list:
-                    
+
                     label_list.append(cl)
                 for token in tokens_list:
                     if token in doc.text and cl not in label_list:
                         label_list.append(cl)
-            x = x+1
+            x = x + 1
 
-            
         collection.append({"title": title, "labels": label_list})
-        i = i+1
-    
-    # clear_temp_folder()
+        i = i + 1
+
     return collection
 
+
 # for each directory in google cloud storage:
-prefix = 'raw_pdf_files/'
+prefix = "raw_pdf_files/"
 directories = list_directories_in_bucket(bucket_name, prefix)
 print(directories)
 
@@ -77,5 +90,6 @@ for directory in directories:
         json.dump(text_classifications, file, indent=4)
 
     # bucket_name, source_file_name, destination_blob_name, folder_name=None
-    upload_file(bucket_name, f"{folder_name}/temp/{output_file}",output_file, "json_files")
-
+    upload_file(
+        bucket_name, f"{folder_name}/temp/{output_file}", output_file, "json_files"
+    )
