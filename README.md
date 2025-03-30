@@ -24,6 +24,10 @@
 /shared/question_builder.py 
 ## Further notes
 You will realize, that most of the files contain the variables
-"bucket_name"  and "folder_name" or similar
-bucket_name sets the folder on the google cloud storage. Here all files referring to thir project are stored.
+"bucket_name"  and "folder_name" (or similar)
+"bucket_name" sets the folder on the google cloud storage. Here all files referring to thir project are stored.
 "folder_name" sets the location where each module saves its files. This was mainly important during development, since all modules are located in the same directory.
+## Docker files
+for the interpreter, the frontend and the text generator we created docker files and Google Cloud Run isntances
+
+However classifier and scraper ran locally
