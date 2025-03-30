@@ -1,3 +1,7 @@
+"""
+provides helper function for communicating with google cloud storage
+"""
+
 from google.cloud import storage
 import os
 

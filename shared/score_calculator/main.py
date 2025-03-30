@@ -15,10 +15,16 @@ def add_entry_to_all_scores_list(all_scores, key, score, save_file1, isLocPhone:
 
 
 def _ex(response_dic: dict) -> dict:
+    """
+    manages and forwards various score calculations
+    :params respnse_dic: review text data in dictionary form
+    """
+    # this list gets filled with all sub-scores. The list later gets used for calcualting the total score
     scores_list: list[float] = []
 
     for key, val in response_dic.items():
         print(key)
+        # loops through the dictionary, checks for all keys and there descriptions
         if isinstance(val, dict) and key != "conclusion":
             smaller_dict: dict = val
             text: str = ""
@@ -28,8 +34,9 @@ def _ex(response_dic: dict) -> dict:
                         text = text + val2["summary"]
                     except:
                         print(f"--------------->problem with {val2}")
+            # API-call for creating score
             score: float = generate_score(text, key)
-
+            # appends score to scores_list for later total score calculation
             response_dic[key]["score"] = score
             scores_list.append(score)
     total_score = get_total_score(scores_list)
@@ -38,6 +45,7 @@ def _ex(response_dic: dict) -> dict:
     return response_dic
 
 
+## test-section
 """
 resp_dic = {
         "materials": {

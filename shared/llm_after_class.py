@@ -1,7 +1,3 @@
-"""
-TODO: allow multiple entities
-"""
-
 from openai import OpenAI
 from shared.ind_key import rand_k
 import json
@@ -23,9 +19,11 @@ from shared.question_builder import (
 )
 import tiktoken
 
+# API key
 sk = rand_k
 client = OpenAI(api_key=sk)
 data = []
+# set size of paragraphs
 min_token_size = 40
 
 
@@ -37,6 +35,9 @@ def get_token_length(text, model="gpt-4"):
 
 # from ind_key import key
 def give_conlusion(previous_text: str, phone_name, count) -> str:
+    """
+    provides conclusion over review
+    """
     context = f"""
     You are a knowledgeable and concise assistant providing conclusions about the environmental footprint of smartphones.
     Your task is to analyze and describe the as-is situation and its direct impact on the environmental footprint.
@@ -244,11 +245,13 @@ def generateAnswer(input: str, sourcefolder, repetitions=5) -> dict:
                 f"summaries/{dir}-{css_name}3.txt",
                 f"{sourcefolder}/temp/{dir}-{css_name}.txt",
             )
+            # create context from company related information
             try:
                 context += getContext(dir, css_name, sourcefolder) + "\n"
             except NotFound:
                 print(f"file summaries_struct_c/{dir}-{css_name}.txt not found")
 
+            # add context from general information, can be skipped if dir is already "general"
             if dir != "general":
                 download_file_from_bucket(
                     bucket_name,
@@ -262,6 +265,7 @@ def generateAnswer(input: str, sourcefolder, repetitions=5) -> dict:
 
             class_description: str = descr
             class_description = class_description.replace("<replacer>", input)
+            # create prompt
             prompt = ""
             prompt += f"""How would you assess the {class_name} of the {input} by {comp}?
             What factors contribute to your evaluation? \n"""
@@ -284,16 +288,15 @@ def generateAnswer(input: str, sourcefolder, repetitions=5) -> dict:
 
     prompt += "Phone information:"
     prompt += get_element_by_name(f"{sourcefolder}/temp/scraped-{dir}-data.json", input)
-    ## hier einbauen: while loop
+
     trial_counter = 0
     resp_options = []
     size_val = count * min_token_size
     print(json_strct)
-    # input("Enter")
+
     best_val = 0
     while trial_counter < repetitions:
 
-        # try:
         response_dic: dict = activate_api(
             input=input,
             question=prompt,

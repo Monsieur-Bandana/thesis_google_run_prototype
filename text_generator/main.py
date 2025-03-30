@@ -34,7 +34,7 @@ def access_list_of_phones():
             download_file_from_bucket(bucket_name, json_file, dest)
             with open(dest, "r") as file:
                 data: list = json.load(file)
-                # TODO: remove limit
+
                 if version != "":
                     data = data[:test_samples_per_brand]
                 for el in data:
@@ -91,8 +91,8 @@ def generate_texts():
         outc = generateAnswer(phone, source_folder)
         save_file = f"{source_folder}/temp/generated_reviews_no_score.json"
         create_json_file(outc, "", save_file)
-        # generateAnswer saves file "generated_reviews_no_score.json"
 
+        # "quciksave" after every fifth phone
         if update_after_five_phones % 5 == 0:
             upload_file(
                 bucket_name=bucket_name,
@@ -124,10 +124,12 @@ def generateAllScoresList():
 
 
 def generate_scores():
+    # reads the list of phones, which have review texts
     with open(f"{source_folder}/temp/generated_reviews_no_score.json", "r") as file:
         all_rendered_phones: list[dict] = json.load(file)
     print(all_rendered_phones)
     print("---------------------------------------")
+    # checks which reviewd phones already got scored
     already_scored_phones = create_list_of_already_rendered_phones("with_score")
     print(already_scored_phones)
     for p in already_scored_phones:
@@ -136,6 +138,7 @@ def generate_scores():
                 all_rendered_phones.remove(p_)
 
     save_file = f"{source_folder}/temp/generated_reviews_with_score.json"
+    # calls scoring API for all phones remaining
     for p in all_rendered_phones:
         scored_dic = main._ex(p)
         create_json_file(scored_dic, "", save_file)
@@ -145,6 +148,8 @@ def generate_scores():
         source_file_name=save_file,
         destination_blob_name=f"json_files/generated_reviews_with_score{version}.json",
     )
+
+    # generates and uploads list of all scores (list gets overwritten not updated)
     generateAllScoresList()
     upload_file(
         bucket_name=bucket_name,
@@ -154,12 +159,13 @@ def generate_scores():
 
 
 create_temp_folder(source_folder)
-generate_texts()
-generate_scores()
+generate_texts()  # executes API calls for review texts loopvice
+generate_scores()  # executes API calls for scores loopvice
 
 with open(f"{source_folder}/temp/generated_reviews_with_score.json", "r") as file:
     phones_with_scores = json.load(file)
 
+# sort phones by scores, then extract the best and worse 4 and store them in seperate lists
 sorted_scores = sorted(phones_with_scores, key=lambda x: x["conclusion"]["score"])
 
 best_phones = sorted_scores[-4:]

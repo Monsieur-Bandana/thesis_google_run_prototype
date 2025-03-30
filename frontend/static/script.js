@@ -27,9 +27,9 @@ function flask_call(input, mode = "") {
         },
         body: `input_text=${encodeURIComponent(`${input},${mode}`)}`,
     })
-        .then(response => response.text()) // Parse the response as text (HTML)
+        .then(response => response.text())
         .then(htmlContent => {
-            // Insert the fetched HTML into the DOM
+
             locDynamicContent.innerHTML = htmlContent;
         })
         .catch(error => {
@@ -293,14 +293,14 @@ modeList.forEach(
             const filteredButtons = allButtons.filter(b =>
                 b.text.toLowerCase().includes(inputValue.toLowerCase())
             );
-            if (filteredButtons != []) { generateDropList(filteredButtons); return true; } // Generiere Dropdown mit gefilterten Elementen
+            if (filteredButtons != []) { generateDropList(filteredButtons); return true; }
             else return false;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             generateDropList(allButtons);
 
-            // Eventlistener für Benutzereingabe
+
             userInputField.addEventListener('input', (event) => {
                 const inputValue = event.target.value;
                 if (filterDropList(inputValue)) { drop_content_fr.style = "display: flex"; }

@@ -1,7 +1,6 @@
 FROM python:3.12.4-slim
 
 WORKDIR /file_interpreter
-# Copy service account key
 COPY keen-dispatch-385408-7150201568b0.json /app/key.json
 
 COPY shared/ ./shared/
@@ -9,12 +8,12 @@ RUN pip3 install ./shared
 COPY file_interpreter/requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-# Set environment variable
+
 ENV GOOGLE_APPLICATION_CREDENTIALS=/app/key.json
 
 
 COPY file_interpreter/ .
 COPY file_interpreter/prefilter.json ./file_interpreter/prefilter.json
 
-# Specify the command to run your application
+
 CMD ["python", "main_structured_class.py"]

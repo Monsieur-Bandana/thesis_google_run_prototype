@@ -6,9 +6,9 @@ url_def = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_
 
 
 def load_class_data_from_git(parent: str, url=url_def):
-    # URL to the raw JSON file in the GitHub repository
-
-    # Local filename to save the downloaded JSON file
+    """
+    loads the EF-bluieprint file. The file is located on git, to ease edit and commit processes
+    """
     local_filename = f"{parent}/temp/classes.json"
     token = git
 
@@ -17,13 +17,11 @@ def load_class_data_from_git(parent: str, url=url_def):
     if not os.path.isfile(local_filename):
 
         try:
-            # Send an HTTP GET request to the URL
+
             response = requests.get(url, headers=headers)
 
-            # Raise an exception for HTTP errors
             response.raise_for_status()
 
-            # Write the content of the response to a file
             with open(local_filename, "w", encoding="utf-8") as file:
                 file.write(response.text)
 

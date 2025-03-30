@@ -25,12 +25,13 @@ from shared.question_builder import (
     generate_comp_related_question,
 )
 
-# Configure your Google Cloud and OpenAI API credentials
+# key for OpenAI API
 sk = rand_k
 main_folder = "file_interpreter"
 prefix = "raw_pdf_files/"
 bucket_name = "raw_pdf_files"
 labels_data = []
+# lsit of already intepreted files (so they don't need to be interpreted again), gets filled by function "checkForInterpreteFiles"
 interpreted_files = []
 upload_data = []
 
@@ -38,11 +39,12 @@ upload_data = []
 def execute_summary(prompt, chunk, comp, chunk_nr, pdf_file_path):
 
     client = OpenAI(api_key=sk)
+    # create context for interpreter
     context_1 = f"""
                 You are a helpful assistant tasked with extracting information about Smartphones and their environmental impact. \n
 
                 """
-
+    # ask company specific question, if file comes from a brand folder
     if not comp == "general":
         context_1 = f"""
                     You are a helpful assistant tasked with extracting information about {comp}-Smartphones, also referred to as {dir}-Smartphones and their environmental impact. \n
@@ -73,7 +75,7 @@ def execute_summary(prompt, chunk, comp, chunk_nr, pdf_file_path):
     try:
 
         response = client.chat.completions.create(
-            model="gpt-4o-mini",  # Oder ein anderes Modell wie "gpt-4"
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": context},
                 {"role": "user", "content": prompt},
@@ -89,6 +91,9 @@ def execute_summary(prompt, chunk, comp, chunk_nr, pdf_file_path):
 
 
 def checkForInterpreteFiles():
+    """
+    loads list of already itnerpreted files from google cloud storage. Fills then the list of already interpeted files
+    """
     file_n = "already_interpreted_files.json"
     download_file_from_bucket(
         "raw_pdf_files", f"json_files/{file_n}", f"{main_folder}/temp/{file_n}"
@@ -129,6 +134,7 @@ def main():
     global interpreted_files
 
     for el in labels_data:
+        # builds string from file name and chunk, to read it from the classifier-list
         source_n: str = el["source"]
         file_inf = source_n.split("-chunk-")
         file_n = file_inf[0]
@@ -138,6 +144,7 @@ def main():
         for cy in comps:
             if cy["product"] == brand:
                 dir = cy["company"]
+        # checks if file already got already interpreted
         if source_n not in interpreted_files:
             pdf_file_path = f"{main_folder}/temp/{file_n}"
             download_file_from_bucket(

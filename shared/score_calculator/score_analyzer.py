@@ -17,6 +17,9 @@ with open(f"shared/score_calculator/score_examples.json", "r") as file:
 
 
 def check_for_further(key, json_name):
+    """
+    in some cases we have more than three few-shots, this method checks if we have further, and appends them to the prompt
+    """
     return_str = ""
     rating = ""
     if key == "low_mid":
@@ -31,16 +34,11 @@ def check_for_further(key, json_name):
 
 
 def generate_score(respone: str, json_name) -> float:
-    """
-    context: str = " "
-    for el in respones:
-        context = context + el["html_output"]
-    prompt=f"{context}\nPress Enter to continue..."
-    input(prompt)
-    """
+
     print(example_dict[json_name]["perfect_phone"])
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
+        # API calls for score calculation, using few shots
         messages=[
             {
                 "role": "system",
@@ -72,19 +70,24 @@ def generate_score(respone: str, json_name) -> float:
 
 def get_total_score(scores: list[float]):
     print("i was executed")
+    # match variables from scores list elements (innovation variable gets ignored)
     bat = scores[0]
     long = scores[1]
     rep = scores[2]
     prod = scores[3]
     rec = scores[4]
     co2 = scores[6]
-    long = (long + bat + rep) / 3  # 3.3
-    long = long / 2.5  # 1.32
-    long = max(0.1, long)  # 1.32
-    neg1 = ((5 - prod) - 0.1 * rec) / long  # 2.6/1.32 =2
-    neg1 = max(0, neg1)
-    neg2 = 5 - co2  # 3
-    t_score = 5 - (neg1 + neg2) / 2  # 5-2.5
-    t_score = max(min(5.0, t_score), 0.0)
+    long = (long + bat + rep) / 3  # calc average for longevity
+    long = (
+        long / 2.5
+    )  # normalize longevity value (normal phone has value 1), env-friendly phone 0.5 -> reduces footprint by halve
+    long = max(0.1, long)  # prevent dividing by 0
+    neg1 = (
+        (5 - prod) - 0.1 * rec
+    ) / long  # production costs - recycling and then divided by longevity
+    neg1 = max(0, neg1)  # avoid negative numbers
+    neg2 = 5 - co2  # calc co2 costs
+    t_score = 5 - (neg1 + neg2) / 2  # calc total score
+    t_score = max(min(5.0, t_score), 0.0)  # avoid numbers < 0 or > 5
     t_score = round(t_score, 1)
     return t_score
