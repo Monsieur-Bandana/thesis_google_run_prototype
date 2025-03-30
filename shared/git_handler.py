@@ -2,7 +2,7 @@ import requests
 from shared.ind_key import git
 import os
 
-url_def = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/structured_functions_test/labels_with_descriptions_structured.json"
+url_def = "https://raw.githubusercontent.com/Monsieur-Bandana/thesis_google_run_prototype/refs/heads/main/labels_with_descriptions_structured.json"
 
 
 def load_class_data_from_git(parent: str, url=url_def):
