@@ -1,27 +1,28 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, request
 from shared.gcs_handler import (
-    list_files_in_folder,
     download_file_from_bucket,
     create_temp_folder,
 )
 from html_generator import generate_html_output, generate_table_output
 import json
 from shared.llm_after_class import generateAnswer
-import random
-import os
-import sys
 from shared.score_calculator import main
 
 app = Flask(__name__)
 
-version = "dev"
+# set here if you want to retreive files from dev versions, set "" if you want the normal version
+version = ""  # or dev
 folder = "frontend"
 bucket = "raw_pdf_files"
+# list of all phones, gets filled by before_request function
 phone_data: list[dict] = []
+# scores of all phones (important for the ratio bar), gets filled by before_request function
 all_phones_scores = {}
+# if compare-mode this variable stores the orignal phone
 phone_one = {}
 
 
+# laods the correct brand-icons for the phone buttons from the image gallery
 def generate_buttons_dict(data: list[dict]):
     phones: list[dict] = []
     for el in data:
@@ -45,30 +46,21 @@ def generate_buttons_dict(data: list[dict]):
 
 
 def generate_button_texts():
-    """
-    json_files = list_files_in_folder(bucket, "json_files")
-
-    phones:list[dict] = []
-    for json_file in json_files:
-        if "scraped" in json_file and not "companies" in json_file:
-            dest: str = f"{folder}/temp/{str(json_file).split("/")[1]}"
-            download_file_from_bucket(bucket, json_file, dest)
-            with open(dest, 'r') as file:
-                data: list[dict] = json.load(file)
-    """
-
-    # Replace this list with dynamic data generation logic
-    # random.shuffle(phones)
 
     return generate_buttons_dict(phone_data)
 
 
+# loads the review text
 def loadAnswer(name, mode) -> str:
-    print("----------------->>")
-    print(type(phone_data))
+    """
+    :param name: model name
+    :param mode: compare mode ("2") or single mode ("")
+    :return: html version of review text as String
+    """
 
     file_content = ""
 
+    # api call if phone does not exist
     def create_new_phone():
         new_p = generateAnswer(name, folder, 2)
 
@@ -77,6 +69,7 @@ def loadAnswer(name, mode) -> str:
         phone_one = new_P_w_sc
         return phone_one
 
+    # checks if phone exists, either returns phone or calls api, if not existant
     def quickLoop():
         for p in phone_data:
             print(type(p))
@@ -87,6 +80,7 @@ def loadAnswer(name, mode) -> str:
         p["in_list"] = "false"
         return p
 
+    # checks if normal mode or compare mode (2)
     if mode == "":
         p = quickLoop()
         global phone_one
@@ -111,9 +105,7 @@ def responseButtons():
 def responseBestPhones():
     selection_kind = request.form.get("input_text", "")
     json_file = f"phones_with_scores_str_{selection_kind}{version}.json"
-    print(
-        f"-------------------------------------------------------------------------------\n{json_file}"
-    )
+
     dest_file = f"{folder}/temp/{json_file}"
     download_file_from_bucket(bucket, f"json_files/{json_file}", dest_file)
     with open(dest_file, "r") as file:
@@ -124,7 +116,11 @@ def responseBestPhones():
 
 @app.before_request
 def before_request():
-    # Code to run before each request
+    """
+    Code to run before each request, loads all files needed for enabling the frontend, list of all phones, worst phones, best phones
+    list of all scores
+
+    """
     create_temp_folder(folder)
     print(f"Before request: {request.path}")
     dest: str = f"{folder}/temp/generated_reviews_with_score.json"
@@ -145,7 +141,6 @@ def before_request():
     global all_phones_scores
     with open(dest2, "r") as file:
         all_phones_scores = json.load(file)
-    # Add any other logic you need here
 
 
 @app.route("/")
@@ -155,11 +150,11 @@ def index():
 
 @app.route("/get-data", methods=["POST"])
 def response():
-    requ_l = request.form.get("input_text", "").split(
-        ","
-    )  # Retrieve the 'name' input value
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    print(requ_l)
+    """
+    retrieves request from frontend. the requests contains a string, seperated by comma. the string contains before the comma the model name,
+    behind the comma information about the mode (compare vs normal)
+    """
+    requ_l = request.form.get("input_text", "").split(",")
     name = requ_l[0]
     mode = requ_l[1]
     message = loadAnswer(name, mode)

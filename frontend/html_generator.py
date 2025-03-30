@@ -1,7 +1,5 @@
 import random
 
-# response = f"""<li class="{css_name}-css-class"><span style="font-weight: bold">{response_dic["generated_adj"]} {class_name}:</span> {response_dic["html_output"]}<span class="sources">{response_dic["footnotes_span"]}</span></li>"""
-
 all_phones_scores = {}
 list_of_additional_inf = ["conclusion", "name", "sources", "in_list"]
 
@@ -9,9 +7,6 @@ list_of_additional_inf = ["conclusion", "name", "sources", "in_list"]
 def calc_ratio(json_name, score, is_in_score_list) -> float:
     list_of_other_scores: list[float] = all_phones_scores[json_name]
     if is_in_score_list == "false":
-        print(
-            "//////////////////////////////////////////////////////////////////////////////////////"
-        )
         list_of_other_scores.append(score)
     num_of_other_scores = 0
     for el in list_of_other_scores:
@@ -213,7 +208,12 @@ def generate_table_output(resp1: dict, resp2: dict, all_phones_scores2: dict):
     return final_response
 
 
-def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit=True):
+def generate_html_output(resp: dict, all_phones_scores2: dict):
+    """
+    generated html for single phone reviews
+    :param resp: the dictionary containg the phones data
+    :param all_phones_scores2: scores of all phones (important for ratio bar)
+    """
     global all_phones_scores
     all_phones_scores = all_phones_scores2
 
@@ -221,8 +221,7 @@ def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit=T
     final_response = ""
     tablecounter = 0
     table = """<table style="width: 100%">"""
-    print("*******************************************************")
-    print(resp)
+
     for key, val in resp.items():
         if isinstance(val, dict) and key != "conclusion":
             h_ = create_header(
@@ -246,7 +245,6 @@ def generate_html_output(resp: dict, all_phones_scores2: dict, is_in_scorelsit=T
             sub_dic_list: dict = val
             final_response += "<ul>"
             for k, v in sub_dic_list.items():
-                # el_dict: dict = next(iter(el.values()))
                 if type(v) == dict:
                     n: str = v["class_name"]
                     text = v["summary"]
@@ -315,6 +313,10 @@ def generate_conclusional_header(
 
 
 def color_leafs(score: float, default_color="white", add_ons=""):
+    """
+    creates the leave-element for the frontend based on the score
+    :param default_color: defines what color, the "other" leaves have
+    """
     color = "green"
     if score < 4.0:
         color = "rgb(138, 193, 107)"
